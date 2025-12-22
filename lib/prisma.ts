@@ -2,8 +2,9 @@ import { PrismaClient } from '@prisma/client';
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
-// O DATABASE_URL deve ser configurado no .env ou no Docker
-// Ex: DATABASE_URL="file:./dev.db" para SQLite ou "mysql://user:pass@host:3306/db" para MySQL
+// DATABASE_URL configurada no Docker ou .env
+// Ex MySQL: "mysql://user:pass@host:3306/db"
+// Ex SQLite: "file:/app/data/dev.db"
 export const prisma =
   globalForPrisma.prisma ||
   new PrismaClient({
