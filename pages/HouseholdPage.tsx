@@ -204,7 +204,13 @@ const HouseholdPage: React.FC<Props> = ({ household, setHousehold, lang }) => {
   );
 };
 
-const MemberCard = ({ member, isGuest, onEdit, onRemove }: { member: HouseholdMember, isGuest?: boolean, onEdit: () => void, onRemove: () => void }) => (
+// Fix: Updated MemberCard to use React.FC and accept Promise for onRemove to resolve type mismatch with async handler and ensure key prop is handled
+const MemberCard: React.FC<{ 
+  member: HouseholdMember, 
+  isGuest?: boolean, 
+  onEdit: () => void, 
+  onRemove: () => void | Promise<void> 
+}> = ({ member, isGuest, onEdit, onRemove }) => (
   <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col hover:shadow-md transition-all group">
     <div className="flex justify-between items-start mb-6">
       <div className="flex items-center gap-4">

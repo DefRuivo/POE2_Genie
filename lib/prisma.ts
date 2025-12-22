@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
+// Use globalThis to avoid "Cannot find name 'global'" error in standard environment
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
 // DATABASE_URL configurada no Docker ou .env
 // Ex MySQL: "mysql://user:pass@host:3306/db"
