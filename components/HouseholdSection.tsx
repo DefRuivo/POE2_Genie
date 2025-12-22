@@ -1,17 +1,23 @@
 
 import React, { useState } from 'react';
 import { HouseholdMember } from '../types';
+import { Language, translations } from '../locales/translations';
 
 interface Props {
   household: HouseholdMember[];
   setHousehold: React.Dispatch<React.SetStateAction<HouseholdMember[]>>;
   activeDiners: string[];
   setActiveDiners: React.Dispatch<React.SetStateAction<string[]>>;
+  lang: Language;
 }
 
-const HouseholdSection: React.FC<Props> = ({ household, setHousehold, activeDiners, setActiveDiners }) => {
+const HouseholdSection: React.FC<Props> = ({ household, setHousehold, activeDiners, setActiveDiners, lang }) => {
+  const t = translations[lang];
   const [newMember, setNewMember] = useState({ name: '', restrictions: '', likes: '', dislikes: '' });
 
+  /**
+   * Adds a new member to the household state and selects them for the current session.
+   */
   const addMember = () => {
     if (!newMember.name) return;
     const member: HouseholdMember = {
@@ -40,8 +46,9 @@ const HouseholdSection: React.FC<Props> = ({ household, setHousehold, activeDine
       <div className="p-6 border-b border-slate-100 bg-slate-50/50">
         <h2 className="text-lg font-bold flex items-center gap-2 text-slate-800">
           <i className="fas fa-home text-indigo-500"></i>
-          Membros da Casa (Household)
+          {t.household_title}
         </h2>
+        <p className="text-sm text-slate-500 mt-1">{t.household_subtitle}</p>
       </div>
       <div className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -59,19 +66,26 @@ const HouseholdSection: React.FC<Props> = ({ household, setHousehold, activeDine
                 </button>
               </div>
               <div className="space-y-2 text-xs">
-                <p><span className="font-bold text-red-700">RESTRIÇÕES:</span> {member.restrictions.join(', ') || 'Nenhuma'}</p>
-                <p><span className="font-bold text-emerald-700">GOSTA:</span> {member.likes.join(', ')}</p>
+                <p><span className="font-bold text-red-700">{t.allergies_label}:</span> {member.restrictions.join(', ') || 'N/A'}</p>
+                <p><span className="font-bold text-emerald-700">{t.likes_label}:</span> {member.likes.join(', ')}</p>
+                <p><span className="font-bold text-slate-500">{t.dislikes_label}:</span> {member.dislikes.join(', ')}</p>
               </div>
             </div>
           ))}
         </div>
 
+        {/* Form to add a new household profile */}
         <div className="bg-slate-50 p-6 rounded-2xl space-y-4 border border-slate-100">
+          <p className="text-xs font-black text-slate-400 uppercase tracking-widest">{t.new_member}</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <input placeholder="Nome" className="px-4 py-2.5 rounded-xl border border-slate-200 text-sm outline-none" value={newMember.name} onChange={e => setNewMember({...newMember, name: e.target.value})} />
-            <input placeholder="Restrições (vírgula)" className="px-4 py-2.5 rounded-xl border border-slate-200 text-sm outline-none" value={newMember.restrictions} onChange={e => setNewMember({...newMember, restrictions: e.target.value})} />
+            <input placeholder={t.name_placeholder} className="px-4 py-2.5 rounded-xl border border-slate-200 text-sm outline-none bg-white" value={newMember.name} onChange={e => setNewMember({...newMember, name: e.target.value})} />
+            <input placeholder={t.restrictions_placeholder} className="px-4 py-2.5 rounded-xl border border-slate-200 text-sm outline-none bg-white" value={newMember.restrictions} onChange={e => setNewMember({...newMember, restrictions: e.target.value})} />
+            <input placeholder={t.likes_placeholder} className="px-4 py-2.5 rounded-xl border border-slate-200 text-sm outline-none bg-white" value={newMember.likes} onChange={e => setNewMember({...newMember, likes: e.target.value})} />
+            <input placeholder={t.dislikes_placeholder} className="px-4 py-2.5 rounded-xl border border-slate-200 text-sm outline-none bg-white" value={newMember.dislikes} onChange={e => setNewMember({...newMember, dislikes: e.target.value})} />
           </div>
-          <button onClick={addMember} className="w-full bg-slate-900 text-white py-3 rounded-xl text-sm font-bold">Adicionar Membro</button>
+          <button onClick={addMember} className="w-full bg-slate-900 text-white py-3 rounded-xl text-sm font-bold hover:bg-black transition-all">
+            {t.add_member}
+          </button>
         </div>
       </div>
     </section>

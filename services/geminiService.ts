@@ -2,26 +2,38 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { HouseholdMember, SessionContext, GeneratedRecipe, ImageSize, AspectRatio } from "../types";
 
+/**
+ * Generates a safe and creative recipe based on household profiles and available ingredients.
+ * The system instruction is tailored to the target language to ensure localized output.
+ */
 export const generateRecipe = async (
   household_db: HouseholdMember[],
-  session_context: SessionContext
+  session_context: SessionContext,
+  language: 'en' | 'pt' = 'en'
 ): Promise<GeneratedRecipe> => {
-  // Fix: Strictly using process.env.API_KEY directly for initialization as per SDK requirements.
+  // Initialize AI client using the provided environment variable.
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
-  const systemInstruction = `Você é o motor de inteligência culinária do "Dinner?". Sua função é atuar como um Chef Executivo e Auditor de Segurança Alimentar.
-
-SEUS OBJETIVOS DE NEGÓCIO (CRÍTICOS):
-1. Combater a falta de criatividade usando APENAS o que o usuário tem (prioridade) ou sugerindo compras mínimas.
-2. Garantir SEGURANÇA ABSOLUTA: Violação Zero de restrições alimentares (ex: Glúten, Diabetes).
-
-SEU PROCESSO DE RACIOCÍNIO (CHAIN OF THOUGHT):
-1. ANÁLISE DE PERFIL: Identifique quem são os participantes ativos (pelo who_is_eating). Agregue TODAS as restrições deles em uma "Lista Proibida" unificada.
-2. FILTRAGEM DE INGREDIENTES: Cruze os pantry_ingredients contra a "Lista Proibida". Se o usuário listou um ingrediente proibido para qualquer um dos participantes ativos, ignore esse ingrediente.
-3. CRIAÇÃO: Gere uma receita criativa priorizando os ingredientes seguros restantes.
-4. PERSONALIZAÇÃO: Use os campos "likes" e "dislikes" dos participantes para ajustar o sabor.
-
-Responda APENAS com um objeto JSON estruturado.`;
+  const systemInstruction = language === 'pt' 
+    ? `Você é o motor de inteligência culinária do "Dinner?". Sua função é atuar como um Chef Executivo e Auditor de Segurança Alimentar.
+SEUS OBJETIVOS:
+1. Combater a falta de criatividade usando APENAS o que o usuário tem ou sugerindo compras mínimas.
+2. Garantir SEGURANÇA ABSOLUTA: Violação Zero de restrições alimentares.
+PROCESSO:
+- Analise restrições dos participantes em who_is_eating.
+- Filtre pantry_ingredients proibidos.
+- Gere receita criativa e segura em PORTUGUÊS.
+Responda APENAS com JSON.`
+    : `You are the culinary intelligence engine for "Dinner?". Your role is to act as an Executive Chef and Food Safety Auditor.
+BUSINESS OBJECTIVES:
+1. Combat lack of creativity using ONLY what the user has (priority) or suggesting minimal purchases.
+2. Ensure ABSOLUTE SAFETY: Zero violation of dietary restrictions (e.g., Gluten, Diabetes).
+REASONING PROCESS:
+- Identify active participants (via who_is_eating). Aggregate ALL their restrictions into a unified "Forbidden List".
+- Filter pantry_ingredients against the list. If an ingredient is unsafe, ignore it.
+- Create a creative recipe prioritizing safe remaining ingredients.
+- Localize the entire output into ENGLISH.
+Respond ONLY with a valid JSON object.`;
 
   const prompt = JSON.stringify({ household_db, session_context });
 
@@ -47,17 +59,19 @@ Responda APENAS com um objeto JSON estruturado.`;
     }
   });
 
-  // Fix: Accessing .text property directly (not as a method) from GenerateContentResponse.
-  if (!response.text) throw new Error("Falha ao gerar receita");
+  if (!response.text) throw new Error("Failed to generate recipe");
   return JSON.parse(response.text) as GeneratedRecipe;
 };
 
+/**
+ * Generates a professional food photograph based on the recipe name.
+ */
 export const generateDishImage = async (
   recipeName: string,
   size: ImageSize,
   ratio: AspectRatio
 ): Promise<string> => {
-  // Fix: Creating new GoogleGenAI instance right before call to ensure up-to-date API key access.
+  // Create a fresh instance to ensure we use the latest injected API Key.
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const prompt = `A professional, high-quality food photography shot of ${recipeName}. 
@@ -78,10 +92,10 @@ No text in image.`;
     }
   });
 
-  // Fix: Iterating through content parts to find the inlineData (image) as per SDK best practices.
+  // Extract the image part from the response candidates.
   const part = response.candidates?.[0]?.content?.parts.find(p => p.inlineData);
   if (!part?.inlineData?.data) {
-    throw new Error("Falha ao gerar imagem do prato.");
+    throw new Error("Failed to generate dish image.");
   }
 
   return `data:image/png;base64,${part.inlineData.data}`;
