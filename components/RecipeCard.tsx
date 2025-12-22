@@ -39,7 +39,8 @@ const RecipeCard: React.FC<Props> = ({ recipe, dishImage, setDishImage, lang, on
     }
   };
 
-  const handleSave = () => {
+  // Fix: Changed handleSave to async and corrected storageService.save() to storageService.saveRecipe().
+  const handleSave = async () => {
     const record: RecipeRecord = {
       ...recipe,
       id: Date.now().toString(),
@@ -47,7 +48,7 @@ const RecipeCard: React.FC<Props> = ({ recipe, dishImage, setDishImage, lang, on
       createdAt: Date.now(),
       dishImage: dishImage
     };
-    storageService.save(record);
+    await storageService.saveRecipe(record);
     setIsSaved(true);
     if (onSaved) onSaved();
   };

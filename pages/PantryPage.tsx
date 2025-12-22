@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Language, translations } from '../locales/translations';
+import { storageService } from '../services/storageService';
 
 interface Props {
   pantry: string[];
@@ -15,18 +16,21 @@ const PantryPage: React.FC<Props> = ({ pantry, setPantry, lang }) => {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editValue, setEditValue] = useState('');
 
-  const addIngredient = () => {
+  const addIngredient = async () => {
     if (!newIngredient) return;
     const trimmed = newIngredient.trim();
     if (pantry.some(i => i.toLowerCase() === trimmed.toLowerCase())) {
       setNewIngredient('');
       return;
     }
+    
+    await storageService.addPantryItem(trimmed);
     setPantry(prev => [...prev, trimmed]);
     setNewIngredient('');
   };
 
-  const removeIngredient = (ing: string) => {
+  const removeIngredient = async (ing: string) => {
+    await storageService.removePantryItem(ing);
     setPantry(prev => prev.filter(i => i !== ing));
   };
 
@@ -35,10 +39,15 @@ const PantryPage: React.FC<Props> = ({ pantry, setPantry, lang }) => {
     setEditValue(value);
   };
 
-  const saveEdit = () => {
+  const saveEdit = async () => {
     if (editingIndex === null || !editValue.trim()) return;
+    const oldName = pantry[editingIndex];
+    const newName = editValue.trim();
+    
+    await storageService.editPantryItem(oldName, newName);
+    
     const newPantry = [...pantry];
-    newPantry[editingIndex] = editValue.trim();
+    newPantry[editingIndex] = newName;
     setPantry(newPantry);
     setEditingIndex(null);
   };
@@ -89,13 +98,13 @@ const PantryPage: React.FC<Props> = ({ pantry, setPantry, lang }) => {
             Resultados ({filteredPantry.length})
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {filteredPantry.map((item, idx) => {
+            {filteredPantry.map((item) => {
               const globalIndex = pantry.indexOf(item);
               const isEditing = editingIndex === globalIndex;
 
               return (
                 <div 
-                  key={globalIndex} 
+                  key={item} 
                   className={`p-4 rounded-2xl flex justify-between items-center group transition-all border ${
                     isEditing ? 'border-indigo-500 bg-indigo-50 shadow-inner' : 'bg-slate-50 border-slate-100 hover:bg-amber-50 hover:border-amber-200'
                   }`}
@@ -140,11 +149,6 @@ const PantryPage: React.FC<Props> = ({ pantry, setPantry, lang }) => {
             <div className="text-center py-20 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-100">
               <i className="fas fa-shopping-cart text-4xl text-slate-200 mb-4"></i>
               <p className="text-slate-400 font-bold uppercase text-xs tracking-widest">Sua despensa está vazia.</p>
-            </div>
-          )}
-          {pantry.length > 0 && filteredPantry.length === 0 && (
-            <div className="text-center py-10 text-slate-400 text-xs font-bold uppercase tracking-widest">
-              Nenhum item encontrado para "{searchTerm}"
             </div>
           )}
         </div>

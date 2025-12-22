@@ -4,11 +4,9 @@ import { HouseholdMember, SessionContext, GeneratedRecipe, MealType, RecipeRecor
 import { generateRecipe } from './services/geminiService';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
-import RecipeCard from './components/RecipeCard';
 import { Language, translations } from './locales/translations';
 import { storageService } from './services/storageService';
 
-// Paginas/Componentes para as Views
 import HouseholdPage from './pages/HouseholdPage';
 import PantryPage from './pages/PantryPage';
 import HistoryPage from './pages/HistoryPage';
@@ -18,44 +16,43 @@ const App: React.FC = () => {
   const [lang, setLang] = useState<Language>('pt');
   const t = translations[lang];
 
-  // --- Global State ---
   const [currentView, setCurrentView] = useState<ViewState>('home');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   
-  const [household, setHousehold] = useState<HouseholdMember[]>(() => {
-    const saved = localStorage.getItem('dinner_household');
-    return saved ? JSON.parse(saved) : [
-      { id: 'h1', name: 'Carlos', restrictions: ['Diabetes'], likes: ['Carne'], dislikes: ['Legumes cozidos'] },
-      { id: 'h2', name: 'Bia', restrictions: ['Vegetariana'], likes: ['Pasta'], dislikes: ['Coentro'] }
-    ];
-  });
+  const [household, setHousehold] = useState<HouseholdMember[]>([]);
+  const [pantry, setPantry] = useState<string[]>([]);
+  const [history, setHistory] = useState<RecipeRecord[]>([]);
 
-  const [pantry, setPantry] = useState<string[]>(() => {
-    const saved = localStorage.getItem('dinner_pantry');
-    return saved ? JSON.parse(saved) : ['Ovos', 'Arroz', 'Feijão', 'Azeite'];
-  });
-
-  const [activeDiners, setActiveDiners] = useState<string[]>(['h1', 'h2']);
+  const [activeDiners, setActiveDiners] = useState<string[]>([]);
   const [mealType, setMealType] = useState<MealType>('main');
   
   const [recipe, setRecipe] = useState<GeneratedRecipe | null>(null);
   const [dishImage, setDishImage] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [history, setHistory] = useState<RecipeRecord[]>([]);
 
-  // Persistência básica via useEffect (em um app real seria storageService)
+  // Carregamento Inicial do Banco de Dados
   useEffect(() => {
-    localStorage.setItem('dinner_household', JSON.stringify(household));
-  }, [household]);
+    const initData = async () => {
+      const [h, p, r] = await Promise.all([
+        storageService.getHousehold(),
+        storageService.getPantry(),
+        storageService.getAllRecipes()
+      ]);
+      setHousehold(h);
+      setPantry(p);
+      setHistory(r);
+      setActiveDiners(h.filter(m => !m.isGuest).map(m => m.id));
+      setIsLoading(false);
+    };
+    initData();
+  }, []);
 
-  useEffect(() => {
-    localStorage.setItem('dinner_pantry', JSON.stringify(pantry));
-  }, [pantry]);
-
-  useEffect(() => {
-    setHistory(storageService.getAll());
-  }, [currentView]);
+  const refreshHistory = async () => {
+    const r = await storageService.getAllRecipes();
+    setHistory(r);
+  };
 
   const handleGenerateRecipe = async () => {
     if (activeDiners.length === 0) {
@@ -83,6 +80,17 @@ const App: React.FC = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="font-black text-indigo-900 animate-pulse uppercase tracking-widest text-xs">Preparando Cozinha...</p>
+        </div>
+      </div>
+    );
+  }
+
   const renderView = () => {
     switch (currentView) {
       case 'household':
@@ -90,7 +98,7 @@ const App: React.FC = () => {
       case 'pantry':
         return <PantryPage pantry={pantry} setPantry={setPantry} lang={lang} />;
       case 'history':
-        return <HistoryPage history={history} onUpdate={() => setHistory(storageService.getAll())} lang={lang} />;
+        return <HistoryPage history={history} onUpdate={refreshHistory} lang={lang} />;
       default:
         return (
           <HomePage 
@@ -108,7 +116,7 @@ const App: React.FC = () => {
             dishImage={dishImage}
             setDishImage={setDishImage}
             lang={lang}
-            onSaved={() => setHistory(storageService.getAll())}
+            onSaved={refreshHistory}
           />
         );
     }

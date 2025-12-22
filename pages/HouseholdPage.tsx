@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { HouseholdMember } from '../types';
 import { Language, translations } from '../locales/translations';
 import TagInput from '../components/TagInput';
+import { storageService } from '../services/storageService';
 
 interface Props {
   household: HouseholdMember[];
@@ -26,18 +27,29 @@ const HouseholdPage: React.FC<Props> = ({ household, setHousehold, lang }) => {
   const members = household.filter(m => !m.isGuest);
   const guests = household.filter(m => m.isGuest);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!form.name) return;
     
+    let updatedMember: HouseholdMember;
+
     if (editingId) {
-      setHousehold(prev => prev.map(m => m.id === editingId ? { ...m, ...form } : m));
+      const existing = household.find(m => m.id === editingId);
+      updatedMember = { ...existing!, ...form };
     } else {
-      const newMember: HouseholdMember = {
+      updatedMember = {
         id: `${activeTab === 'resident' ? 'h' : 'g'}-${Date.now()}`,
         ...form,
         isGuest: activeTab === 'guest'
       };
-      setHousehold(prev => [...prev, newMember]);
+    }
+
+    await storageService.saveMember(updatedMember);
+    
+    // Atualiza estado local
+    if (editingId) {
+      setHousehold(prev => prev.map(m => m.id === editingId ? updatedMember : m));
+    } else {
+      setHousehold(prev => [...prev, updatedMember]);
     }
 
     setForm({ name: '', restrictions: [], likes: [], dislikes: [] });
@@ -57,7 +69,8 @@ const HouseholdPage: React.FC<Props> = ({ household, setHousehold, lang }) => {
     setIsAdding(true);
   };
 
-  const removeMember = (id: string) => {
+  const removeMember = async (id: string) => {
+    await storageService.deleteMember(id);
     setHousehold(prev => prev.filter(m => m.id !== id));
   };
 
@@ -66,7 +79,7 @@ const HouseholdPage: React.FC<Props> = ({ household, setHousehold, lang }) => {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-3xl font-black text-slate-900 tracking-tighter">{t.household_title}</h2>
-          <p className="text-slate-500 font-medium">Cadastre residentes ou convidados frequentes.</p>
+          <p className="text-slate-500 font-medium">Gerencie residentes ou convidados com banco de dados seguro.</p>
         </div>
         {!isAdding && (
           <button 
@@ -153,7 +166,6 @@ const HouseholdPage: React.FC<Props> = ({ household, setHousehold, lang }) => {
         </div>
       )}
 
-      {/* Lists */}
       <div className="space-y-12">
         {members.length > 0 && (
           <div>

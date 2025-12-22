@@ -33,12 +33,15 @@ export default function Home() {
   const [history, setHistory] = useState<RecipeRecord[]>([]);
 
   // Load history on mount
+  // Fix: Corrected storageService.getAll() to storageService.getAllRecipes() and handled the promise result.
   useEffect(() => {
-    setHistory(storageService.getAll());
+    storageService.getAllRecipes().then(setHistory);
   }, []);
 
-  const refreshHistory = () => {
-    setHistory(storageService.getAll());
+  // Fix: Corrected storageService.getAll() to storageService.getAllRecipes() and awaited the result.
+  const refreshHistory = async () => {
+    const data = await storageService.getAllRecipes();
+    setHistory(data);
   };
 
   /**

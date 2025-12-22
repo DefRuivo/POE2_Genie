@@ -18,8 +18,9 @@ const HistorySection: React.FC<Props> = ({ history, onUpdate, lang }) => {
     onUpdate();
   };
 
-  const removeRecipe = (id: string) => {
-    storageService.delete(id);
+  // Fix: Corrected storageService.delete() to storageService.deleteRecipe() and made handler async.
+  const removeRecipe = async (id: string) => {
+    await storageService.deleteRecipe(id);
     onUpdate();
   };
 

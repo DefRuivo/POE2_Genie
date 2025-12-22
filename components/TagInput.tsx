@@ -17,16 +17,20 @@ const TagInput: React.FC<Props> = ({ category, tags, onChange, placeholder, labe
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Fix: storageService.getTags is async, so we must await it before filtering in useEffect.
   useEffect(() => {
-    const allTags = storageService.getTags(category);
-    if (inputValue) {
-      const filtered = allTags.filter(t => 
-        t.toLowerCase().includes(inputValue.toLowerCase()) && !tags.includes(t)
-      );
-      setSuggestions(filtered);
-    } else {
-      setSuggestions([]);
-    }
+    const fetchSuggestions = async () => {
+      const allTags = await storageService.getTags(category);
+      if (inputValue) {
+        const filtered = allTags.filter(t => 
+          t.toLowerCase().includes(inputValue.toLowerCase()) && !tags.includes(t)
+        );
+        setSuggestions(filtered);
+      } else {
+        setSuggestions([]);
+      }
+    };
+    fetchSuggestions();
   }, [inputValue, tags, category]);
 
   const addTag = (tag: string) => {
