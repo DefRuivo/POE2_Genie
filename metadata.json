@@ -1,0 +1,7 @@
+{
+  "name": "Dinner?",
+  "description": "Seu Chef Executivo e Auditor de Segurança Alimentar. Inteligência culinária para receitas seguras, criativas e sem desperdício.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
