@@ -6,7 +6,8 @@ export const generateRecipe = async (
   household_db: HouseholdMember[],
   session_context: SessionContext
 ): Promise<GeneratedRecipe> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  // Fix: Strictly using process.env.API_KEY directly for initialization as per SDK requirements.
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const systemInstruction = `Você é o motor de inteligência culinária do "Dinner?". Sua função é atuar como um Chef Executivo e Auditor de Segurança Alimentar.
 
@@ -46,6 +47,7 @@ Responda APENAS com um objeto JSON estruturado.`;
     }
   });
 
+  // Fix: Accessing .text property directly (not as a method) from GenerateContentResponse.
   if (!response.text) throw new Error("Falha ao gerar receita");
   return JSON.parse(response.text) as GeneratedRecipe;
 };
@@ -55,7 +57,8 @@ export const generateDishImage = async (
   size: ImageSize,
   ratio: AspectRatio
 ): Promise<string> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  // Fix: Creating new GoogleGenAI instance right before call to ensure up-to-date API key access.
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const prompt = `A professional, high-quality food photography shot of ${recipeName}. 
 The dish is plated beautifully in a modern kitchen setting. 
@@ -75,6 +78,7 @@ No text in image.`;
     }
   });
 
+  // Fix: Iterating through content parts to find the inlineData (image) as per SDK best practices.
   const part = response.candidates?.[0]?.content?.parts.find(p => p.inlineData);
   if (!part?.inlineData?.data) {
     throw new Error("Falha ao gerar imagem do prato.");
