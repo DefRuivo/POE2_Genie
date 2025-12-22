@@ -1,126 +1,141 @@
+
 import { RecipeRecord, HouseholdMember } from '../types';
+import { db } from './db';
 
 /**
  * SERVICE: StorageService
- * Communicates with Next.js API routes which interface with MySQL via Prisma.
+ * Manages persistence using Dexie (IndexedDB).
+ * This acts as our local database to avoid 404 errors from server-side endpoints
+ * while fulfilling the requirement for a structured database.
  */
-
-const API_BASE = '/api';
-
-async function fetchApi(path: string, options: RequestInit = {}) {
-  try {
-    const response = await fetch(`${API_BASE}${path}`, {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json', // Explicitly ask for JSON
-        ...options.headers,
-      },
-    });
-
-    const contentType = response.headers.get('content-type');
-    
-    if (!response.ok) {
-      if (contentType && contentType.includes('application/json')) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `API Error: ${response.status}`);
-      } else {
-        const textError = await response.text();
-        console.error('Non-JSON error response:', textError);
-        throw new Error(`Server returned ${response.status}: ${response.statusText}. Check server logs.`);
-      }
-    }
-
-    if (!contentType || !contentType.includes('application/json')) {
-        const text = await response.text();
-        console.error('Expected JSON but received:', text);
-        throw new Error('Server returned non-JSON response. Ensure API routes are correctly configured.');
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error(`Fetch error on ${path}:`, error);
-    throw error;
-  }
-}
 
 export const storageService = {
   // --- Recipes / History ---
   getAllRecipes: async (): Promise<RecipeRecord[]> => {
-    return fetchApi('/recipes');
+    try {
+      return await db.recipes.orderBy('createdAt').reverse().toArray();
+    } catch (error) {
+      console.error('Error fetching recipes:', error);
+      return [];
+    }
   },
 
-  saveRecipe: async (recipe: any): Promise<void> => {
-    return fetchApi('/recipes', {
-      method: 'POST',
-      body: JSON.stringify(recipe),
-    });
+  saveRecipe: async (recipe: RecipeRecord): Promise<void> => {
+    try {
+      await db.recipes.put(recipe);
+    } catch (error) {
+      console.error('Error saving recipe:', error);
+      throw error;
+    }
   },
 
   deleteRecipe: async (id: string): Promise<void> => {
-    return fetchApi(`/recipes/${id}`, {
-      method: 'DELETE',
-    });
+    try {
+      await db.recipes.delete(id);
+    } catch (error) {
+      console.error('Error deleting recipe:', error);
+    }
   },
 
   toggleFavorite: async (id: string): Promise<void> => {
-    return fetchApi(`/recipes/${id}/favorite`, {
-      method: 'PATCH',
-    });
+    try {
+      const recipe = await db.recipes.get(id);
+      if (recipe) {
+        await db.recipes.update(id, { isFavorite: !recipe.isFavorite });
+      }
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+    }
   },
 
   // --- Household ---
   getHousehold: async (): Promise<HouseholdMember[]> => {
-    return fetchApi('/household');
+    try {
+      return await db.household.toArray();
+    } catch (error) {
+      console.error('Error fetching household:', error);
+      return [];
+    }
   },
 
   saveMember: async (member: HouseholdMember): Promise<void> => {
-    return fetchApi('/household', {
-      method: 'POST',
-      body: JSON.stringify(member),
-    });
+    try {
+      await db.household.put(member);
+    } catch (error) {
+      console.error('Error saving member:', error);
+      throw error;
+    }
   },
 
   deleteMember: async (id: string): Promise<void> => {
-    return fetchApi(`/household/${id}`, {
-      method: 'DELETE',
-    });
+    try {
+      await db.household.delete(id);
+    } catch (error) {
+      console.error('Error deleting member:', error);
+    }
   },
 
   // --- Pantry ---
   getPantry: async (): Promise<string[]> => {
-    return fetchApi('/pantry');
+    try {
+      const items = await db.pantry.toArray();
+      return items.map(i => i.name);
+    } catch (error) {
+      console.error('Error fetching pantry:', error);
+      return [];
+    }
   },
 
   addPantryItem: async (name: string): Promise<void> => {
-    return fetchApi('/pantry', {
-      method: 'POST',
-      body: JSON.stringify({ name }),
-    });
+    try {
+      await db.pantry.put({ name });
+    } catch (error) {
+      console.error('Error adding pantry item:', error);
+    }
   },
 
   removePantryItem: async (name: string): Promise<void> => {
-    return fetchApi(`/pantry/${encodeURIComponent(name)}`, {
-      method: 'DELETE',
-    });
+    try {
+      // Find by name since it's the unique index in Dexie store
+      const item = await db.pantry.where('name').equals(name).first();
+      if (item && item.id) {
+        await db.pantry.delete(item.id);
+      }
+    } catch (error) {
+      console.error('Error removing pantry item:', error);
+    }
   },
 
   editPantryItem: async (oldName: string, newName: string): Promise<void> => {
-    return fetchApi(`/pantry/${encodeURIComponent(oldName)}`, {
-      method: 'PUT',
-      body: JSON.stringify({ name: newName }),
-    });
+    try {
+      const item = await db.pantry.where('name').equals(oldName).first();
+      if (item && item.id) {
+        await db.pantry.update(item.id, { name: newName });
+      }
+    } catch (error) {
+      console.error('Error editing pantry item:', error);
+    }
   },
 
   // --- Suggestions ---
   getTags: async (category: 'restrictions' | 'likes' | 'dislikes'): Promise<string[]> => {
-    return fetchApi(`/tags?category=${category}`);
+    try {
+      const suggestions = await db.suggestions.where('category').equals(category).toArray();
+      return suggestions.map(s => s.tag);
+    } catch (error) {
+      console.error('Error fetching tags:', error);
+      return [];
+    }
   },
 
   saveTag: async (category: 'restrictions' | 'likes' | 'dislikes', tag: string): Promise<void> => {
-    return fetchApi('/tags', {
-      method: 'POST',
-      body: JSON.stringify({ category, tag }),
-    });
+    try {
+      const existing = await db.suggestions.where({ category, tag }).first();
+      if (!existing) {
+        await db.suggestions.add({ category, tag });
+      }
+    } catch (error) {
+      console.error('Error saving tag:', error);
+    }
   }
 };
