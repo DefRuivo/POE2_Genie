@@ -1,94 +1,105 @@
-
 import { RecipeRecord, HouseholdMember } from '../types';
-import { db } from './db';
+
+/**
+ * SERVICE: StorageService
+ * Transitioned from Local IndexedDB (Dexie) to Backend API (MySQL).
+ * This client-side service now communicates with the application's API layer.
+ */
+
+const API_BASE = '/api';
+
+async function fetchApi(path: string, options: RequestInit = {}) {
+  const response = await fetch(`${API_BASE}${path}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'API request failed' }));
+    throw new Error(error.message || 'API request failed');
+  }
+  return response.json();
+}
 
 export const storageService = {
   // --- Recipes / History ---
   getAllRecipes: async (): Promise<RecipeRecord[]> => {
-    return await db.recipes.orderBy('createdAt').reverse().toArray();
+    return fetchApi('/recipes');
   },
 
   saveRecipe: async (recipe: RecipeRecord): Promise<void> => {
-    await db.recipes.put(recipe); // put faz insert ou update se ID existir
+    return fetchApi('/recipes', {
+      method: 'POST',
+      body: JSON.stringify(recipe),
+    });
   },
 
   deleteRecipe: async (id: string): Promise<void> => {
-    await db.recipes.delete(id);
+    return fetchApi(`/recipes/${id}`, {
+      method: 'DELETE',
+    });
   },
 
   toggleFavorite: async (id: string): Promise<void> => {
-    const recipe = await db.recipes.get(id);
-    if (recipe) {
-      await db.recipes.update(id, { isFavorite: !recipe.isFavorite });
-    }
+    return fetchApi(`/recipes/${id}/favorite`, {
+      method: 'PATCH',
+    });
   },
 
-  // --- Household (Residentes e Convidados) ---
+  // --- Household ---
   getHousehold: async (): Promise<HouseholdMember[]> => {
-    const members = await db.household.toArray();
-    if (members.length === 0) {
-      // Seed inicial apenas se o banco for novo
-      const initial: HouseholdMember[] = [
-        { id: 'h1', name: 'Carlos', restrictions: ['Diabetes'], likes: ['Carne'], dislikes: ['Legumes cozidos'], isGuest: false },
-        { id: 'h2', name: 'Bia', restrictions: ['Vegetariana'], likes: ['Pasta'], dislikes: ['Coentro'], isGuest: false }
-      ];
-      await db.household.bulkAdd(initial);
-      return initial;
-    }
-    return members;
+    return fetchApi('/household');
   },
 
   saveMember: async (member: HouseholdMember): Promise<void> => {
-    await db.household.put(member);
-    
-    // Salva automaticamente novos termos nas sugestões para o autocomplete aprender
-    for (const tag of [...member.restrictions]) await storageService.saveTag('restrictions', tag);
-    for (const tag of [...member.likes]) await storageService.saveTag('likes', tag);
-    for (const tag of [...member.dislikes]) await storageService.saveTag('dislikes', tag);
+    return fetchApi('/household', {
+      method: 'POST',
+      body: JSON.stringify(member),
+    });
   },
 
   deleteMember: async (id: string): Promise<void> => {
-    await db.household.delete(id);
+    return fetchApi(`/household/${id}`, {
+      method: 'DELETE',
+    });
   },
 
-  // --- Pantry (Despensa com suporte a busca e edição) ---
+  // --- Pantry ---
   getPantry: async (): Promise<string[]> => {
-    const items = await db.pantry.toArray();
-    return items.map(i => i.name).sort();
+    return fetchApi('/pantry');
   },
 
   addPantryItem: async (name: string): Promise<void> => {
-    try {
-      await db.pantry.add({ name });
-    } catch (e) {
-      // Duplicata ignorada pelo índice &name
-    }
+    return fetchApi('/pantry', {
+      method: 'POST',
+      body: JSON.stringify({ name }),
+    });
   },
 
   removePantryItem: async (name: string): Promise<void> => {
-    const item = await db.pantry.where('name').equals(name).first();
-    if (item?.id) await db.pantry.delete(item.id);
+    return fetchApi(`/pantry/${encodeURIComponent(name)}`, {
+      method: 'DELETE',
+    });
   },
 
   editPantryItem: async (oldName: string, newName: string): Promise<void> => {
-    const item = await db.pantry.where('name').equals(oldName).first();
-    if (item?.id) await db.pantry.update(item.id, { name: newName });
+    return fetchApi(`/pantry/${encodeURIComponent(oldName)}`, {
+      method: 'PUT',
+      body: JSON.stringify({ name: newName }),
+    });
   },
 
-  // --- Suggestions (Dicionário de Tags / Autocomplete) ---
+  // --- Suggestions ---
   getTags: async (category: 'restrictions' | 'likes' | 'dislikes'): Promise<string[]> => {
-    const tags = await db.suggestions.where('category').equals(category).toArray();
-    return tags.map(t => t.tag);
+    return fetchApi(`/tags?category=${category}`);
   },
 
   saveTag: async (category: 'restrictions' | 'likes' | 'dislikes', tag: string): Promise<void> => {
-    const trimmed = tag.trim();
-    if (!trimmed) return;
-    try {
-      // Tenta adicionar a combinação única de categoria+tag
-      await db.suggestions.add({ category, tag: trimmed });
-    } catch (e) {
-      // Já existe
-    }
+    return fetchApi('/tags', {
+      method: 'POST',
+      body: JSON.stringify({ category, tag }),
+    });
   }
 };

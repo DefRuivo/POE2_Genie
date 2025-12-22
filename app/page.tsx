@@ -25,6 +25,7 @@ export default function Home() {
   const [pantry, setPantry] = useState<string[]>(['Traditional Pasta', 'Tomato Sauce', 'Sugar', 'Zucchini', 'Eggs', 'Parmesan Cheese', 'Roasted Peanuts']);
   const [activeDiners, setActiveDiners] = useState<string[]>(['pai', 'filha']);
   const [mealType, setMealType] = useState<MealType>('main');
+  
   // Fix: Added missing difficulty and prepTime state to satisfy SessionContext requirements
   const [difficulty, setDifficulty] = useState<Difficulty>('intermediate');
   const [prepTime, setPrepTime] = useState<PrepTimePreference>('quick');
@@ -36,12 +37,10 @@ export default function Home() {
   const [history, setHistory] = useState<RecipeRecord[]>([]);
 
   // Load history on mount
-  // Fix: Corrected storageService.getAll() to storageService.getAllRecipes() and handled the promise result.
   useEffect(() => {
     storageService.getAllRecipes().then(setHistory);
   }, []);
 
-  // Fix: Corrected storageService.getAll() to storageService.getAllRecipes() and awaited the result.
   const refreshHistory = async () => {
     const data = await storageService.getAllRecipes();
     setHistory(data);
