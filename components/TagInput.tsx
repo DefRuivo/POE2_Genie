@@ -1,91 +1,108 @@
-
-import React, { useState, useRef, useEffect } from 'react';
-import { storageService } from '../services/storageService';
+import React, { useState, useEffect, useRef } from 'react';
 
 interface Props {
-  category: 'restrictions' | 'likes' | 'dislikes';
   tags: string[];
   onChange: (tags: string[]) => void;
   placeholder: string;
-  label: string;
-  accentColor: string;
+  category: 'restriction' | 'like' | 'dislike';
 }
 
-const TagInput: React.FC<Props> = ({ category, tags, onChange, placeholder, label, accentColor }) => {
-  const [inputValue, setInputValue] = useState('');
+export const TagInput: React.FC<Props> = ({ tags, onChange, placeholder, category }) => {
+  const [input, setInput] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Fix: storageService.getTags is async, so we must await it before filtering in useEffect.
+  // Debounce fetch suggestions
   useEffect(() => {
-    const fetchSuggestions = async () => {
-      const allTags = await storageService.getTags(category);
-      if (inputValue) {
-        const filtered = allTags.filter(t => 
-          t.toLowerCase().includes(inputValue.toLowerCase()) && !tags.includes(t)
-        );
-        setSuggestions(filtered);
+    const timeoutId = setTimeout(async () => {
+      if (input.trim().length > 1) {
+        try {
+          const res = await fetch(`/api/tags?category=${category}&q=${encodeURIComponent(input)}`);
+          if (res.ok) {
+            const data = await res.json();
+            setSuggestions(data.filter((s: string) => !tags.includes(s)));
+          }
+        } catch (e) {
+          console.error("Failed to fetch suggestions", e);
+        }
       } else {
         setSuggestions([]);
       }
-    };
-    fetchSuggestions();
-  }, [inputValue, tags, category]);
+    }, 300);
+    return () => clearTimeout(timeoutId);
+  }, [input, category, tags]);
 
-  const addTag = (tag: string) => {
-    const trimmed = tag.trim();
-    if (trimmed && !tags.includes(trimmed)) {
-      const newTags = [...tags, trimmed];
-      onChange(newTags);
-      storageService.saveTag(category, trimmed);
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addTag(input);
+    } else if (e.key === 'Backspace' && !input && tags.length > 0) {
+      removeTag(tags.length - 1);
     }
-    setInputValue('');
-    setShowSuggestions(false);
   };
 
-  const removeTag = (tagToRemove: string) => {
-    onChange(tags.filter(t => t !== tagToRemove));
+  const addTag = (val: string) => {
+    const trimmed = val.trim();
+    if (trimmed && !tags.includes(trimmed)) {
+      onChange([...tags, trimmed]);
+      setInput('');
+      setSuggestions([]);
+    }
+  };
+
+  const removeTag = (index: number) => {
+    onChange(tags.filter((_, i) => i !== index));
   };
 
   return (
-    <div className="space-y-2 relative">
-      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{label}</label>
-      <div className={`min-h-[56px] p-2 bg-slate-50 border border-slate-200 rounded-2xl flex flex-wrap gap-2 transition-all focus-within:ring-2 ${accentColor}`}>
-        {tags.map(tag => (
-          <span key={tag} className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-700 animate-in zoom-in-95">
+    <div className="relative">
+      <div
+        className={`flex flex-wrap gap-2 p-2 rounded-xl border bg-white min-h-[46px] transition-all cursor-text ${isFocused ? 'border-indigo-500 ring-1 ring-indigo-500' : 'border-slate-200'}`}
+        onClick={() => inputRef.current?.focus()}
+      >
+        {tags.map((tag, i) => (
+          <span key={i} className="bg-indigo-100 text-indigo-800 text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
             {tag}
-            <button onClick={() => removeTag(tag)} className="text-slate-400 hover:text-red-500">
+            <button
+              onClick={(e) => { e.stopPropagation(); removeTag(i); }}
+              className="hover:text-indigo-600 focus:outline-none"
+            >
               <i className="fas fa-times"></i>
             </button>
           </span>
         ))}
         <input
           ref={inputRef}
-          type="text"
-          className="flex-1 min-w-[120px] bg-transparent outline-none text-sm font-medium px-2 py-1"
-          placeholder={tags.length === 0 ? placeholder : ''}
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              addTag(inputValue);
-            }
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => {
+            // Delayed blur to allow clicking suggestions
+            setTimeout(() => {
+              setIsFocused(false);
+              if (input) addTag(input); // Add raw text on blur? Optional.
+            }, 200);
           }}
-          onFocus={() => setShowSuggestions(true)}
+          placeholder={tags.length === 0 ? placeholder : ''}
+          className="flex-1 outline-none text-sm min-w-[120px] bg-transparent"
         />
       </div>
 
-      {showSuggestions && suggestions.length > 0 && (
-        <div className="absolute z-50 left-0 right-0 mt-1 bg-white border border-slate-100 shadow-2xl rounded-xl p-1 animate-in fade-in slide-in-from-top-2">
-          {suggestions.map(s => (
+      {/* Autocomplete Dropdown */}
+      {isFocused && suggestions.length > 0 && (
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-50 max-h-48 overflow-y-auto">
+          {suggestions.map((s, i) => (
             <button
-              key={s}
-              onClick={() => addTag(s)}
-              className="w-full text-left px-4 py-2 hover:bg-slate-50 text-sm font-bold text-slate-600 rounded-lg transition-colors"
+              key={i}
+              onMouseDown={(e) => {
+                e.preventDefault(); // Prevent blur
+                addTag(s);
+              }}
+              className="w-full text-left px-4 py-2 hover:bg-slate-50 text-sm font-medium text-slate-700 block transition-colors"
             >
-              <i className="fas fa-history mr-2 opacity-30"></i> {s}
+              {s}
             </button>
           ))}
         </div>
@@ -93,5 +110,3 @@ const TagInput: React.FC<Props> = ({ category, tags, onChange, placeholder, labe
     </div>
   );
 };
-
-export default TagInput;

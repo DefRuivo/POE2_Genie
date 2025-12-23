@@ -27,14 +27,11 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export function AppProvider({ children }: { children: React.ReactNode }) {
     const [lang, setLang] = useState<Language>('en');
 
-    // Initial hardcoded data as per original app/page.tsx
-    const [household, setHousehold] = useState<HouseholdMember[]>([
-        { id: 'pai', name: 'Carlos', restrictions: ['Diabetes Type 2'], likes: ['Beef', 'BBQ'], dislikes: ['Cooked vegetables'] },
-        { id: 'filha', name: 'Bia', restrictions: ['Vegetarian', 'Peanut Allergy'], likes: ['Pasta', 'Mushrooms'], dislikes: ['Cilantro'] }
-    ]);
+    // Initial state (Empty - Load from DB)
+    const [household, setHousehold] = useState<HouseholdMember[]>([]);
 
-    const [pantry, setPantry] = useState<string[]>(['Traditional Pasta', 'Tomato Sauce', 'Sugar', 'Zucchini', 'Eggs', 'Parmesan Cheese', 'Roasted Peanuts']);
-    const [activeDiners, setActiveDiners] = useState<string[]>(['pai', 'filha']);
+    const [pantry, setPantry] = useState<string[]>([]);
+    const [activeDiners, setActiveDiners] = useState<string[]>([]);
     const [mealType, setMealType] = useState<MealType>('main');
     const [difficulty, setDifficulty] = useState<Difficulty>('intermediate');
     const [prepTime, setPrepTime] = useState<PrepTimePreference>('quick');

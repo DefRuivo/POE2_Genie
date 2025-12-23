@@ -11,9 +11,24 @@ interface Props {
   lang: Language;
 }
 
+import { TagInput } from './TagInput';
+
+interface Props {
+  household: HouseholdMember[];
+  setHousehold: React.Dispatch<React.SetStateAction<HouseholdMember[]>>;
+  activeDiners: string[];
+  setActiveDiners: React.Dispatch<React.SetStateAction<string[]>>;
+  lang: Language;
+}
+
 const HouseholdSection: React.FC<Props> = ({ household, setHousehold, activeDiners, setActiveDiners, lang }) => {
   const t = translations[lang];
-  const [newMember, setNewMember] = useState({ name: '', restrictions: '', likes: '', dislikes: '' });
+  const [newMember, setNewMember] = useState<{
+    name: string;
+    restrictions: string[];
+    likes: string[];
+    dislikes: string[];
+  }>({ name: '', restrictions: [], likes: [], dislikes: [] });
 
   /**
    * Adds a new member to the household state and selects them for the current session.
@@ -23,13 +38,13 @@ const HouseholdSection: React.FC<Props> = ({ household, setHousehold, activeDine
     const member: HouseholdMember = {
       id: Date.now().toString(),
       name: newMember.name,
-      restrictions: newMember.restrictions.split(',').map(s => s.trim()).filter(s => s),
-      likes: newMember.likes.split(',').map(s => s.trim()).filter(s => s),
-      dislikes: newMember.dislikes.split(',').map(s => s.trim()).filter(s => s),
+      restrictions: newMember.restrictions,
+      likes: newMember.likes,
+      dislikes: newMember.dislikes,
     };
     setHousehold([...household, member]);
     setActiveDiners([...activeDiners, member.id]);
-    setNewMember({ name: '', restrictions: '', likes: '', dislikes: '' });
+    setNewMember({ name: '', restrictions: [], likes: [], dislikes: [] });
   };
 
   const removeMember = (id: string) => {
@@ -78,12 +93,32 @@ const HouseholdSection: React.FC<Props> = ({ household, setHousehold, activeDine
         <div className="bg-slate-50 p-6 rounded-2xl space-y-4 border border-slate-100">
           <p className="text-xs font-black text-slate-400 uppercase tracking-widest">{t.new_member}</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <input placeholder={t.name_placeholder} className="px-4 py-2.5 rounded-xl border border-slate-200 text-sm outline-none bg-white" value={newMember.name} onChange={e => setNewMember({...newMember, name: e.target.value})} />
-            <input placeholder={t.restrictions_placeholder} className="px-4 py-2.5 rounded-xl border border-slate-200 text-sm outline-none bg-white" value={newMember.restrictions} onChange={e => setNewMember({...newMember, restrictions: e.target.value})} />
-            <input placeholder={t.likes_placeholder} className="px-4 py-2.5 rounded-xl border border-slate-200 text-sm outline-none bg-white" value={newMember.likes} onChange={e => setNewMember({...newMember, likes: e.target.value})} />
-            <input placeholder={t.dislikes_placeholder} className="px-4 py-2.5 rounded-xl border border-slate-200 text-sm outline-none bg-white" value={newMember.dislikes} onChange={e => setNewMember({...newMember, dislikes: e.target.value})} />
+            <input
+              placeholder={t.name_placeholder}
+              className="px-4 py-3 rounded-xl border border-slate-200 text-sm outline-none bg-white focus:border-indigo-500 transition-colors"
+              value={newMember.name}
+              onChange={e => setNewMember({ ...newMember, name: e.target.value })}
+            />
+            <TagInput
+              tags={newMember.restrictions}
+              onChange={(tags) => setNewMember({ ...newMember, restrictions: tags })}
+              placeholder={t.restrictions_placeholder}
+              category="restriction"
+            />
+            <TagInput
+              tags={newMember.likes}
+              onChange={(tags) => setNewMember({ ...newMember, likes: tags })}
+              placeholder={t.likes_placeholder}
+              category="like"
+            />
+            <TagInput
+              tags={newMember.dislikes}
+              onChange={(tags) => setNewMember({ ...newMember, dislikes: tags })}
+              placeholder={t.dislikes_placeholder}
+              category="dislike"
+            />
           </div>
-          <button onClick={addMember} className="w-full bg-slate-900 text-white py-3 rounded-xl text-sm font-bold hover:bg-black transition-all">
+          <button onClick={addMember} className="w-full bg-slate-900 text-white py-3 rounded-xl text-sm font-bold hover:bg-black transition-all shadow-lg">
             {t.add_member}
           </button>
         </div>
