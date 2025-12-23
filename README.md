@@ -12,7 +12,7 @@ A world-class AI-powered culinary engine designed to combat decision fatigue and
 ## How to Run
 
 1.  **Environment Setup**: 
-    - `API_KEY`: Your Google Gemini API key.
+    - `GEMINI_API_KEY`: Your Google Gemini API key.
     - `DATABASE_URL`: Your MySQL connection string (e.g., `mysql://user:password@localhost:3306/dinnerdb`).
 
 2.  **Database Migration**:

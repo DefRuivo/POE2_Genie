@@ -24,7 +24,7 @@ async function apiRequest(path: string, options: RequestInit = {}) {
         console.warn(`Endpoint ${path} não encontrado. Verifique se o backend está rodando.`);
         return null;
       }
-      
+
       const errorData = await response.json().catch(() => ({ message: `Erro HTTP ${response.status}` }));
       throw new Error(errorData.message || 'Erro na requisição');
     }
@@ -41,7 +41,7 @@ export const storageService = {
   getAllRecipes: async (): Promise<RecipeRecord[]> => {
     const data = await apiRequest('/recipes');
     if (!data) return [];
-    
+
     return data.map((r: any) => ({
       ...r,
       ingredients_from_pantry: typeof r.ingredients_from_pantry === 'string' ? JSON.parse(r.ingredients_from_pantry) : r.ingredients_from_pantry,
@@ -61,6 +61,19 @@ export const storageService = {
         step_by_step: JSON.stringify(recipe.step_by_step),
       }),
     });
+  },
+
+  getRecipeById: async (id: string): Promise<RecipeRecord | null> => {
+    const data = await apiRequest(`/recipes/${id}`);
+    if (!data) return null;
+
+    return {
+      ...data,
+      ingredients_from_pantry: typeof data.ingredients_from_pantry === 'string' ? JSON.parse(data.ingredients_from_pantry) : data.ingredients_from_pantry,
+      shopping_list: typeof data.shopping_list === 'string' ? JSON.parse(data.shopping_list) : data.shopping_list,
+      step_by_step: typeof data.step_by_step === 'string' ? JSON.parse(data.step_by_step) : data.step_by_step,
+      createdAt: new Date(data.createdAt).getTime(),
+    };
   },
 
   deleteRecipe: async (id: string): Promise<void> => {

@@ -1,37 +1,51 @@
 
-import React, { useState } from 'react';
-import { GeneratedRecipe, ImageSize, AspectRatio, RecipeRecord } from '../types';
-import { generateDishImage } from '../services/geminiService';
+
+import React, { useState, useEffect } from 'react';
+import { GeneratedRecipe, ImageSize, AspectRatio, RecipeRecord, Difficulty } from '../types';
 import { Language, translations } from '../locales/translations';
 import { storageService } from '../services/storageService';
 
 interface Props {
-  recipe: GeneratedRecipe;
+  recipe: GeneratedRecipe | RecipeRecord;
   dishImage: string | null;
   setDishImage: React.Dispatch<React.SetStateAction<string | null>>;
   lang: Language;
   onSaved?: () => void;
 }
 
-const RecipeCard: React.FC<Props> = ({ recipe, dishImage, setDishImage, lang, onSaved }) => {
+const RecipeCard: React.FC<Props> = ({ recipe: initialRecipe, dishImage, setDishImage, lang, onSaved }) => {
   const t = translations[lang];
+  const [recipe, setRecipe] = useState(initialRecipe);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
+  const [isTranslating, setIsTranslating] = useState(false);
+  const [isSaved, setIsSaved] = useState((initialRecipe as RecipeRecord).isFavorite || false);
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [copyFeedback, setCopyFeedback] = useState(false);
 
   const isDev = process.env.NODE_ENV === 'development';
+  const originalLanguage = (recipe as RecipeRecord).language || 'en';
+  const showTranslate = originalLanguage !== lang;
+
+  useEffect(() => {
+    setRecipe(initialRecipe);
+  }, [initialRecipe]);
 
   const handleGenerateImage = async () => {
-    // @ts-ignore
-    if (window.aistudio && !(await window.aistudio.hasSelectedApiKey())) {
-      // @ts-ignore
-      await window.aistudio.openSelectKey();
-    }
     setIsGeneratingImage(true);
     try {
-      const img = await generateDishImage(recipe.recipe_title, ImageSize.S1K, AspectRatio.A1_1);
-      setDishImage(img);
+      const data = await fetch('/api/image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recipeName: recipe.recipe_title,
+          size: ImageSize.S1K,
+          ratio: AspectRatio.A1_1
+        }),
+      }).then(res => {
+        if (!res.ok) throw new Error('Image generation failed');
+        return res.json();
+      });
+      setDishImage(data.imageUrl);
     } catch (err: any) {
       console.error("Image generation error:", err);
     } finally {
@@ -39,14 +53,35 @@ const RecipeCard: React.FC<Props> = ({ recipe, dishImage, setDishImage, lang, on
     }
   };
 
-  // Fix: Changed handleSave to async and corrected storageService.save() to storageService.saveRecipe().
+  const handleTranslate = async () => {
+    setIsTranslating(true);
+    try {
+      const translated = await fetch('/api/recipe/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recipe,
+          targetLanguage: lang
+        })
+      }).then(res => res.json());
+
+      // Preserve ID and other metadata, just update text fields
+      setRecipe(prev => ({ ...prev, ...translated }));
+    } catch (err) {
+      console.error("Translation failed", err);
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+
   const handleSave = async () => {
     const record: RecipeRecord = {
       ...recipe,
-      id: Date.now().toString(),
+      id: (recipe as RecipeRecord).id || Date.now().toString(),
       isFavorite: false,
-      createdAt: Date.now(),
-      dishImage: dishImage
+      createdAt: (recipe as RecipeRecord).createdAt || Date.now(),
+      dishImage: dishImage,
+      language: showTranslate ? lang : originalLanguage // Save as new language if translated? Or keep original? User said "generate translated". I'll assume we keep current state.
     };
     await storageService.saveRecipe(record);
     setIsSaved(true);
@@ -74,31 +109,56 @@ const RecipeCard: React.FC<Props> = ({ recipe, dishImage, setDishImage, lang, on
   return (
     <article className="bg-white rounded-[2.5rem] shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in slide-in-from-bottom-10 duration-700">
       {/* Dynamic Header Area */}
-      <div className="relative min-h-[450px] bg-slate-900 flex flex-col items-center justify-center p-10">
+      <div className="relative min-h-[500px] bg-slate-900 flex flex-col items-center justify-end pb-16 pt-24 px-6 md:px-10">
         {dishImage && (
-          <img 
-            src={dishImage} 
-            alt={recipe.recipe_title} 
-            className="absolute inset-0 w-full h-full object-cover opacity-60 transition-opacity duration-1000" 
+          <img
+            src={dishImage}
+            alt={recipe.recipe_title}
+            className="absolute inset-0 w-full h-full object-cover opacity-60 transition-opacity duration-1000"
           />
         )}
-        
+
         {/* Title and Info Overlay (Persistent) */}
-        <div className="relative z-10 text-center space-y-6 max-w-2xl px-4">
-          <div className="inline-flex px-3 py-1 bg-white/10 backdrop-blur-md text-white rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20">
-            {isGeneratingImage ? t.generating_photo : t.recipe_suggestion}
+        <div className="relative z-10 text-center space-y-6 max-w-3xl w-full mx-auto">
+          <div className="flex flex-wrap gap-3 justify-center">
+            <div className="inline-flex px-3 py-1 bg-white/10 backdrop-blur-md text-white rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20">
+              {isGeneratingImage ? t.generating_photo : t.recipe_suggestion}
+            </div>
+            {/* Difficulty Badge */}
+            <div className={`inline-flex px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20 text-white ${recipe.difficulty === 'easy' ? 'bg-green-500/80' :
+                recipe.difficulty === 'intermediate' ? 'bg-yellow-500/80' :
+                  recipe.difficulty === 'chef' ? 'bg-slate-900 border-indigo-500/50' : 'bg-red-500/80'
+              }`}>
+              {recipe.difficulty === 'chef' ? <><i className="fas fa-hat-chef mr-1"></i> CHEF</> : recipe.difficulty}
+            </div>
+            {/* Translate Button */}
+            {showTranslate && (
+              <button
+                onClick={handleTranslate}
+                disabled={isTranslating}
+                className="inline-flex px-3 py-1 bg-indigo-600/80 hover:bg-indigo-500 backdrop-blur-md text-white rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20 transition-colors"
+              >
+                {isTranslating ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-language mr-2"></i>}
+                {t.translate_to_portuguese || "Translate"}
+              </button>
+            )}
           </div>
-          <h3 className="text-4xl md:text-6xl font-black text-white tracking-tighter leading-none drop-shadow-2xl">
+
+          <h3 className="text-4xl md:text-6xl font-black text-white tracking-tighter leading-tight drop-shadow-2xl">
             {recipe.recipe_title}
           </h3>
-          <p className="text-slate-200 text-base md:text-lg font-medium max-w-md mx-auto drop-shadow-lg opacity-90">
-            {recipe.match_reasoning}
-          </p>
-          
-          <div className="pt-8 flex gap-4 justify-center flex-wrap">
-            <button 
-              onClick={handleGenerateImage} 
-              disabled={isGeneratingImage} 
+
+          {/* Improved readability for reasoning text */}
+          <div className="bg-slate-900/40 backdrop-blur-sm p-6 rounded-2xl border border-white/10">
+            <p className="text-slate-100 text-base md:text-lg font-medium leading-relaxed drop-shadow-md">
+              {recipe.match_reasoning}
+            </p>
+          </div>
+
+          <div className="pt-4 flex gap-4 justify-center flex-wrap">
+            <button
+              onClick={handleGenerateImage}
+              disabled={isGeneratingImage}
               className="bg-white text-slate-900 px-8 py-4 rounded-2xl font-black hover:bg-indigo-50 transition-all text-xs uppercase shadow-2xl flex items-center gap-3 group"
             >
               {isGeneratingImage ? <i className="fas fa-circle-notch fa-spin"></i> : <i className="fas fa-magic group-hover:rotate-12 transition-transform"></i>}
@@ -108,12 +168,12 @@ const RecipeCard: React.FC<Props> = ({ recipe, dishImage, setDishImage, lang, on
         </div>
 
         {/* Persistent Dark Gradient for Readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-slate-900/60 opacity-90 pointer-events-none"></div>
-        
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-slate-900/60 opacity-90 pointer-events-none -z-0"></div>
+
         <div className="absolute top-8 right-8 z-20">
-          <button 
+          <button
             disabled={isSaved}
-            onClick={handleSave} 
+            onClick={handleSave}
             className={`px-6 py-4 rounded-2xl font-black text-[10px] uppercase shadow-2xl transition-all tracking-widest ${isSaved ? 'bg-emerald-500 text-white' : 'bg-indigo-600 text-white hover:bg-indigo-700'}`}
           >
             {isSaved ? <><i className="fas fa-check mr-2"></i>Saved</> : t.save_recipe}
@@ -140,8 +200,11 @@ const RecipeCard: React.FC<Props> = ({ recipe, dishImage, setDishImage, lang, on
               </h4>
               <ul className="space-y-3">
                 {recipe.ingredients_from_pantry.map((ing, idx) => (
-                  <li key={idx} className="flex items-center gap-3 text-slate-700 bg-slate-50 p-4 rounded-2xl border border-slate-100 text-sm font-bold">
-                    <i className="fas fa-check text-emerald-500"></i> {ing}
+                  <li key={idx} className="flex items-center gap-3 text-slate-700 bg-emerald-50 p-4 rounded-2xl border border-emerald-100 text-sm font-bold">
+                    <i className="fas fa-check-circle text-emerald-500"></i>
+                    <span>{ing}</span>
+                    {/* Visual cue that it's in pantry */}
+                    <span className="ml-auto text-[10px] uppercase bg-white px-2 py-1 rounded-full text-emerald-600 border border-emerald-200">In Pantry</span>
                   </li>
                 ))}
               </ul>
@@ -154,15 +217,15 @@ const RecipeCard: React.FC<Props> = ({ recipe, dishImage, setDishImage, lang, on
                     <i className="fas fa-cart-plus"></i>
                     {t.to_buy}
                   </h4>
-                  
+
                   <div className="relative">
-                    <button 
+                    <button
                       onClick={() => setShowShareMenu(!showShareMenu)}
                       className="w-10 h-10 bg-white border border-orange-200 text-orange-600 rounded-xl flex items-center justify-center hover:bg-orange-100 transition-all shadow-sm"
                     >
                       <i className="fas fa-share-alt"></i>
                     </button>
-                    
+
                     {showShareMenu && (
                       <div className="absolute right-0 mt-2 w-52 bg-white border border-slate-100 shadow-2xl rounded-2xl p-2 z-30 animate-in fade-in zoom-in-95 duration-200">
                         <button onClick={() => handleShare('whatsapp')} className="w-full flex items-center gap-3 p-4 hover:bg-emerald-50 rounded-xl text-xs font-black text-slate-700 transition-colors">
@@ -190,7 +253,7 @@ const RecipeCard: React.FC<Props> = ({ recipe, dishImage, setDishImage, lang, on
               </div>
             )}
           </div>
-          
+
           <div className="md:col-span-7">
             <h4 className="text-xl font-black text-slate-900 flex items-center gap-3 mb-10">
               <i className="fas fa-list-ol text-indigo-500"></i>

@@ -29,7 +29,14 @@ export async function POST(request: Request) {
         difficulty: data.difficulty,
         prep_time: data.prep_time,
         dishImage: data.dishImage,
-        isFavorite: data.isFavorite || false
+        isFavorite: data.isFavorite || false,
+        language: data.language || 'en',
+        pantryItems: {
+          connectOrCreate: (Array.isArray(data.ingredients_from_pantry) ? data.ingredients_from_pantry : []).map((name: string) => ({
+            where: { name },
+            create: { name }
+          }))
+        }
       }
     });
     return NextResponse.json(recipe);

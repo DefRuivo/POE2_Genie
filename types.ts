@@ -1,14 +1,14 @@
 
 export type MealType = 'appetizer' | 'main' | 'dessert' | 'snack';
-export type Difficulty = 'easy' | 'intermediate' | 'advanced';
+export type Difficulty = 'easy' | 'intermediate' | 'advanced' | 'chef';
 export type PrepTimePreference = 'quick' | 'plenty';
 
 export interface HouseholdMember {
   id: string;
   name: string;
-  restrictions: string[];
-  likes: string[];
-  dislikes: string[];
+  restrictions: string[]; // Mapped from Restriction entities
+  likes: string[];        // Mapped from Like entities
+  dislikes: string[];     // Mapped from Dislike entities
   isGuest?: boolean;
 }
 
@@ -18,6 +18,7 @@ export interface SessionContext {
   requested_type: MealType;
   difficulty_preference: Difficulty;
   prep_time_preference: PrepTimePreference;
+  observation?: string;
 }
 
 export interface GeneratedRecipe {
@@ -38,6 +39,7 @@ export interface RecipeRecord extends GeneratedRecipe {
   isFavorite: boolean;
   createdAt: number;
   dishImage?: string | null;
+  language?: string;
 }
 
 export enum ImageSize {

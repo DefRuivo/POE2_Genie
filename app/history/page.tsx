@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import HistorySection from '../../components/HistorySection';
 import { useApp } from '../../components/Providers';
 import { storageService } from '../../services/storageService';
@@ -8,6 +9,7 @@ import { RecipeRecord } from '../../types';
 
 export default function HistoryPage() {
     const { lang } = useApp();
+    const router = useRouter();
     const [history, setHistory] = useState<RecipeRecord[]>([]);
 
     useEffect(() => {
@@ -25,6 +27,7 @@ export default function HistoryPage() {
                 history={history}
                 onUpdate={refreshHistory}
                 lang={lang}
+                onViewRecipe={(recipe) => router.push(`/history/${recipe.id}`)}
             />
         </div>
     );

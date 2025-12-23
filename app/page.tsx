@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { useApp } from '../components/Providers';
-import { generateRecipe } from '../services/geminiService';
 import RecipeCard from '../components/RecipeCard';
 import HistorySection from '../components/HistorySection';
 import Footer from '../components/Footer';
@@ -26,6 +25,7 @@ export default function Home() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useState<RecipeRecord[]>([]);
+  const [observation, setObservation] = useState('');
 
   // Load history (also on History page, but good to have recent here)
   React.useEffect(() => {
@@ -54,9 +54,17 @@ export default function Home() {
         pantry_ingredients: pantry,
         requested_type: mealType,
         difficulty_preference: difficulty,
-        prep_time_preference: prepTime
+        prep_time_preference: prepTime,
+        observation: observation
       };
-      const result = await generateRecipe(household, context, lang);
+      const result = await fetch('/api/recipe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ household, context, language: lang }),
+      }).then(res => {
+        if (!res.ok) throw new Error('API request failed');
+        return res.json();
+      });
       setRecipe(result);
     } catch (err: any) {
       setError("Failed to generate recipe. Please try again.");
@@ -94,8 +102,8 @@ export default function Home() {
                 key={member.id}
                 onClick={() => toggleDiner(member.id)}
                 className={`px-4 py-2 rounded-xl font-bold transition-all border-2 ${activeDiners.includes(member.id)
-                    ? 'bg-indigo-600 border-indigo-600 text-white shadow-md'
-                    : 'bg-white border-slate-200 text-slate-500 hover:border-indigo-200'
+                  ? 'bg-indigo-600 border-indigo-600 text-white shadow-md'
+                  : 'bg-white border-slate-200 text-slate-500 hover:border-indigo-200'
                   }`}
               >
                 {activeDiners.includes(member.id) && <i className="fas fa-check mr-2"></i>}
@@ -119,8 +127,8 @@ export default function Home() {
                 key={type}
                 onClick={() => setMealType(type)}
                 className={`px-8 py-4 rounded-2xl font-black text-sm uppercase transition-all flex items-center gap-3 border-2 ${mealType === type
-                    ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-100'
-                    : 'bg-white border-slate-100 text-slate-400 hover:border-slate-200'
+                  ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-100'
+                  : 'bg-white border-slate-100 text-slate-400 hover:border-slate-200'
                   }`}
               >
                 <i className={`fas ${type === 'appetizer' ? 'fa-cheese' : type === 'main' ? 'fa-hamburger' : 'fa-ice-cream'
@@ -128,6 +136,48 @@ export default function Home() {
                 {type}
               </button>
             ))}
+          </div>
+        </section>
+
+        {/* Preferences & Observations */}
+        <section className="bg-white rounded-3xl shadow-sm border border-slate-200 p-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-6">
+                Difficulty Level
+              </h3>
+              <div className="flex flex-wrap gap-3">
+                {[
+                  { label: 'Fácil', value: 'easy', icon: 'fa-smile' },
+                  { label: 'Difícil', value: 'advanced', icon: 'fa-fire' },
+                  { label: 'Chef Mode', value: 'chef', icon: 'fa-hat-chef' }
+                ].map((level) => (
+                  <button
+                    key={level.value}
+                    onClick={() => setDifficulty(level.value as any)}
+                    className={`px-6 py-3 rounded-2xl font-black text-xs uppercase transition-all flex items-center gap-2 border-2 ${difficulty === level.value
+                      ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg'
+                      : 'bg-white border-slate-100 text-slate-400 hover:border-slate-200'
+                      }`}
+                  >
+                    <i className={`fas ${level.icon}`}></i>
+                    {level.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-6">
+                Extra Observations
+              </h3>
+              <textarea
+                value={observation}
+                onChange={(e) => setObservation(e.target.value)}
+                placeholder="Ex: Tenho 2 horas, quero usar o forno, sem fritura..."
+                className="w-full p-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-indigo-500 focus:ring-0 text-slate-700 font-medium resize-none h-32"
+              />
+            </div>
           </div>
         </section>
 

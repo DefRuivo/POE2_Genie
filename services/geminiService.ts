@@ -10,25 +10,32 @@ export const generateRecipe = async (
   session_context: SessionContext,
   language: 'en' | 'pt' = 'en'
 ): Promise<GeneratedRecipe> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
+  const isChefMode = session_context.difficulty_preference === 'chef';
+  const obs = session_context.observation ? `\n\nUSER OBSERVATIONS (CRITICAL): ${session_context.observation}` : '';
+  const chefInstructionPt = isChefMode ? "MODO CHEF ATIVADO: O usuário deseja preparar tudo do zero (massas, molhos, bases). Receita complexa e técnica." : `Dificuldade solicitada: ${session_context.difficulty_preference}.`;
+  const chefInstructionEn = isChefMode ? "CHEF MODE ACTIVATED: User wants to cook from scratch (doughs, sauces, stocks). Complex and technical recipe." : `Requested difficulty: ${session_context.difficulty_preference}.`;
 
   const systemInstruction = language === 'pt'
     ? `Você é o Chef Executivo do "Dinner?".
 OBJETIVOS:
 1. Respeite o tipo de refeição: ${session_context.requested_type}.
-2. Dificuldade solicitada: ${session_context.difficulty_preference}.
+2. ${chefInstructionPt}
 3. Preferência de tempo: ${session_context.prep_time_preference === 'quick' ? 'Rápido (menos de 30min)' : 'Pode levar tempo'}.
 4. Se for impossível criar uma receita de qualidade do tipo solicitado com os ingredientes disponíveis, use o analysis_log para explicar o porquê detalhadamente.
 5. Garanta SEGURANÇA TOTAL contra restrições alimentares.
+${obs}
 SAÍDA:
 Gere a resposta em PORTUGUÊS no formato JSON.`
     : `You are the Executive Chef for "Dinner?".
 OBJECTIVES:
 1. Follow the requested meal type: ${session_context.requested_type}.
-2. Requested difficulty: ${session_context.difficulty_preference}.
+2. ${chefInstructionEn}
 3. Prep time preference: ${session_context.prep_time_preference === 'quick' ? 'Quick (under 30min)' : 'Can take time'}.
 4. If it is impossible to create a quality recipe of the requested type with the available ingredients, use analysis_log to explain exactly why.
 5. Ensure 100% SAFETY against food restrictions.
+${obs}
 OUTPUT:
 Localize the output to ENGLISH and respond ONLY with JSON.`;
 
@@ -68,7 +75,7 @@ export const generateDishImage = async (
   size: ImageSize,
   ratio: AspectRatio
 ): Promise<string> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
   const prompt = `Gourmet food photography of ${recipeName}, masterfully plated, elegant lighting, bokeh background. High contrast, professional culinary magazine style.`;
 

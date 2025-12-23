@@ -60,7 +60,13 @@ export const translations = {
     advanced: "Advanced",
     quick: "Quick (< 30 min)",
     plenty: "I have time",
-    view_details: "View Recipe"
+    view_details: "View Recipe",
+    translate_to_portuguese: "Translate to Portuguese",
+    translate_to_english: "Translate to English",
+    difficulty_level: "Difficulty Level",
+    extra_observations: "Extra Observations",
+    observations_placeholder: "Ex: I have 2 hours, I want to use the oven, no frying...",
+    chef_mode: "Chef Mode"
   },
   pt: {
     app_name: "Dinner?",
@@ -119,10 +125,16 @@ export const translations = {
     prep_time_label: "Tempo",
     easy: "Fácil",
     intermediate: "Médio",
-    advanced: "Avançado",
+    advanced: "Difícil",
     quick: "Rápido (< 30 min)",
     plenty: "Tenho tempo",
-    view_details: "Ver Receita"
+    view_details: "Ver Receita",
+    translate_to_portuguese: "Traduzir para Português",
+    translate_to_english: "Traduzir para Inglês",
+    difficulty_level: "Nível de Dificuldade",
+    extra_observations: "Observações Extras",
+    observations_placeholder: "Ex: Tenho 2 horas, quero usar o forno, sem fritura...",
+    chef_mode: "Modo Chef"
   }
 };
 
