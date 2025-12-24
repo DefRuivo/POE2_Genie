@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from "@google/genai";
 import { prisma } from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
+import { GET_TRANSLATION_PROMPT } from '@/lib/prompts';
 
 export async function POST(req: NextRequest) {
     try {
@@ -13,12 +14,7 @@ export async function POST(req: NextRequest) {
         }
 
         const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-        const prompt = `Translate the following recipe JSON to ${targetLanguage === 'pt' ? 'Portuguese (Brazil)' : 'English'}. 
-    Maintain the EXACT JSON structure. Only translate the values of: "recipe_title", "analysis_log", "match_reasoning", "ingredients_from_pantry", "shopping_list", "step_by_step", "meal_type", "difficulty", "prep_time".
-    Do NOT translate "safety_badge" boolean.
-    
-    Recipe JSON:
-    ${JSON.stringify(recipe)}`;
+        const prompt = GET_TRANSLATION_PROMPT(targetLanguage, JSON.stringify(recipe));
 
 
         const response = await ai.models.generateContent({

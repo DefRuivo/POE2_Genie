@@ -2,6 +2,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { prisma } from "@/lib/prisma";
 import { KitchenMember, SessionContext, GeneratedRecipe } from "../types";
+import { RECIPE_GENERATION_SYSTEM_INSTRUCTION } from "@/lib/prompts";
 
 /**
  * Generates a safe and creative recipe based on household profiles, pantry, and meal type.
@@ -16,16 +17,7 @@ export const generateRecipe = async (
   const obs = session_context.observation ? `\n\nUSER OBSERVATIONS (CRITICAL): ${session_context.observation}` : '';
   const chefInstructionEn = isChefMode ? "CHEF MODE ACTIVATED: User wants to cook from scratch (doughs, sauces, stocks). Complex and technical recipe." : `Requested difficulty: ${session_context.difficulty_preference}.`;
 
-  const systemInstruction = `You are the Executive Chef for "Dinner?".
-OBJECTIVES:
-1. Follow the requested meal type: ${session_context.requested_type}.
-2. ${chefInstructionEn}
-3. Prep time preference: ${session_context.prep_time_preference === 'quick' ? 'Quick (under 30min)' : 'Can take time'}.
-4. If it is impossible to create a quality recipe of the requested type with the available ingredients, use analysis_log to explain exactly why.
-5. Ensure 100% SAFETY against food restrictions.
-${obs}
-OUTPUT:
-Localize the output to ENGLISH and respond ONLY with JSON.`;
+  const systemInstruction = RECIPE_GENERATION_SYSTEM_INSTRUCTION(session_context, chefInstructionEn, obs);
 
   const prompt = JSON.stringify({ household_db, session_context });
 

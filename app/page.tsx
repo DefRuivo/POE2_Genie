@@ -13,7 +13,7 @@ export default function Home() {
     household,
     pantry,
     activeDiners, setActiveDiners,
-    mealType, setMealType,
+    // mealType, setMealType, // Removed from useApp destructuring
     difficulty, setDifficulty,
     prepTime, setPrepTime
   } = useApp();
@@ -24,6 +24,7 @@ export default function Home() {
   const [history, setHistory] = useState<RecipeRecord[]>([]);
   const [observation, setObservation] = useState('');
   const [showGenerator, setShowGenerator] = useState(false);
+  const [mealType, setMealType] = useState<MealType>('main'); // Declared locally with default
 
   useEffect(() => {
     storageService.getAllRecipes()
@@ -99,42 +100,42 @@ export default function Home() {
   const recipesCount = history.length;
 
   return (
-    <div className="min-h-screen pb-20 bg-slate-50 selection:bg-rose-100">
+    <div className="min-h-screen pb-10 bg-slate-50 selection:bg-rose-100">
 
       {/* Dashboard Header */}
       <header className="bg-white border-b border-slate-200">
-        <div className="max-w-4xl mx-auto px-6 py-8">
+        <div className="max-w-4xl mx-auto px-6 py-4">
           <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-2">
             Good Evening, Chef! <span className="text-rose-500">👨‍🍳</span>
           </h1>
           <p className="text-slate-500 font-medium">Ready to cook something amazing today?</p>
 
           {/* Stats Row */}
-          <div className="grid grid-cols-3 gap-4 mt-8">
-            <div className="bg-rose-50/50 p-4 rounded-2xl border border-rose-100 text-center">
+          <div className="grid grid-cols-3 gap-4 mt-4">
+            <Link href="/members" className="bg-rose-50/50 p-4 rounded-2xl border border-rose-100 text-center hover:bg-rose-50 transition-colors block">
               <div className="text-2xl font-black text-rose-600">{activeCount}</div>
               <div className="text-xs font-bold text-rose-400 uppercase tracking-wider">Members</div>
-            </div>
-            <div className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 text-center">
+            </Link>
+            <Link href="/pantry" className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 text-center hover:bg-emerald-50 transition-colors block">
               <div className="text-2xl font-black text-emerald-600">{pantryCount}</div>
               <div className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Pantry Data</div>
-            </div>
-            <div className="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100 text-center">
+            </Link>
+            <Link href="/history" className="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100 text-center hover:bg-indigo-50 transition-colors block">
               <div className="text-2xl font-black text-indigo-600">{recipesCount}</div>
-              <div className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Cooked</div>
-            </div>
+              <div className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Saved</div>
+            </Link>
           </div>
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 mt-8 space-y-8">
+      <main className="max-w-4xl mx-auto px-4 mt-4 space-y-4">
 
         {/* Action Buttons */}
         {!recipe && !showGenerator && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <button
               onClick={() => setShowGenerator(true)}
-              className="p-8 bg-white rounded-3xl border-2 border-slate-200 shadow-sm hover:border-rose-500 hover:shadow-rose-100 transition-all group text-left"
+              className="p-4 bg-white rounded-3xl border-2 border-slate-200 shadow-sm hover:border-rose-500 hover:shadow-rose-100 transition-all group text-left"
             >
               <div className="w-12 h-12 bg-rose-100 rounded-full flex items-center justify-center text-rose-600 text-xl mb-4 group-hover:scale-110 transition-transform">
                 <i className="fas fa-wand-magic-sparkles"></i>
@@ -143,7 +144,7 @@ export default function Home() {
               <p className="text-sm text-slate-500 font-medium">Use AI to create a custom meal based on your pantry.</p>
             </button>
 
-            <Link href="/pantry" className="p-8 bg-white rounded-3xl border-2 border-slate-200 shadow-sm hover:border-emerald-500 hover:shadow-emerald-100 transition-all group text-left">
+            <Link href="/pantry" className="p-4 bg-white rounded-3xl border-2 border-slate-200 shadow-sm hover:border-emerald-500 hover:shadow-emerald-100 transition-all group text-left">
               <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 text-xl mb-4 group-hover:scale-110 transition-transform">
                 <i className="fas fa-carrot"></i>
               </div>
@@ -151,7 +152,7 @@ export default function Home() {
               <p className="text-sm text-slate-500 font-medium">Update ingredients.</p>
             </Link>
 
-            <Link href="/kitchens" className="p-8 bg-white rounded-3xl border-2 border-slate-200 shadow-sm hover:border-indigo-500 hover:shadow-indigo-100 transition-all group text-left">
+            <Link href="/kitchens" className="p-4 bg-white rounded-3xl border-2 border-slate-200 shadow-sm hover:border-indigo-500 hover:shadow-indigo-100 transition-all group text-left">
               <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 text-xl mb-4 group-hover:scale-110 transition-transform">
                 <i className="fas fa-utensils"></i>
               </div>
@@ -170,7 +171,7 @@ export default function Home() {
             </div>
 
             {/* Who (Simplified Select) */}
-            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+            <div className="bg-white p-4 rounded-3xl border border-slate-200 shadow-sm">
               <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Who is eating?</label>
               <div className="flex flex-wrap gap-2">
                 {household.map(m => (
@@ -188,14 +189,14 @@ export default function Home() {
 
             {/* Type & Difficulty */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+              <div className="bg-white p-4 rounded-3xl border border-slate-200 shadow-sm">
                 <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Meal Type</label>
                 <div className="flex gap-2">
-                  {['appetizer', 'main', 'dessert'].map(t => (
+                  {['appetizer', 'main', 'dessert', 'snack'].map(t => (
                     <button
                       key={t}
                       onClick={() => setMealType(t as MealType)}
-                      className={`flex-1 py-2 rounded-xl text-xs font-bold border-2 uppercase ${mealType === t ? 'bg-rose-100 border-rose-500 text-rose-700' : 'bg-white border-slate-200 text-slate-400'}`}
+                      className={`flex-1 py-3 rounded-xl text-xs font-bold border-2 uppercase ${mealType === t ? 'bg-rose-100 border-rose-500 text-rose-700' : 'bg-white border-slate-200 text-slate-400'}`}
                     >
                       {t}
                     </button>
@@ -203,7 +204,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+              <div className="bg-white p-4 rounded-3xl border border-slate-200 shadow-sm">
                 <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Difficulty</label>
                 <div className="flex gap-2">
                   {['easy', 'intermediate', 'advanced'].map(d => (
@@ -220,7 +221,7 @@ export default function Home() {
             </div>
 
             {/* Observation */}
-            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+            <div className="bg-white p-4 rounded-3xl border border-slate-200 shadow-sm">
               <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Any special requests?</label>
               <textarea
                 value={observation}

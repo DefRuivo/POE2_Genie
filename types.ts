@@ -3,6 +3,7 @@ export type MealType = 'appetizer' | 'main' | 'dessert' | 'snack';
 export type Difficulty = 'easy' | 'intermediate' | 'advanced' | 'chef';
 export type PrepTimePreference = 'quick' | 'plenty';
 export type ReplenishmentRule = 'ALWAYS' | 'ONE_SHOT' | 'NEVER';
+export type MeasurementSystem = 'METRIC' | 'IMPERIAL';
 
 // --- User & Kitchen ---
 
@@ -15,6 +16,7 @@ export interface Kitchen {
 export interface KitchenMember {
   id: string;
   name: string;
+  email?: string;
   isGuest?: boolean;
   userId?: string;
   kitchenId: string;
@@ -55,6 +57,7 @@ export interface SessionContext {
   difficulty_preference: Difficulty;
   prep_time_preference: PrepTimePreference;
   observation?: string;
+  measurement_system?: MeasurementSystem;
 }
 
 // Raw output from the AI Generator

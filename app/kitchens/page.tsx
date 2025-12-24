@@ -74,7 +74,7 @@ export default function KitchensPage() {
                 </div>
             </header>
 
-            <main className="max-w-2xl mx-auto px-4 pt-24 pb-32 space-y-8 animate-in fade-in duration-500">
+            <main className="max-w-2xl mx-auto px-4 pt-24 pb-32 space-y-4 animate-in fade-in duration-500">
                 {loading ? (
                     <div className="text-center py-20 text-slate-400 font-bold animate-pulse">Loading Kitchens...</div>
                 ) : (
@@ -84,7 +84,7 @@ export default function KitchensPage() {
                             <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest px-1">Your Kitchens</h2>
                             <div className="grid gap-4">
                                 {user?.kitchenMemberships?.map((m: any) => (
-                                    <div key={m.id} className={`bg-white p-6 rounded-3xl shadow-sm border-2 flex items-center justify-between transition-all ${m.kitchenId === user.currentKitchenId ? 'border-rose-500 ring-4 ring-rose-50' : 'border-slate-100 hover:border-slate-200'}`}>
+                                    <div key={m.id} className={`bg-white p-4 rounded-3xl shadow-sm border-2 flex items-center justify-between transition-all ${m.kitchenId === user.currentKitchenId ? 'border-rose-500 ring-4 ring-rose-50' : 'border-slate-100 hover:border-slate-200'}`}>
                                         <div className="flex items-center gap-4">
                                             <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow-inner ${m.kitchenId === user.currentKitchenId ? 'bg-rose-100 text-rose-600' : 'bg-slate-100 text-slate-400'}`}>
                                                 <i className="fas fa-utensils"></i>
@@ -108,7 +108,7 @@ export default function KitchensPage() {
                         </section>
 
                         {/* Create New Kitchen */}
-                        <section className="bg-white p-6 rounded-3xl shadow-xl border border-slate-100 mt-8">
+                        <section className="bg-white p-4 rounded-3xl shadow-xl border border-slate-100 mt-4">
                             <h2 className="font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
                                 <span className="w-8 h-8 bg-rose-100 rounded-lg flex items-center justify-center text-rose-600 text-sm"><i className="fas fa-plus"></i></span>
                                 Create New Kitchen

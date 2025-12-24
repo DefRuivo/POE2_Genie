@@ -72,7 +72,7 @@ const RecipeCard: React.FC<Props> = ({ recipe: initialRecipe, onSaved }) => {
   return (
     <article className="bg-white rounded-[2.5rem] shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in slide-in-from-bottom-10 duration-700">
       {/* Dynamic Header Area */}
-      <div className="relative bg-slate-900 flex flex-col p-8 md:p-14 h-auto min-h-[400px] justify-center">
+      <div className="relative bg-slate-900 flex flex-col p-4 md:p-14 h-auto min-h-[400px] justify-center">
 
         {/* Persistent Dark Gradient for Readability */}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-slate-900/60 opacity-90 pointer-events-none z-0"></div>
@@ -80,7 +80,7 @@ const RecipeCard: React.FC<Props> = ({ recipe: initialRecipe, onSaved }) => {
         <div className="relative z-10 w-full max-w-4xl mx-auto flex flex-col gap-10">
 
           {/* Top Bar: Badges & Actions */}
-          <div className="flex flex-col-reverse md:flex-row justify-between items-center gap-6">
+          <div className="flex flex-col-reverse md:flex-row justify-between items-center gap-4">
             <div className="flex flex-wrap gap-3 justify-center md:justify-start">
               <div className="inline-flex px-3 py-1 bg-white/10 backdrop-blur-md text-white rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20">
                 Today's Suggestion
@@ -106,12 +106,12 @@ const RecipeCard: React.FC<Props> = ({ recipe: initialRecipe, onSaved }) => {
           </div>
 
           {/* Main Title & Description */}
-          <div className="text-center space-y-8">
+          <div className="text-center space-y-4">
             <h3 className="text-4xl md:text-5xl lg:text-7xl font-black text-white tracking-tighter leading-tight drop-shadow-2xl">
               {recipe.recipe_title}
             </h3>
 
-            <div className="bg-slate-800/90 p-8 md:p-10 rounded-3xl border border-slate-700 max-w-3xl mx-auto shadow-xl">
+            <div className="bg-slate-800/90 p-4 md:p-10 rounded-3xl border border-slate-700 max-w-3xl mx-auto shadow-xl">
               <p className="text-slate-200 text-lg md:text-xl font-medium leading-relaxed">
                 {recipe.match_reasoning}
               </p>
@@ -121,9 +121,9 @@ const RecipeCard: React.FC<Props> = ({ recipe: initialRecipe, onSaved }) => {
         </div>
       </div>
 
-      <div className="p-8 md:p-14">
+      <div className="p-4 md:p-14">
         {isDev && (
-          <div className="bg-slate-50 border border-slate-100 p-6 rounded-3xl mb-12">
+          <div className="bg-slate-50 border border-slate-100 p-4 rounded-3xl mb-12">
             <h4 className="font-black text-slate-400 text-[10px] uppercase tracking-widest mb-2 flex items-center gap-2">
               <i className="fas fa-terminal"></i> Auditor Log (Dev Only)
             </h4>
@@ -151,7 +151,7 @@ const RecipeCard: React.FC<Props> = ({ recipe: initialRecipe, onSaved }) => {
             </div>
 
             {recipe.shopping_list.length > 0 && (
-              <div className="bg-orange-50/30 p-8 rounded-[2rem] border-2 border-dashed border-orange-200 relative">
+              <div className="bg-orange-50/30 p-4 rounded-[2rem] border-2 border-dashed border-orange-200 relative">
                 <div className="flex justify-between items-center mb-6">
                   <h4 className="text-lg font-black text-orange-900 flex items-center gap-3">
                     <i className="fas fa-cart-plus"></i>
@@ -184,16 +184,18 @@ const RecipeCard: React.FC<Props> = ({ recipe: initialRecipe, onSaved }) => {
 
                 <ul className="space-y-3">
                   {recipe.shopping_list.map((ing, idx) => (
-                    <li key={idx} className="flex items-center justify-between text-orange-800 text-sm font-bold bg-white/50 p-2 rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <span className="w-2 h-2 bg-orange-400 rounded-full"></span>
-                        {ing}
+                    <li key={idx} className="flex items-center justify-between text-orange-900 text-sm font-bold bg-white/60 p-3 rounded-xl border border-orange-100/50 hover:bg-white transition-colors">
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <span className="w-1.5 h-1.5 shrink-0 bg-orange-400 rounded-full"></span>
+                        <span className="leading-tight">{ing}</span>
                       </div>
                       <button
                         onClick={() => setItemToAdd(ing)}
-                        className="ml-2 text-[10px] bg-orange-100 px-2 py-1 rounded text-orange-600 hover:bg-orange-200 transition-colors uppercase tracking-wider"
+                        className="ml-3 shrink-0 flex items-center gap-2 px-3 py-2 bg-white text-orange-600 rounded-lg text-[10px] font-black uppercase tracking-wider border border-orange-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+                        title="Add to Shopping List"
                       >
-                        <i className="fas fa-plus mr-1"></i> Pantry
+                        <i className="fas fa-cart-plus text-base"></i>
+                        <span className="hidden sm:inline">Add</span>
                       </button>
                     </li>
                   ))}
@@ -222,10 +224,10 @@ const RecipeCard: React.FC<Props> = ({ recipe: initialRecipe, onSaved }) => {
 
       {itemToAdd && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl space-y-6 animate-in zoom-in-95 duration-200">
+          <div className="bg-white rounded-3xl p-4 max-w-sm w-full shadow-2xl space-y-6 animate-in zoom-in-95 duration-200">
             <div>
-              <h3 className="text-xl font-black text-slate-900">Add "{itemToAdd}" to Pantry?</h3>
-              <p className="text-slate-500 text-xs font-medium mt-1 uppercase tracking-wide">Select a replenishment rule</p>
+              <h3 className="text-xl font-black text-slate-900">Add "{itemToAdd}" to List?</h3>
+              <p className="text-slate-500 text-xs font-medium mt-1 uppercase tracking-wide">Select how to track this item</p>
             </div>
 
             <div className="grid gap-3">

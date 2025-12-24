@@ -94,7 +94,7 @@ export default function ShoppingListPage() {
                 </div>
             </header>
 
-            <main className="max-w-2xl mx-auto px-4 pt-24 pb-32 space-y-8 animate-in fade-in duration-500">
+            <main className="max-w-2xl mx-auto px-4 pt-24 pb-32 space-y-4 animate-in fade-in duration-500">
                 {loading ? (
                     <div className="text-center py-20 text-slate-400 font-bold animate-pulse">Loading List...</div>
                 ) : (

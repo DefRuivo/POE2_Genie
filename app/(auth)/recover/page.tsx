@@ -75,7 +75,7 @@ export default function RecoverPage() {
                     </button>
                 </form>
 
-                <div className="mt-8 text-center">
+                <div className="mt-4 text-center">
                     <Link href="/login" className="text-slate-400 font-bold hover:text-slate-600 text-sm">
                         &larr; Back to Login
                     </Link>

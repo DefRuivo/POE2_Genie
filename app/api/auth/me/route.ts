@@ -30,6 +30,7 @@ export async function GET(request: NextRequest) {
                 name: true,
                 surname: true,
                 email: true,
+                measurementSystem: true,
                 kitchenMemberships: {
                     include: {
                         kitchen: true
@@ -59,5 +60,53 @@ export async function GET(request: NextRequest) {
     } catch (error) {
         console.error('GET /api/auth/me error:', error);
         return NextResponse.json({ message: 'Error fetching user profile', error: String(error) }, { status: 500 });
+    }
+}
+
+export async function PUT(request: NextRequest) {
+    try {
+        const token = request.cookies.get('auth_token')?.value;
+        const payload = await verifyToken(token || '');
+
+        if (!payload || !payload.userId) {
+            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+        }
+
+        const userId = payload.userId as string;
+        const data = await request.json();
+
+        // Validation (basic)
+        if (!data.name || !data.surname) {
+            return NextResponse.json({ message: 'Name and Surname are required' }, { status: 400 });
+        }
+
+        const updateData: any = {
+            name: data.name,
+            surname: data.surname,
+            measurementSystem: data.measurementSystem
+        };
+
+        if (data.password && data.password.trim() !== '') {
+            const bcrypt = require('bcryptjs');
+            updateData.password = await bcrypt.hash(data.password, 10);
+        }
+
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: updateData,
+            select: {
+                id: true,
+                name: true,
+                surname: true,
+                email: true,
+                measurementSystem: true
+            }
+        });
+
+        return NextResponse.json({ user: updatedUser });
+
+    } catch (error) {
+        console.error('PUT /api/auth/me error:', error);
+        return NextResponse.json({ message: 'Error updating profile', error: String(error) }, { status: 500 });
     }
 }

@@ -65,12 +65,16 @@ export async function POST(request: NextRequest) {
     if (!payload || !payload.houseId) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
-    const houseId = payload.houseId as string;
+    // Handle transitional payload: prefer kitchenId, fallback to houseId
+    const kitchenId = (payload.kitchenId || payload.houseId) as string;
     const userId = payload.userId as string;
 
     // Resolve current member for favorites
-    const member = await prisma.householdMember.findUnique({
-      where: { userId_houseId: { userId, houseId } }
+    const member = await prisma.kitchenMember.findFirst({
+      where: {
+        userId: userId,
+        kitchenId: kitchenId
+      }
     });
 
     const parse = (val: any) => typeof val === 'string' ? JSON.parse(val) : val;
@@ -89,15 +93,15 @@ export async function POST(request: NextRequest) {
         prep_time: data.prep_time,
         dishImage: data.dishImage,
         language: data.language || 'en',
-        houseId: houseId,
+        kitchenId: kitchenId,
 
         ingredients: {
           create: pantryIngredients.map((name: string) => ({
             inPantry: true,
             ingredient: {
               connectOrCreate: {
-                where: { name_houseId: { name, houseId } },
-                create: { name, houseId }
+                where: { name_kitchenId: { name, kitchenId } },
+                create: { name, kitchenId }
               }
             }
           }))
@@ -107,8 +111,8 @@ export async function POST(request: NextRequest) {
           create: shoppingList.map((name: string) => ({
             shoppingItem: {
               connectOrCreate: {
-                where: { name_houseId: { name, houseId } },
-                create: { name, houseId }
+                where: { name_kitchenId: { name, kitchenId } },
+                create: { name, kitchenId }
               }
             }
           }))

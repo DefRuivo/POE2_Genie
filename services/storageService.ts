@@ -142,6 +142,13 @@ export const storageService = {
     return await apiRequest('/auth/me');
   },
 
+  updateProfile: async (data: { name: string; surname: string; measurementSystem: string; password?: string }): Promise<any> => {
+    return await apiRequest('/auth/me', {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    });
+  },
+
   switchKitchen: async (kitchenId: string): Promise<void> => {
     await apiRequest('/auth/switch-context', {
       method: 'POST',

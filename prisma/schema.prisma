@@ -14,7 +14,11 @@ enum ReplenishmentRule {
   NEVER
 }
 
-// Models
+enum MeasurementSystem {
+  METRIC
+  IMPERIAL
+}
+
 // Models
 model Kitchen {
   id        String   @id @default(cuid())
@@ -32,13 +36,14 @@ model Kitchen {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String
-  name      String
-  surname   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                String            @id @default(cuid())
+  email             String            @unique
+  password          String
+  name              String
+  surname           String
+  measurementSystem MeasurementSystem @default(METRIC)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
   
   // User can belong to multiple kitchens via memberships
   kitchenMemberships KitchenMember[]
@@ -48,6 +53,7 @@ model User {
 model KitchenMember {
   id           String        @id @default(cuid())
   name         String
+  email        String?       // For pending invites or purely guest records with contact info
   isGuest      Boolean       @default(false)
   
   kitchenId    String

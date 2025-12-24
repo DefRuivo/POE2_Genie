@@ -48,7 +48,7 @@ export default function RecipeDetailsPage() {
     }
 
     return (
-        <div className="max-w-4xl mx-auto px-4 mt-8 pb-20 space-y-8">
+        <div className="max-w-4xl mx-auto px-4 mt-4 pb-10 space-y-4">
             <button
                 onClick={() => router.back()}
                 className="flex items-center gap-2 text-slate-500 hover:text-rose-600 font-bold transition-colors"

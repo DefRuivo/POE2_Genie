@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     if (!payload || !payload.houseId) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
-    const houseId = payload.houseId as string;
+    const kitchenId = (payload.kitchenId || payload.houseId) as string;
 
     const initialStock = inStock !== undefined ? inStock : true;
     const rule = replenishmentRule || 'NEVER';
@@ -46,18 +46,18 @@ export async function POST(request: NextRequest) {
     const item = await prisma.$transaction(async (tx) => {
       const created = await tx.pantryItem.upsert({
         where: {
-          name_houseId: {
+          name_kitchenId: {
             name,
-            houseId
+            kitchenId
           }
         },
         update: {
-          replenishmentRule: replenishmentRule || undefined,
-          inStock: inStock !== undefined ? inStock : undefined
+          replenishmentRule: rule,
+          inStock: initialStock
         },
         create: {
           name,
-          houseId,
+          kitchenId,
           inStock: initialStock,
           replenishmentRule: rule
         }
@@ -65,10 +65,10 @@ export async function POST(request: NextRequest) {
 
       if (created.replenishmentRule === 'ALWAYS' && created.inStock === false) {
         const shoppingItem = await tx.shoppingItem.upsert({
-          where: { name_houseId: { name: created.name, houseId } },
+          where: { name_kitchenId: { name: created.name, kitchenId } },
           create: {
             name: created.name,
-            houseId,
+            kitchenId,
             checked: false,
             pantryItemId: created.id
           },
