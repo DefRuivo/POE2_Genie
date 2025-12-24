@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { signToken } from '@/lib/auth';
 import { hashPassword } from '@/lib/password';
 
 export async function POST(req: NextRequest) {
@@ -20,38 +21,46 @@ export async function POST(req: NextRequest) {
 
         const hashedPassword = await hashPassword(password);
 
-        // Create User, House, and link them transactional
+        // Create User, linked to a new House via HouseholdMember
         const user = await prisma.user.create({
             data: {
-                name,
-                surname,
                 email,
                 password: hashedPassword,
-                house: {
+                name,
+                surname,
+                kitchenMemberships: {
                     create: {
-                        name: `${name}'s Kitchen`
+                        name: name,
+                        isGuest: false,
+                        kitchen: {
+                            create: {
+                                name: `${name}'s Kitchen`
+                            }
+                        }
                     }
                 }
             },
             include: {
-                house: true
-            }
-        });
-
-        // Auto-create Household Member profile for the new user
-        await prisma.householdMember.create({
-            data: {
-                name: user.name,
-                userId: user.id,
-                houseId: user.houseId,
-                isGuest: false
+                kitchenMemberships: {
+                    include: { kitchen: true }
+                }
             }
         });
 
         // Don't return the password
         const { password: _, ...userWithoutPassword } = user;
 
-        return NextResponse.json({ user: userWithoutPassword }, { status: 201 });
+        const kitchenId = user.kitchenMemberships[0].kitchenId;
+
+        const token = await signToken({
+            userId: user.id,
+            email: user.email,
+            name: user.name,
+            kitchenId: kitchenId,
+            houseId: kitchenId // Backwards compat
+        });
+
+        return NextResponse.json({ user: userWithoutPassword, token }, { status: 201 });
     } catch (error) {
         console.error('Registration error:', error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

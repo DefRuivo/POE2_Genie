@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from "@google/genai";
+import { prisma } from '@/lib/prisma';
+import { verifyToken } from '@/lib/auth';
 
 export async function POST(req: NextRequest) {
     try {
@@ -18,6 +20,7 @@ export async function POST(req: NextRequest) {
     Recipe JSON:
     ${JSON.stringify(recipe)}`;
 
+
         const response = await ai.models.generateContent({
             model: 'gemini-3-pro-preview',
             contents: prompt,
@@ -27,6 +30,37 @@ export async function POST(req: NextRequest) {
         });
 
         if (!response.text) throw new Error("Translation failed");
+
+        // Log Usage
+        try {
+            const token = req.cookies.get('auth_token')?.value;
+            let userId: string | undefined;
+            let kitchenId: string | undefined;
+
+            if (token) {
+                const payload = await verifyToken(token);
+                if (payload) {
+                    userId = payload.userId;
+                    kitchenId = payload.kitchenId;
+                }
+            }
+
+            const inputTokens = response.usageMetadata?.promptTokenCount || 0;
+            const outputTokens = response.usageMetadata?.candidatesTokenCount || 0;
+
+            await prisma.geminiUsage.create({
+                data: {
+                    prompt: "Translation Request (Prompt hidden for brevity)", // Or log full prompt if needed
+                    response: response.text,
+                    inputTokens,
+                    outputTokens,
+                    userId,
+                    kitchenId
+                }
+            });
+        } catch (err) {
+            console.error("Failed to log translation usage", err);
+        }
 
         const translatedRecipe = JSON.parse(response.text);
         return NextResponse.json(translatedRecipe);

@@ -1,12 +1,13 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
-import { HouseholdMember, SessionContext, GeneratedRecipe } from "../types";
+import { prisma } from "@/lib/prisma";
+import { KitchenMember, SessionContext, GeneratedRecipe } from "../types";
 
 /**
  * Generates a safe and creative recipe based on household profiles, pantry, and meal type.
  */
 export const generateRecipe = async (
-  household_db: HouseholdMember[],
+  household_db: KitchenMember[],
   session_context: SessionContext
 ): Promise<GeneratedRecipe> => {
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
@@ -27,6 +28,7 @@ OUTPUT:
 Localize the output to ENGLISH and respond ONLY with JSON.`;
 
   const prompt = JSON.stringify({ household_db, session_context });
+
 
   const response = await ai.models.generateContent({
     model: 'gemini-3-pro-preview',
@@ -54,6 +56,37 @@ Localize the output to ENGLISH and respond ONLY with JSON.`;
   });
 
   if (!response.text) throw new Error("AI generation failed");
+
+  // Log Usage
+  try {
+    const inputTokens = response.usageMetadata?.promptTokenCount || 0;
+    const outputTokens = response.usageMetadata?.candidatesTokenCount || 0;
+
+    // Attempt to attribute to a user/kitchen
+    let userId: string | undefined;
+    let kitchenId: string | undefined;
+
+    if (household_db.length > 0) {
+      // Use the first member's kitchen. 
+      // Note: household_db is likely KitchenMember[] now.
+      kitchenId = household_db[0].kitchenId;
+      userId = household_db[0].userId || undefined;
+    }
+
+    await prisma.geminiUsage.create({
+      data: {
+        prompt,
+        response: response.text,
+        inputTokens,
+        outputTokens,
+        userId,
+        kitchenId
+      }
+    });
+  } catch (err) {
+    console.error("Failed to log Gemini usage:", err);
+  }
+
   return JSON.parse(response.text) as GeneratedRecipe;
 };
 

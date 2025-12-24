@@ -2,17 +2,18 @@ import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '../../../lib/prisma';
 import { verifyToken } from '@/lib/auth';
 
+// GET: Fetch members
 export async function GET(request: NextRequest) {
   try {
     const token = request.cookies.get('auth_token')?.value;
     const payload = await verifyToken(token || '');
-    if (!payload || !payload.houseId) {
+    if (!payload || !payload.kitchenId) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
-    const houseId = payload.houseId as string;
+    const kitchenId = payload.kitchenId as string;
 
-    const members = await prisma.householdMember.findMany({
-      where: { houseId },
+    const members = await prisma.kitchenMember.findMany({
+      where: { kitchenId },
       include: {
         restrictions: true,
         likes: true,
@@ -20,7 +21,6 @@ export async function GET(request: NextRequest) {
       }
     });
 
-    // Map relations back to string arrays for frontend compatibility
     const formattedMembers = members.map(m => ({
       ...m,
       restrictions: m.restrictions.map(r => r.name),
@@ -30,19 +30,20 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(formattedMembers || []);
   } catch (error) {
-    console.error('GET /api/household error:', error);
-    return NextResponse.json({ message: 'Error fetching household members', error: String(error) }, { status: 500 });
+    console.error('GET /api/kitchen-members error:', error);
+    return NextResponse.json({ message: 'Error fetching members', error: String(error) }, { status: 500 });
   }
 }
 
+// POST: Add/Update member
 export async function POST(request: NextRequest) {
   try {
     const token = request.cookies.get('auth_token')?.value;
     const payload = await verifyToken(token || '');
-    if (!payload || !payload.houseId) {
+    if (!payload || !payload.kitchenId) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
-    const houseId = payload.houseId as string;
+    const kitchenId = payload.kitchenId as string;
 
     const data = await request.json();
 
@@ -56,7 +57,6 @@ export async function POST(request: NextRequest) {
     let member;
     let userIdToLink: string | undefined = undefined;
 
-    // Logic: If email is provided, try to find the user to link
     if (data.email) {
       const linkedUser = await prisma.user.findUnique({
         where: { email: data.email }
@@ -67,9 +67,8 @@ export async function POST(request: NextRequest) {
       userIdToLink = linkedUser.id;
     }
 
-    // Check if it's an existing member or a new one
     if (data.id && !data.id.startsWith('h-') && !data.id.startsWith('g-') && !data.id.startsWith('temp-')) {
-      member = await prisma.householdMember.update({
+      member = await prisma.kitchenMember.update({
         where: { id: data.id },
         data: {
           name: data.name,
@@ -85,7 +84,7 @@ export async function POST(request: NextRequest) {
         }
       });
     } else {
-      member = await prisma.householdMember.create({
+      member = await prisma.kitchenMember.create({
         data: {
           name: data.name,
           userId: userIdToLink,
@@ -93,7 +92,7 @@ export async function POST(request: NextRequest) {
           likes: { create: (data.likes || []).map((n: string) => ({ name: n })) },
           dislikes: { create: (data.dislikes || []).map((n: string) => ({ name: n })) },
           isGuest: !!userIdToLink ? false : (data.isGuest || true),
-          houseId: houseId
+          kitchenId: kitchenId
         },
         include: {
           restrictions: true,
@@ -103,7 +102,6 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Format response
     const formattedMember = {
       ...member,
       restrictions: member.restrictions.map(r => r.name),
@@ -113,7 +111,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(formattedMember);
   } catch (error) {
-    console.error('POST /api/household error:', error);
-    return NextResponse.json({ message: 'Error saving household member', error: String(error) }, { status: 500 });
+    console.error('POST /api/kitchen-members error:', error);
+    return NextResponse.json({ message: 'Error saving member', error: String(error) }, { status: 500 });
   }
 }

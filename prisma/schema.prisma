@@ -7,16 +7,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model House {
+// Enums
+enum ReplenishmentRule {
+  ALWAYS
+  ONE_SHOT
+  NEVER
+}
+
+// Models
+// Models
+model Kitchen {
   id        String   @id @default(cuid())
   name      String   @default("My Kitchen")
   createdAt DateTime @default(now())
   
-  users           User[]
-  members         HouseholdMember[]
+  // Relations
+  members         KitchenMember[]
   pantryItems     PantryItem[]
   recipes         Recipe[]
+  shoppingItems   ShoppingItem[]
+  ingredients     Ingredient[]
   tagSuggestions  TagSuggestion[]
+  geminiUsage     GeminiUsage[]
 }
 
 model User {
@@ -28,77 +40,155 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
-  houseId         String
-  house           House            @relation(fields: [houseId], references: [id], onDelete: Cascade)
-  householdMember HouseholdMember?
+  // User can belong to multiple kitchens via memberships
+  kitchenMemberships KitchenMember[]
+  geminiUsage        GeminiUsage[]
 }
 
-model HouseholdMember {
+model KitchenMember {
   id           String        @id @default(cuid())
   name         String
+  isGuest      Boolean       @default(false)
+  
+  kitchenId    String
+  kitchen      Kitchen       @relation(fields: [kitchenId], references: [id], onDelete: Cascade)
+  
+  userId       String?
+  user         User?         @relation(fields: [userId], references: [id]) // Optional:Guest might not have User
+
+  // Preferences
   restrictions Restriction[]
   likes        Like[]
   dislikes     Dislike[]
-  isGuest      Boolean       @default(false)
-  
-  houseId      String
-  house        House    @relation(fields: [houseId], references: [id], onDelete: Cascade)
-  
-  userId       String?  @unique
-  user         User?    @relation(fields: [userId], references: [id])
+  favorites    FavoriteRecipe[]
+
+  @@unique([userId, kitchenId]) // Unique membership per kitchen
 }
 
 model Restriction {
   id       String          @id @default(cuid())
   name     String
-  members  HouseholdMember[]
+  members  KitchenMember[]
 }
 
 model Like {
   id       String          @id @default(cuid())
   name     String
-  members  HouseholdMember[]
+  members  KitchenMember[]
 }
 
 model Dislike {
   id       String          @id @default(cuid())
   name     String
-  members  HouseholdMember[]
+  members  KitchenMember[]
 }
 
 model PantryItem {
+  id                String            @id @default(cuid())
+  name              String
+  inStock           Boolean           @default(true)
+  replenishmentRule ReplenishmentRule @default(NEVER)
+
+  kitchenId         String
+  kitchen           Kitchen           @relation(fields: [kitchenId], references: [id], onDelete: Cascade)
+
+  // Link to shopping list (if auto-replenish is needed)
+  shoppingItemId    String?           @unique
+  shoppingItem      ShoppingItem?     @relation(fields: [shoppingItemId], references: [id])
+
+  @@unique([name, kitchenId])
+}
+
+model Ingredient {
   id      String   @id @default(cuid())
   name    String
-  recipes Recipe[]
   
-  houseId String
-  house   House  @relation(fields: [houseId], references: [id], onDelete: Cascade)
-  
-  inStock Boolean @default(true)
+  kitchenId String
+  kitchen   Kitchen  @relation(fields: [kitchenId], references: [id], onDelete: Cascade)
 
-  @@unique([name, houseId])
+  recipeIngredients RecipeIngredient[]
+
+  @@unique([name, kitchenId])
+}
+
+model ShoppingItem {
+  id        String   @id @default(cuid())
+  name      String
+  checked   Boolean  @default(false)
+  
+  kitchenId String
+  kitchen   Kitchen  @relation(fields: [kitchenId], references: [id], onDelete: Cascade)
+  
+  // Back-relation to empty pantry item
+  pantryItem PantryItem?
+
+  // Recipes that need this item
+  recipeItems RecipeShoppingItem[]
+
+  @@unique([name, kitchenId])
 }
 
 model Recipe {
-  id                      String       @id @default(cuid())
-  createdAt               DateTime     @default(now())
-  recipe_title            String
-  analysis_log            String       @db.Text
-  match_reasoning         String       @db.Text
-  ingredients_from_pantry Json         // Storing list for display, but also linking to PantryItem
-  shopping_list           Json
-  step_by_step            Json
-  safety_badge            Boolean
-  meal_type               String
-  difficulty              String
-  prep_time               String
-  dishImage               String?      @db.Text
-  isFavorite              Boolean      @default(false)
-  language                String       @default("en")
-  pantryItems             PantryItem[]
+  id              String   @id @default(cuid())
+  createdAt       DateTime @default(now())
+  recipe_title    String
   
-  houseId                 String
-  house                   House        @relation(fields: [houseId], references: [id], onDelete: Cascade)
+  analysis_log    String   @db.Text
+  match_reasoning String   @db.Text
+  
+  // Relational data instead of JSON
+  ingredients     RecipeIngredient[]
+  shoppingItems   RecipeShoppingItem[]
+  
+  step_by_step    Json     // Keeping steps as JSON array of strings
+  
+  safety_badge    Boolean
+  meal_type       String
+  difficulty      String
+  prep_time       String
+  dishImage       String?  @db.Text
+  language        String   @default("en")
+  
+  kitchenId       String
+  kitchen         Kitchen  @relation(fields: [kitchenId], references: [id], onDelete: Cascade)
+  
+  favoritedBy     FavoriteRecipe[]
+}
+
+model RecipeIngredient {
+  id           String     @id @default(cuid())
+  amount       String?    // e.g., "2 cups"
+  inPantry     Boolean    // Was it in pantry when generated?
+
+  recipeId     String
+  recipe       Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  
+  ingredientId String
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+}
+
+model RecipeShoppingItem {
+  id             String       @id @default(cuid())
+  
+  recipeId       String
+  recipe         Recipe       @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  
+  shoppingItemId String
+  shoppingItem   ShoppingItem @relation(fields: [shoppingItemId], references: [id], onDelete: Cascade)
+
+  @@unique([recipeId, shoppingItemId])
+}
+
+model FavoriteRecipe {
+  id        String          @id @default(cuid())
+  
+  memberId  String
+  member    KitchenMember   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  
+  recipeId  String
+  recipe    Recipe          @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([memberId, recipeId])
 }
 
 model TagSuggestion {
@@ -106,8 +196,25 @@ model TagSuggestion {
   category String
   tag      String
 
-  houseId  String
-  house    House  @relation(fields: [houseId], references: [id], onDelete: Cascade)
+  kitchenId String
+  kitchen   Kitchen  @relation(fields: [kitchenId], references: [id], onDelete: Cascade)
 
-  @@unique([category, tag, houseId])
+  @@unique([category, tag, kitchenId])
+}
+
+model GeminiUsage {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  
+  prompt       String   @db.Text
+  response     String   @db.Text
+  
+  inputTokens  Int      @default(0)
+  outputTokens Int      @default(0)
+  
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id])
+  
+  kitchenId    String?
+  kitchen      Kitchen? @relation(fields: [kitchenId], references: [id])
 }

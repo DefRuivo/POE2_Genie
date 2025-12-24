@@ -16,6 +16,9 @@ const RecipeCard: React.FC<Props> = ({ recipe: initialRecipe, onSaved }) => {
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [copyFeedback, setCopyFeedback] = useState(false);
 
+  // State for adding to pantry with logic
+  const [itemToAdd, setItemToAdd] = useState<string | null>(null);
+
   const isDev = process.env.NODE_ENV === 'development';
 
   useEffect(() => {
@@ -55,52 +58,66 @@ const RecipeCard: React.FC<Props> = ({ recipe: initialRecipe, onSaved }) => {
     setShowShareMenu(false);
   };
 
+  const confirmAddToPantry = async (rule: string) => {
+    if (!itemToAdd) return;
+    try {
+      // Add to pantry as tracked item (inStock=false since we need to buy it)
+      await storageService.addPantryItem(itemToAdd, rule, false);
+      setItemToAdd(null);
+    } catch (err) {
+      console.error("Error adding to pantry:", err);
+    }
+  };
+
   return (
     <article className="bg-white rounded-[2.5rem] shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in slide-in-from-bottom-10 duration-700">
       {/* Dynamic Header Area */}
-      <div className="relative bg-slate-900 flex flex-col items-center justify-center py-20 px-6 md:px-10 min-h-[400px]">
-
-        {/* Title and Info Overlay (Persistent) */}
-        <div className="relative z-10 text-center space-y-8 max-w-4xl w-full mx-auto">
-          <div className="flex flex-wrap gap-3 justify-center">
-            <div className="inline-flex px-3 py-1 bg-white/10 backdrop-blur-md text-white rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20">
-              Today's Suggestion
-            </div>
-            {/* Difficulty Badge */}
-            <div className={`inline-flex px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20 text-white ${recipe.difficulty === 'easy' ? 'bg-green-500/80' :
-              recipe.difficulty === 'intermediate' ? 'bg-yellow-500/80' :
-                recipe.difficulty === 'chef' ? 'bg-slate-900 border-rose-500/50' : 'bg-red-500/80'
-              }`}>
-              {recipe.difficulty === 'chef' ? <><i className="fas fa-hat-chef mr-1"></i> CHEF</> : recipe.difficulty}
-            </div>
-          </div>
-
-          <h3 className="text-4xl md:text-6xl font-black text-white tracking-tighter leading-tight drop-shadow-2xl">
-            {recipe.recipe_title}
-          </h3>
-
-          {/* Improved readability for reasoning text */}
-          <div className="bg-slate-900/40 backdrop-blur-sm p-6 rounded-3xl border border-white/10 max-w-2xl mx-auto">
-            <p className="text-slate-100 text-base md:text-lg font-medium leading-[1.8] drop-shadow-md">
-              {recipe.match_reasoning}
-            </p>
-          </div>
-        </div>
+      <div className="relative bg-slate-900 flex flex-col p-8 md:p-14 h-auto min-h-[400px] justify-center">
 
         {/* Persistent Dark Gradient for Readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-slate-900/60 opacity-90 pointer-events-none -z-0"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-slate-900/60 opacity-90 pointer-events-none z-0"></div>
 
-        <div className="absolute top-8 right-8 z-20">
-          <button
-            onClick={toggleFavorite}
-            className={`px-6 py-4 rounded-2xl font-black text-[10px] uppercase shadow-2xl transition-all tracking-widest ${isFavorite ? 'bg-pink-500 text-white hover:bg-pink-600' : 'bg-slate-800 text-white hover:bg-slate-700'}`}
-          >
-            {isFavorite ? (
-              <><i className="fas fa-heart-broken mr-2"></i>Unfavorite</>
-            ) : (
-              <><i className="fas fa-heart mr-2"></i>Favorite</>
-            )}
-          </button>
+        <div className="relative z-10 w-full max-w-4xl mx-auto flex flex-col gap-10">
+
+          {/* Top Bar: Badges & Actions */}
+          <div className="flex flex-col-reverse md:flex-row justify-between items-center gap-6">
+            <div className="flex flex-wrap gap-3 justify-center md:justify-start">
+              <div className="inline-flex px-3 py-1 bg-white/10 backdrop-blur-md text-white rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20">
+                Today's Suggestion
+              </div>
+              <div className={`inline-flex px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20 text-white ${recipe.difficulty === 'easy' ? 'bg-green-500/80' :
+                recipe.difficulty === 'intermediate' ? 'bg-yellow-500/80' :
+                  recipe.difficulty === 'chef' ? 'bg-slate-900 border-rose-500/50' : 'bg-red-500/80'
+                }`}>
+                {recipe.difficulty === 'chef' ? <><i className="fas fa-hat-chef mr-1"></i> CHEF</> : recipe.difficulty}
+              </div>
+            </div>
+
+            <button
+              onClick={toggleFavorite}
+              className={`px-6 py-3 rounded-2xl font-black text-[10px] uppercase shadow-2xl transition-all tracking-widest ${isFavorite ? 'bg-pink-500 text-white hover:bg-pink-600' : 'bg-slate-800 text-white hover:bg-slate-700'}`}
+            >
+              {isFavorite ? (
+                <><i className="fas fa-heart-broken mr-2"></i>Unfavorite</>
+              ) : (
+                <><i className="fas fa-heart mr-2"></i>Favorite</>
+              )}
+            </button>
+          </div>
+
+          {/* Main Title & Description */}
+          <div className="text-center space-y-8">
+            <h3 className="text-4xl md:text-5xl lg:text-7xl font-black text-white tracking-tighter leading-tight drop-shadow-2xl">
+              {recipe.recipe_title}
+            </h3>
+
+            <div className="bg-slate-800/90 p-8 md:p-10 rounded-3xl border border-slate-700 max-w-3xl mx-auto shadow-xl">
+              <p className="text-slate-200 text-lg md:text-xl font-medium leading-relaxed">
+                {recipe.match_reasoning}
+              </p>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -167,9 +184,17 @@ const RecipeCard: React.FC<Props> = ({ recipe: initialRecipe, onSaved }) => {
 
                 <ul className="space-y-3">
                   {recipe.shopping_list.map((ing, idx) => (
-                    <li key={idx} className="flex items-center gap-3 text-orange-800 text-sm font-bold">
-                      <span className="w-2 h-2 bg-orange-400 rounded-full"></span>
-                      {ing}
+                    <li key={idx} className="flex items-center justify-between text-orange-800 text-sm font-bold bg-white/50 p-2 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <span className="w-2 h-2 bg-orange-400 rounded-full"></span>
+                        {ing}
+                      </div>
+                      <button
+                        onClick={() => setItemToAdd(ing)}
+                        className="ml-2 text-[10px] bg-orange-100 px-2 py-1 rounded text-orange-600 hover:bg-orange-200 transition-colors uppercase tracking-wider"
+                      >
+                        <i className="fas fa-plus mr-1"></i> Pantry
+                      </button>
                     </li>
                   ))}
                 </ul>
@@ -194,6 +219,43 @@ const RecipeCard: React.FC<Props> = ({ recipe: initialRecipe, onSaved }) => {
           </div>
         </div>
       </div>
+
+      {itemToAdd && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl space-y-6 animate-in zoom-in-95 duration-200">
+            <div>
+              <h3 className="text-xl font-black text-slate-900">Add "{itemToAdd}" to Pantry?</h3>
+              <p className="text-slate-500 text-xs font-medium mt-1 uppercase tracking-wide">Select a replenishment rule</p>
+            </div>
+
+            <div className="grid gap-3">
+              <button onClick={() => confirmAddToPantry('ALWAYS')} className="p-4 rounded-xl bg-indigo-50 text-indigo-700 font-bold hover:bg-indigo-100 flex items-center gap-3 transition-all border border-indigo-100">
+                <div className="w-8 h-8 rounded-full bg-indigo-200 flex items-center justify-center text-indigo-700"><i className="fas fa-sync"></i></div>
+                <div className="text-left">
+                  <div className="text-sm">Always Replenish</div>
+                  <div className="text-[10px] opacity-70">Auto-add to list when empty</div>
+                </div>
+              </button>
+              <button onClick={() => confirmAddToPantry('ONE_SHOT')} className="p-4 rounded-xl bg-emerald-50 text-emerald-700 font-bold hover:bg-emerald-100 flex items-center gap-3 transition-all border border-emerald-100">
+                <div className="w-8 h-8 rounded-full bg-emerald-200 flex items-center justify-center text-emerald-700"><i className="fas fa-check"></i></div>
+                <div className="text-left">
+                  <div className="text-sm">One Shot</div>
+                  <div className="text-[10px] opacity-70">Buy heavily once</div>
+                </div>
+              </button>
+              <button onClick={() => confirmAddToPantry('NEVER')} className="p-4 rounded-xl bg-slate-50 text-slate-700 font-bold hover:bg-slate-100 flex items-center gap-3 transition-all border border-slate-200">
+                <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-600"><i className="fas fa-ban"></i></div>
+                <div className="text-left">
+                  <div className="text-sm">Just Track</div>
+                  <div className="text-[10px] opacity-70">Don't replenish automatically</div>
+                </div>
+              </button>
+            </div>
+
+            <button onClick={() => setItemToAdd(null)} className="w-full py-3 text-slate-400 font-bold hover:text-slate-600 text-sm uppercase tracking-wide">Cancel</button>
+          </div>
+        </div>
+      )}
     </article>
   );
 };

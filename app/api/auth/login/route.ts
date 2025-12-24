@@ -15,16 +15,25 @@ export async function POST(req: NextRequest) {
 
         const user = await prisma.user.findUnique({
             where: { email },
+            include: { kitchenMemberships: true }
         });
 
-        if (!user) {
+        if (!user || !user.password) {
             return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
         }
 
-        const isPasswordValid = await comparePassword(password, user.password);
+        const isValid = await comparePassword(password, user.password);
 
-        if (!isPasswordValid) {
+        if (!isValid) {
             return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+        }
+
+        // Use the first house as default for now
+        // TODO: In future allow user to select context
+        const defaultKitchenId = user.kitchenMemberships[0]?.kitchenId;
+
+        if (!defaultKitchenId) {
+            return NextResponse.json({ error: 'User has no active kitchen' }, { status: 400 });
         }
 
         // Generate JWT
@@ -32,7 +41,8 @@ export async function POST(req: NextRequest) {
             userId: user.id,
             email: user.email,
             name: user.name,
-            houseId: user.houseId
+            houseId: defaultKitchenId, // TODO: Update JWT payload key to kitchenId later or map it
+            kitchenId: defaultKitchenId
         });
 
         const response = NextResponse.json({ success: true, user: { name: user.name, email: user.email } });

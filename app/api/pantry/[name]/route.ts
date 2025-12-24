@@ -50,15 +50,57 @@ export async function PUT(
     if (newName !== undefined) updateData.name = newName;
     if (inStock !== undefined) updateData.inStock = inStock;
 
-    const updated = await prisma.pantryItem.update({
-      where: {
-        name_houseId: {
-          name: decodeURIComponent(name),
-          houseId
-        }
-      },
-      data: updateData
+    // Use transaction to handle side effects (auto-shopping list)
+    const updated = await prisma.$transaction(async (tx) => {
+      const item = await tx.pantryItem.update({
+        where: {
+          name_houseId: {
+            name: decodeURIComponent(name),
+            houseId
+          }
+        },
+        data: updateData
+      });
+
+      // Loop replenishment logic
+      if (item.replenishmentRule === 'ALWAYS' && item.inStock === false) {
+        const shoppingItem = await tx.shoppingItem.upsert({
+          where: { name_houseId: { name: item.name, houseId } },
+          create: {
+            name: item.name,
+            houseId,
+            checked: false,
+            pantryItemId: item.id
+          },
+          update: {
+            checked: false, // Re-activate if it was checked
+            pantryItemId: item.id
+          }
+        });
+        // We could link back? item already has shoppingItemId via unique pantryItemId on ShoppingItem model?
+        // Actually PantryItem defines shoppingItemId as FK? No, look at schema.
+        // PantryItem: shoppingItemId String? @unique, shoppingItem ShoppingItem? ...
+        // ShoppingItem: pantryItemId String? @unique, pantryItem PantryItem?
+        // Wait, usually one side has the FK.
+        // Schema:
+        // PantryItem: shoppingItemId String? @unique ... shoppingItem @relation...
+        // ShoppingItem: pantryItemId ... (back relation if PantryItem holds FK)
+
+        // In my schema I wrote:
+        // PantryItem { shoppingItemId String? @unique ... }
+        // ShoppingItem { pantryItem PantryItem? }
+        // Validation: The relation is 1-1 optional.
+
+        // So I should update PantryItem with shoppingItemId if I created one.
+        await tx.pantryItem.update({
+          where: { id: item.id },
+          data: { shoppingItemId: shoppingItem.id }
+        });
+      }
+
+      return item;
     });
+
     return NextResponse.json(updated);
   } catch (error) {
     console.error('PUT /api/pantry/[name] error:', error);
