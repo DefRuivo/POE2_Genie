@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { HouseholdMember } from '../types';
-import { translations } from '../locales/translations';
 import { ConfirmDialog } from './ConfirmDialog';
 import { storageService } from '../services/storageService';
 import { TagInput } from './TagInput';
@@ -13,7 +12,6 @@ interface Props {
 }
 
 const HouseholdSection: React.FC<Props> = ({ household, setHousehold, activeDiners, setActiveDiners }) => {
-  const t = translations;
   const [newMember, setNewMember] = useState<{
     name: string;
     email: string;
@@ -30,9 +28,9 @@ const HouseholdSection: React.FC<Props> = ({ household, setHousehold, activeDine
   const addMember = async () => {
     if (!newMember.name) return;
     const member: any = {
-      id: `temp-${Date.now()}`, // Prefix ensures backend treats as NEW, not update
+      id: `temp-${Date.now()}`,
       name: newMember.name,
-      email: newMember.email, // Passed to backend for linking
+      email: newMember.email,
       restrictions: newMember.restrictions,
       likes: newMember.likes,
       dislikes: newMember.dislikes,
@@ -40,7 +38,7 @@ const HouseholdSection: React.FC<Props> = ({ household, setHousehold, activeDine
 
     try {
       await storageService.saveMember(member);
-      setHousehold([...household, member]); // Note: Real refresh would show userId
+      setHousehold([...household, member]);
       setActiveDiners([...activeDiners, member.id]);
       setNewMember({ name: '', email: '', restrictions: [], likes: [], dislikes: [] });
     } catch (error) {
@@ -76,9 +74,9 @@ const HouseholdSection: React.FC<Props> = ({ household, setHousehold, activeDine
       <div className="p-6 border-b border-slate-100 bg-slate-50/50">
         <h2 className="text-lg font-bold flex items-center gap-2 text-slate-800">
           <i className="fas fa-home text-rose-500"></i>
-          {t.household_title}
+          Household Members
         </h2>
-        <p className="text-sm text-slate-500 mt-1">{t.household_subtitle}</p>
+        <p className="text-sm text-slate-500 mt-1">Define who is present and their critical restrictions.</p>
       </div>
       <div className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -96,9 +94,9 @@ const HouseholdSection: React.FC<Props> = ({ household, setHousehold, activeDine
                 </button>
               </div>
               <div className="space-y-2 text-xs">
-                <p><span className="font-bold text-red-700">{t.allergies_label}:</span> {member.restrictions.join(', ') || 'N/A'}</p>
-                <p><span className="font-bold text-emerald-700">{t.likes_label}:</span> {member.likes.join(', ')}</p>
-                <p><span className="font-bold text-slate-500">{t.dislikes_label}:</span> {member.dislikes.join(', ')}</p>
+                <p><span className="font-bold text-red-700">ALLERGIES:</span> {member.restrictions.join(', ') || 'N/A'}</p>
+                <p><span className="font-bold text-emerald-700">LIKES:</span> {member.likes.join(', ')}</p>
+                <p><span className="font-bold text-slate-500">HATES:</span> {member.dislikes.join(', ')}</p>
               </div>
             </div>
           ))}
@@ -106,10 +104,10 @@ const HouseholdSection: React.FC<Props> = ({ household, setHousehold, activeDine
 
         {/* Form to add a new household profile */}
         <div className="bg-slate-50 p-6 rounded-2xl space-y-4 border border-slate-100">
-          <p className="text-xs font-black text-slate-400 uppercase tracking-widest">{t.new_member}</p>
+          <p className="text-xs font-black text-slate-400 uppercase tracking-widest">New Member</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <input
-              placeholder={t.name_placeholder}
+              placeholder="Name (e.g. John)"
               className="px-4 py-3 rounded-xl border border-slate-200 text-sm outline-none bg-white focus:border-rose-500 transition-colors"
               value={newMember.name}
               onChange={e => setNewMember({ ...newMember, name: e.target.value })}
@@ -123,24 +121,24 @@ const HouseholdSection: React.FC<Props> = ({ household, setHousehold, activeDine
             <TagInput
               tags={newMember.restrictions}
               onChange={(tags) => setNewMember({ ...newMember, restrictions: tags })}
-              placeholder={t.restrictions_placeholder}
+              placeholder="Restrictions (comma separated)"
               category="restriction"
             />
             <TagInput
               tags={newMember.likes}
               onChange={(tags) => setNewMember({ ...newMember, likes: tags })}
-              placeholder={t.likes_placeholder}
+              placeholder="Likes (e.g. Pasta, Fish)"
               category="like"
             />
             <TagInput
               tags={newMember.dislikes}
               onChange={(tags) => setNewMember({ ...newMember, dislikes: tags })}
-              placeholder={t.dislikes_placeholder}
+              placeholder="Dislikes (e.g. Onion)"
               category="dislike"
             />
           </div>
           <button onClick={addMember} className="w-full bg-slate-900 text-white py-3 rounded-xl text-sm font-bold hover:bg-black transition-all shadow-lg">
-            {t.add_member}
+            Add to Household
           </button>
         </div>
       </div>

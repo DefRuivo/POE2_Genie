@@ -2,7 +2,6 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { ViewState } from '../types';
-import { translations } from '../locales/translations';
 
 interface Props {
   isOpen: boolean;
@@ -12,7 +11,6 @@ interface Props {
 
 const Sidebar: React.FC<Props> = ({ isOpen, onClose, onNavigate }) => {
   const router = useRouter();
-  const t = translations;
 
   const handleLogout = async () => {
     try {
@@ -60,21 +58,21 @@ const Sidebar: React.FC<Props> = ({ isOpen, onClose, onNavigate }) => {
               className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-slate-600 font-bold hover:bg-slate-50 hover:text-rose-600 transition-all group"
             >
               <i className="fas fa-users w-6 group-hover:scale-110 transition-transform"></i>
-              {t.household_title}
+              Household Members
             </button>
             <button
               onClick={() => onNavigate('pantry')}
               className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-slate-600 font-bold hover:bg-slate-50 hover:text-rose-600 transition-all group"
             >
               <i className="fas fa-box-open w-6 group-hover:scale-110 transition-transform"></i>
-              {t.pantry_title}
+              Pantry & Fridge
             </button>
             <button
               onClick={() => onNavigate('history')}
               className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-slate-600 font-bold hover:bg-slate-50 hover:text-rose-600 transition-all group"
             >
               <i className="fas fa-history w-6 group-hover:scale-110 transition-transform"></i>
-              {t.history_title}
+              Saved Recipes
             </button>
           </nav>
 

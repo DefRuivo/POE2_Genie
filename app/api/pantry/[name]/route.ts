@@ -43,7 +43,13 @@ export async function PUT(
     const houseId = payload.houseId as string;
 
     const { name } = await params;
-    const { name: newName } = await request.json();
+    const { name: newName, inStock } = await request.json();
+
+    // Construct dynamic update object
+    const updateData: any = {};
+    if (newName !== undefined) updateData.name = newName;
+    if (inStock !== undefined) updateData.inStock = inStock;
+
     const updated = await prisma.pantryItem.update({
       where: {
         name_houseId: {
@@ -51,7 +57,7 @@ export async function PUT(
           houseId
         }
       },
-      data: { name: newName }
+      data: updateData
     });
     return NextResponse.json(updated);
   } catch (error) {

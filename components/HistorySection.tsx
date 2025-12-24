@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { RecipeRecord } from '../types';
-import { translations } from '../locales/translations';
 import { storageService } from '../services/storageService';
 
 interface Props {
@@ -11,7 +10,6 @@ interface Props {
 }
 
 const HistorySection: React.FC<Props> = ({ history, onUpdate, onViewRecipe }) => {
-  const t = translations;
 
   const toggleFavorite = async (id: string) => {
     await storageService.toggleFavorite(id);
@@ -29,7 +27,7 @@ const HistorySection: React.FC<Props> = ({ history, onUpdate, onViewRecipe }) =>
     <section className="bg-slate-50 rounded-[2.5rem] p-10 border border-slate-200">
       <h2 className="text-2xl font-black text-slate-900 mb-8 flex items-center gap-3">
         <i className="fas fa-history text-rose-500"></i>
-        {t.history_title}
+        Saved Recipes
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -57,7 +55,7 @@ const HistorySection: React.FC<Props> = ({ history, onUpdate, onViewRecipe }) =>
             >
               <div className="flex items-center gap-2 mb-2">
                 <span className="px-2 py-0.5 rounded-lg bg-rose-50 text-rose-600 text-[10px] font-black uppercase">
-                  {(t as any)[recipe.meal_type === 'main' ? 'main_course' : recipe.meal_type] || recipe.meal_type}
+                  {recipe.meal_type === 'main' ? 'Main Course' : recipe.meal_type}
                 </span>
                 <span className="text-slate-400 text-[10px] font-bold">
                   {new Date(recipe.createdAt).toLocaleDateString()}
@@ -76,13 +74,13 @@ const HistorySection: React.FC<Props> = ({ history, onUpdate, onViewRecipe }) =>
                 onClick={() => removeRecipe(recipe.id)}
                 className="text-slate-300 hover:text-red-500 text-xs font-bold transition-colors"
               >
-                {t.delete_recipe}
+                Delete
               </button>
               <button
                 onClick={() => onViewRecipe?.(recipe)}
                 className="text-[10px] font-black text-rose-600 uppercase tracking-widest hover:underline"
               >
-                {t.view_details}
+                View Recipe
               </button>
             </div>
           </div>

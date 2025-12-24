@@ -1,5 +1,4 @@
 import React from 'react';
-import { translations } from '../locales/translations';
 
 interface Props {
   onMenuClick?: () => void;
@@ -7,7 +6,6 @@ interface Props {
 }
 
 const Header: React.FC<Props> = ({ onMenuClick, onHomeClick }) => {
-  const t = translations;
 
   return (
     <header className="bg-white text-slate-900 shadow-sm p-5 sticky top-0 z-50 border-b border-slate-100 backdrop-blur-md bg-white/80">
@@ -30,7 +28,7 @@ const Header: React.FC<Props> = ({ onMenuClick, onHomeClick }) => {
             <div className="bg-rose-600 p-2 rounded-lg group-hover:scale-110 transition-transform shadow-lg shadow-rose-100">
               <i className="fas fa-utensils text-white"></i>
             </div>
-            <h1 className="text-2xl font-black tracking-tighter text-slate-900">{t.app_name}</h1>
+            <h1 className="text-2xl font-black tracking-tighter text-slate-900">Dinner?</h1>
           </div>
         </div>
       </div>

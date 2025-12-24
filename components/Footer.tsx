@@ -1,19 +1,16 @@
 
 import React from 'react';
-import { translations } from '../locales/translations';
-
 const Footer: React.FC = () => {
-  const t = translations;
 
   return (
     <footer className="mt-32 py-16 border-t border-slate-200 text-center">
       <div className="max-w-4xl mx-auto px-6">
         <div className="inline-flex items-center gap-2 text-rose-600 font-black tracking-tighter text-xl mb-4">
           <i className="fas fa-utensils"></i>
-          {t.app_name}
+          Dinner?
         </div>
         <p className="text-slate-400 text-xs font-bold uppercase tracking-[0.2em]">
-          {t.footer_tagline}
+          Smart & Safe Culinary Intelligence
         </p>
 
         <div className="mt-8 flex justify-center gap-6 text-slate-300">

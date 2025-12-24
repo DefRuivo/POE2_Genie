@@ -1,4 +1,4 @@
-import { RecipeRecord, HouseholdMember } from '../types';
+import { RecipeRecord, HouseholdMember, PantryItem } from '../types';
 
 /**
  * SERVICE: StorageService
@@ -114,13 +114,15 @@ export const storageService = {
   },
 
   // --- Pantry ---
-  getPantry: async (): Promise<string[]> => {
+  getPantry: async (): Promise<PantryItem[]> => {
     const data = await apiRequest('/pantry');
+    // Ensure we handle legacy string[] response if API wasn't updated yet, though we will update API next.
+    // Ideally the API returns PantryItem objects now.
     return data || [];
   },
 
-  addPantryItem: async (name: string): Promise<void> => {
-    await apiRequest('/pantry', {
+  addPantryItem: async (name: string): Promise<PantryItem | null> => {
+    return await apiRequest('/pantry', {
       method: 'POST',
       body: JSON.stringify({ name }),
     });
@@ -130,10 +132,10 @@ export const storageService = {
     await apiRequest(`/pantry/${encodeURIComponent(name)}`, { method: 'DELETE' });
   },
 
-  editPantryItem: async (oldName: string, newName: string): Promise<void> => {
-    await apiRequest(`/pantry/${encodeURIComponent(oldName)}`, {
+  editPantryItem: async (currentName: string, updates: { name?: string; inStock?: boolean }): Promise<void> => {
+    await apiRequest(`/pantry/${encodeURIComponent(currentName)}`, {
       method: 'PUT',
-      body: JSON.stringify({ name: newName }),
+      body: JSON.stringify(updates),
     });
   },
 

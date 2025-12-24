@@ -3,6 +3,12 @@ export type MealType = 'appetizer' | 'main' | 'dessert' | 'snack';
 export type Difficulty = 'easy' | 'intermediate' | 'advanced' | 'chef';
 export type PrepTimePreference = 'quick' | 'plenty';
 
+export interface PantryItem {
+  id: string;
+  name: string;
+  inStock: boolean;
+}
+
 export interface HouseholdMember {
   id: string;
   name: string;

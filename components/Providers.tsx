@@ -2,15 +2,15 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { HouseholdMember, MealType, Difficulty, PrepTimePreference } from '../types';
+import { HouseholdMember, MealType, Difficulty, PrepTimePreference, PantryItem } from '../types';
 import { storageService } from '../services/storageService';
 
 
 interface AppContextType {
     household: HouseholdMember[];
     setHousehold: React.Dispatch<React.SetStateAction<HouseholdMember[]>>;
-    pantry: string[];
-    setPantry: React.Dispatch<React.SetStateAction<string[]>>;
+    pantry: PantryItem[];
+    setPantry: React.Dispatch<React.SetStateAction<PantryItem[]>>;
     activeDiners: string[];
     setActiveDiners: React.Dispatch<React.SetStateAction<string[]>>;
     mealType: MealType;
@@ -29,7 +29,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     // Initial state (Empty - Load from DB)
     const [household, setHousehold] = useState<HouseholdMember[]>([]);
 
-    const [pantry, setPantry] = useState<string[]>([]);
+    const [pantry, setPantry] = useState<PantryItem[]>([]);
     const [activeDiners, setActiveDiners] = useState<string[]>([]);
     const [mealType, setMealType] = useState<MealType>('main');
     const [difficulty, setDifficulty] = useState<Difficulty>('intermediate');

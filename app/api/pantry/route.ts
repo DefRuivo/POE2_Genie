@@ -11,8 +11,11 @@ export async function GET(request: NextRequest) {
     }
     const houseId = payload.houseId as string;
 
-    const items = await prisma.pantryItem.findMany({ where: { houseId } });
-    return NextResponse.json(items.map(i => i.name));
+    const items = await prisma.pantryItem.findMany({
+      where: { houseId },
+      select: { id: true, name: true, inStock: true }
+    });
+    return NextResponse.json(items);
   } catch (error) {
     console.error('GET /api/pantry error:', error);
     return NextResponse.json({ message: 'Error fetching pantry items', error: String(error) }, { status: 500 });
@@ -39,7 +42,7 @@ export async function POST(request: NextRequest) {
         }
       },
       update: {},
-      create: { name, houseId }
+      create: { name, houseId, inStock: true }
     });
     return NextResponse.json(item);
   } catch (error) {

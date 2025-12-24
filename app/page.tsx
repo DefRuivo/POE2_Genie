@@ -56,7 +56,7 @@ export default function Home() {
     try {
       const context: SessionContext = {
         who_is_eating: activeDiners,
-        pantry_ingredients: pantry,
+        pantry_ingredients: pantry.filter(i => i.inStock).map(i => i.name),
         requested_type: mealType,
         difficulty_preference: difficulty,
         prep_time_preference: prepTime,
@@ -95,7 +95,7 @@ export default function Home() {
 
   // Stats
   const activeCount = household.length;
-  const pantryCount = pantry.length;
+  const pantryCount = pantry.filter(i => i.inStock).length;
   const recipesCount = history.length;
 
   return (
