@@ -137,7 +137,7 @@ export default function Home() {
               className="p-8 bg-white rounded-3xl border-2 border-slate-200 shadow-sm hover:border-rose-500 hover:shadow-rose-100 transition-all group text-left"
             >
               <div className="w-12 h-12 bg-rose-100 rounded-full flex items-center justify-center text-rose-600 text-xl mb-4 group-hover:scale-110 transition-transform">
-                <i className="fas fa-hat-chef"></i>
+                <i className="fas fa-wand-magic-sparkles"></i>
               </div>
               <h3 className="text-xl font-black text-slate-800 mb-1">Generate Recipe</h3>
               <p className="text-sm text-slate-500 font-medium">Use AI to create a custom meal based on your pantry.</p>
