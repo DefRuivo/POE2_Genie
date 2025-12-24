@@ -10,9 +10,8 @@ import RecipeCard from '../../../components/RecipeCard';
 export default function RecipeDetailsPage() {
     const { id } = useParams();
     const router = useRouter();
-    const { lang } = useApp();
+    // const { lang } = useApp(); // Removed
     const [recipe, setRecipe] = useState<RecipeRecord | null>(null);
-    const [dishImage, setDishImage] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -20,7 +19,6 @@ export default function RecipeDetailsPage() {
             storageService.getRecipeById(id as string).then(data => {
                 if (data) {
                     setRecipe(data);
-                    setDishImage(data.dishImage || null);
                 }
                 setLoading(false);
             });
@@ -30,7 +28,7 @@ export default function RecipeDetailsPage() {
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-[50vh]">
-                <i className="fas fa-circle-notch fa-spin text-4xl text-indigo-500"></i>
+                <i className="fas fa-circle-notch fa-spin text-4xl text-rose-500"></i>
             </div>
         );
     }
@@ -41,7 +39,7 @@ export default function RecipeDetailsPage() {
                 <h2 className="text-2xl font-bold text-slate-700">Recipe not found!</h2>
                 <button
                     onClick={() => router.back()}
-                    className="mt-4 px-6 py-2 bg-indigo-600 text-white rounded-xl"
+                    className="mt-4 px-6 py-2 bg-rose-600 text-white rounded-xl"
                 >
                     Go Back
                 </button>
@@ -53,16 +51,13 @@ export default function RecipeDetailsPage() {
         <div className="max-w-4xl mx-auto px-4 mt-8 pb-20 space-y-8">
             <button
                 onClick={() => router.back()}
-                className="flex items-center gap-2 text-slate-500 hover:text-indigo-600 font-bold transition-colors"
+                className="flex items-center gap-2 text-slate-500 hover:text-rose-600 font-bold transition-colors"
             >
                 <i className="fas fa-arrow-left"></i> Back to History
             </button>
 
             <RecipeCard
                 recipe={recipe}
-                dishImage={dishImage}
-                setDishImage={setDishImage}
-                lang={lang}
                 onSaved={async () => {
                     // In details view, onSaved might implicitly mean update? 
                     // Since it's already saved, maybe just re-fetch or no-op.

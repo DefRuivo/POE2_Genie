@@ -1,14 +1,27 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '../../../../lib/prisma';
+import { verifyToken } from '@/lib/auth';
 
 export async function DELETE(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ name: string }> }
 ) {
   try {
+    const token = request.cookies.get('auth_token')?.value;
+    const payload = await verifyToken(token || '');
+    if (!payload || !payload.houseId) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+    const houseId = payload.houseId as string;
+
     const { name } = await params;
     await prisma.pantryItem.delete({
-      where: { name: decodeURIComponent(name) }
+      where: {
+        name_houseId: {
+          name: decodeURIComponent(name),
+          houseId
+        }
+      }
     });
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -18,14 +31,26 @@ export async function DELETE(
 }
 
 export async function PUT(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ name: string }> }
 ) {
   try {
+    const token = request.cookies.get('auth_token')?.value;
+    const payload = await verifyToken(token || '');
+    if (!payload || !payload.houseId) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+    const houseId = payload.houseId as string;
+
     const { name } = await params;
     const { name: newName } = await request.json();
     const updated = await prisma.pantryItem.update({
-      where: { name: decodeURIComponent(name) },
+      where: {
+        name_houseId: {
+          name: decodeURIComponent(name),
+          houseId
+        }
+      },
       data: { name: newName }
     });
     return NextResponse.json(updated);

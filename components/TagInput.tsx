@@ -58,15 +58,15 @@ export const TagInput: React.FC<Props> = ({ tags, onChange, placeholder, categor
   return (
     <div className="relative">
       <div
-        className={`flex flex-wrap gap-2 p-2 rounded-xl border bg-white min-h-[46px] transition-all cursor-text ${isFocused ? 'border-indigo-500 ring-1 ring-indigo-500' : 'border-slate-200'}`}
+        className={`flex flex-wrap gap-2 p-2 rounded-xl border bg-white min-h-[46px] transition-all cursor-text ${isFocused ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-200'}`}
         onClick={() => inputRef.current?.focus()}
       >
         {tags.map((tag, i) => (
-          <span key={i} className="bg-indigo-100 text-indigo-800 text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+          <span key={i} className="bg-rose-100 text-rose-800 text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
             {tag}
             <button
               onClick={(e) => { e.stopPropagation(); removeTag(i); }}
-              className="hover:text-indigo-600 focus:outline-none"
+              className="hover:text-rose-600 focus:outline-none"
             >
               <i className="fas fa-times"></i>
             </button>

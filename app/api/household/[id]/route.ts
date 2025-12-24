@@ -1,11 +1,18 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '../../../../lib/prisma';
+import { verifyToken } from '@/lib/auth';
 
 export async function DELETE(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const token = request.cookies.get('auth_token')?.value;
+    const payload = await verifyToken(token || '');
+    if (!payload || !payload.houseId) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
     const { id } = await params;
     await prisma.householdMember.delete({
       where: { id }

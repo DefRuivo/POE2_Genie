@@ -7,6 +7,32 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model House {
+  id        String   @id @default(cuid())
+  name      String   @default("My Kitchen")
+  createdAt DateTime @default(now())
+  
+  users           User[]
+  members         HouseholdMember[]
+  pantryItems     PantryItem[]
+  recipes         Recipe[]
+  tagSuggestions  TagSuggestion[]
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  surname   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  houseId         String
+  house           House            @relation(fields: [houseId], references: [id], onDelete: Cascade)
+  householdMember HouseholdMember?
+}
+
 model HouseholdMember {
   id           String        @id @default(cuid())
   name         String
@@ -14,6 +40,12 @@ model HouseholdMember {
   likes        Like[]
   dislikes     Dislike[]
   isGuest      Boolean       @default(false)
+  
+  houseId      String
+  house        House    @relation(fields: [houseId], references: [id], onDelete: Cascade)
+  
+  userId       String?  @unique
+  user         User?    @relation(fields: [userId], references: [id])
 }
 
 model Restriction {
@@ -36,8 +68,13 @@ model Dislike {
 
 model PantryItem {
   id      String   @id @default(cuid())
-  name    String   @unique
+  name    String
   recipes Recipe[]
+  
+  houseId String
+  house   House  @relation(fields: [houseId], references: [id], onDelete: Cascade)
+  
+  @@unique([name, houseId])
 }
 
 model Recipe {
@@ -57,6 +94,9 @@ model Recipe {
   isFavorite              Boolean      @default(false)
   language                String       @default("en")
   pantryItems             PantryItem[]
+  
+  houseId                 String
+  house                   House        @relation(fields: [houseId], references: [id], onDelete: Cascade)
 }
 
 model TagSuggestion {
@@ -64,5 +104,8 @@ model TagSuggestion {
   category String
   tag      String
 
-  @@unique([category, tag])
+  houseId  String
+  house    House  @relation(fields: [houseId], references: [id], onDelete: Cascade)
+
+  @@unique([category, tag, houseId])
 }

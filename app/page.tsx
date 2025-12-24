@@ -1,16 +1,15 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../components/Providers';
 import RecipeCard from '../components/RecipeCard';
-import HistorySection from '../components/HistorySection';
 import Footer from '../components/Footer';
-import { SessionContext, GeneratedRecipe, MealType, RecipeRecord } from '../types';
+import { SessionContext, MealType, RecipeRecord, Difficulty } from '../types';
 import { storageService } from '../services/storageService';
+import Link from 'next/link';
 
 export default function Home() {
   const {
-    lang,
     household,
     pantry,
     activeDiners, setActiveDiners,
@@ -19,17 +18,24 @@ export default function Home() {
     prepTime, setPrepTime
   } = useApp();
 
-  // Local UI state
-  const [recipe, setRecipe] = useState<GeneratedRecipe | null>(null);
-  const [dishImage, setDishImage] = useState<string | null>(null);
+  const [recipe, setRecipe] = useState<RecipeRecord | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useState<RecipeRecord[]>([]);
   const [observation, setObservation] = useState('');
+  const [showGenerator, setShowGenerator] = useState(false);
 
-  // Load history (also on History page, but good to have recent here)
-  React.useEffect(() => {
-    storageService.getAllRecipes().then(setHistory);
+  useEffect(() => {
+    storageService.getAllRecipes()
+      .then(setHistory)
+      .catch(err => {
+        if (err.message.includes('Unauthorized') || err.message.includes('401')) {
+          // Redirect explicitly just in case Providers didn't catch it fast enough
+          window.location.href = '/login';
+        } else {
+          console.error("Failed to load history", err);
+        }
+      });
   }, []);
 
   const refreshHistory = async () => {
@@ -39,14 +45,13 @@ export default function Home() {
 
   const handleGenerateRecipe = async () => {
     if (activeDiners.length === 0) {
-      // Basic validation if user hasn't selected diners
-      setError("Please select who is eating in the Household tab first!"); // TODO: Translation
+      setError("Please select who is eating first! (Check 'Members')");
       return;
     }
     setIsGenerating(true);
     setError(null);
     setRecipe(null);
-    setDishImage(null);
+    setShowGenerator(false); // Collapse to show result focus
 
     try {
       const context: SessionContext = {
@@ -57,163 +62,211 @@ export default function Home() {
         prep_time_preference: prepTime,
         observation: observation
       };
+
       const result = await fetch('/api/recipe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ household, context, language: lang }),
+        body: JSON.stringify({ household, context, language: 'en' }),
       }).then(res => {
         if (!res.ok) throw new Error('API request failed');
         return res.json();
       });
-      setRecipe(result);
+
+      const newRecord: RecipeRecord = {
+        ...result,
+        id: Date.now().toString(),
+        isFavorite: false,
+        createdAt: Date.now(),
+        language: 'en'
+      };
+
+      await storageService.saveRecipe(newRecord);
+      setRecipe(newRecord);
+      refreshHistory();
+
     } catch (err: any) {
       setError("Failed to generate recipe. Please try again.");
       console.error(err);
+      setShowGenerator(true); // Re-open on error
     } finally {
       setIsGenerating(false);
     }
   };
 
-  // Helper to toggle active diner
-  const toggleDiner = (id: string) => {
-    if (activeDiners.includes(id)) {
-      setActiveDiners(prev => prev.filter(d => d !== id));
-    } else {
-      setActiveDiners(prev => [...prev, id]);
-    }
-  };
+  // Stats
+  const activeCount = household.length;
+  const pantryCount = pantry.length;
+  const recipesCount = history.length;
 
   return (
-    <div className="min-h-screen pb-20 selection:bg-indigo-100">
+    <div className="min-h-screen pb-20 bg-slate-50 selection:bg-rose-100">
+
+      {/* Dashboard Header */}
+      <header className="bg-white border-b border-slate-200">
+        <div className="max-w-4xl mx-auto px-6 py-8">
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-2">
+            Good Evening, Chef! <span className="text-rose-500">👨‍🍳</span>
+          </h1>
+          <p className="text-slate-500 font-medium">Ready to cook something amazing today?</p>
+
+          {/* Stats Row */}
+          <div className="grid grid-cols-3 gap-4 mt-8">
+            <div className="bg-rose-50/50 p-4 rounded-2xl border border-rose-100 text-center">
+              <div className="text-2xl font-black text-rose-600">{activeCount}</div>
+              <div className="text-xs font-bold text-rose-400 uppercase tracking-wider">Members</div>
+            </div>
+            <div className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 text-center">
+              <div className="text-2xl font-black text-emerald-600">{pantryCount}</div>
+              <div className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Pantry Data</div>
+            </div>
+            <div className="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100 text-center">
+              <div className="text-2xl font-black text-indigo-600">{recipesCount}</div>
+              <div className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Cooked</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
       <main className="max-w-4xl mx-auto px-4 mt-8 space-y-8">
 
-        {/* Quick Diner Selection (Simplified) */}
-        <section className="bg-white rounded-3xl shadow-sm border border-slate-200 p-8">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest">
-              Who is eating?
-            </h3>
-            <a href="/household" className="text-indigo-600 font-bold text-sm hover:underline">Manage Household &rarr;</a>
-          </div>
+        {/* Action Buttons */}
+        {!recipe && !showGenerator && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <button
+              onClick={() => setShowGenerator(true)}
+              className="p-8 bg-white rounded-3xl border-2 border-slate-200 shadow-sm hover:border-rose-500 hover:shadow-rose-100 transition-all group text-left"
+            >
+              <div className="w-12 h-12 bg-rose-100 rounded-full flex items-center justify-center text-rose-600 text-xl mb-4 group-hover:scale-110 transition-transform">
+                <i className="fas fa-hat-chef"></i>
+              </div>
+              <h3 className="text-xl font-black text-slate-800 mb-1">Generate Recipe</h3>
+              <p className="text-sm text-slate-500 font-medium">Use AI to create a custom meal based on your pantry.</p>
+            </button>
 
-          <div className="flex flex-wrap gap-3">
-            {household.map(member => (
-              <button
-                key={member.id}
-                onClick={() => toggleDiner(member.id)}
-                className={`px-4 py-2 rounded-xl font-bold transition-all border-2 ${activeDiners.includes(member.id)
-                  ? 'bg-indigo-600 border-indigo-600 text-white shadow-md'
-                  : 'bg-white border-slate-200 text-slate-500 hover:border-indigo-200'
-                  }`}
-              >
-                {activeDiners.includes(member.id) && <i className="fas fa-check mr-2"></i>}
-                {member.name}
-              </button>
-            ))}
-            {household.length === 0 && (
-              <p className="text-slate-400 italic">No members found. Add them in Household.</p>
-            )}
-          </div>
-        </section>
+            <Link href="/pantry" className="p-8 bg-white rounded-3xl border-2 border-slate-200 shadow-sm hover:border-emerald-500 hover:shadow-emerald-100 transition-all group text-left">
+              <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 text-xl mb-4 group-hover:scale-110 transition-transform">
+                <i className="fas fa-carrot"></i>
+              </div>
+              <h3 className="text-xl font-black text-slate-800 mb-1">Pantry</h3>
+              <p className="text-sm text-slate-500 font-medium">Update ingredients.</p>
+            </Link>
 
-        {/* Meal Type Selection */}
-        <section className="bg-white rounded-3xl shadow-sm border border-slate-200 p-8">
-          <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-6">
-            Type of Meal
-          </h3>
-          <div className="flex flex-wrap gap-4">
-            {(['appetizer', 'main', 'dessert'] as MealType[]).map(type => (
-              <button
-                key={type}
-                onClick={() => setMealType(type)}
-                className={`px-8 py-4 rounded-2xl font-black text-sm uppercase transition-all flex items-center gap-3 border-2 ${mealType === type
-                  ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-100'
-                  : 'bg-white border-slate-100 text-slate-400 hover:border-slate-200'
-                  }`}
-              >
-                <i className={`fas ${type === 'appetizer' ? 'fa-cheese' : type === 'main' ? 'fa-hamburger' : 'fa-ice-cream'
-                  }`}></i>
-                {type}
-              </button>
-            ))}
+            <Link href="/household" className="p-8 bg-white rounded-3xl border-2 border-slate-200 shadow-sm hover:border-indigo-500 hover:shadow-indigo-100 transition-all group text-left">
+              <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 text-xl mb-4 group-hover:scale-110 transition-transform">
+                <i className="fas fa-users"></i>
+              </div>
+              <h3 className="text-xl font-black text-slate-800 mb-1">Household</h3>
+              <p className="text-sm text-slate-500 font-medium">Add members/guests.</p>
+            </Link>
           </div>
-        </section>
+        )}
 
-        {/* Preferences & Observations */}
-        <section className="bg-white rounded-3xl shadow-sm border border-slate-200 p-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-6">
-                Difficulty Level
-              </h3>
-              <div className="flex flex-wrap gap-3">
-                {[
-                  { label: 'Fácil', value: 'easy', icon: 'fa-smile' },
-                  { label: 'Difícil', value: 'advanced', icon: 'fa-fire' },
-                  { label: 'Chef Mode', value: 'chef', icon: 'fa-hat-chef' }
-                ].map((level) => (
+        {/* Generator Section */}
+        {(showGenerator || isGenerating) && (
+          <div className="animate-fade-in space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-black text-slate-900">Configure Meal</h2>
+              {!isGenerating && <button onClick={() => setShowGenerator(false)} className="text-sm font-bold text-slate-400 hover:text-slate-600">Cancel</button>}
+            </div>
+
+            {/* Who (Simplified Select) */}
+            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+              <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Who is eating?</label>
+              <div className="flex flex-wrap gap-2">
+                {household.map(m => (
                   <button
-                    key={level.value}
-                    onClick={() => setDifficulty(level.value as any)}
-                    className={`px-6 py-3 rounded-2xl font-black text-xs uppercase transition-all flex items-center gap-2 border-2 ${difficulty === level.value
-                      ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg'
-                      : 'bg-white border-slate-100 text-slate-400 hover:border-slate-200'
-                      }`}
+                    key={m.id}
+                    onClick={() => setActiveDiners(prev => prev.includes(m.id) ? prev.filter(id => id !== m.id) : [...prev, m.id])}
+                    className={`px-4 py-2 rounded-xl text-sm font-bold border-2 transition-all ${activeDiners.includes(m.id) ? 'bg-slate-900 border-slate-900 text-white' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'}`}
                   >
-                    <i className={`fas ${level.icon}`}></i>
-                    {level.label}
+                    {m.name}
                   </button>
                 ))}
+                {household.length === 0 && <Link href="/household" className="text-sm text-rose-600 font-bold underline">Add members first</Link>}
               </div>
             </div>
 
-            <div>
-              <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-6">
-                Extra Observations
-              </h3>
+            {/* Type & Difficulty */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Meal Type</label>
+                <div className="flex gap-2">
+                  {['appetizer', 'main', 'dessert'].map(t => (
+                    <button
+                      key={t}
+                      onClick={() => setMealType(t as MealType)}
+                      className={`flex-1 py-2 rounded-xl text-xs font-bold border-2 uppercase ${mealType === t ? 'bg-rose-100 border-rose-500 text-rose-700' : 'bg-white border-slate-200 text-slate-400'}`}
+                    >
+                      {t}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Difficulty</label>
+                <div className="flex gap-2">
+                  {['easy', 'intermediate', 'advanced'].map(d => (
+                    <button
+                      key={d}
+                      onClick={() => setDifficulty(d as Difficulty)}
+                      className={`flex-1 py-2 rounded-xl text-xs font-bold border-2 uppercase ${difficulty === d ? 'bg-indigo-100 border-indigo-500 text-indigo-700' : 'bg-white border-slate-200 text-slate-400'}`}
+                    >
+                      {d}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Observation */}
+            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+              <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Any special requests?</label>
               <textarea
                 value={observation}
-                onChange={(e) => setObservation(e.target.value)}
-                placeholder="Ex: Tenho 2 horas, quero usar o forno, sem fritura..."
-                className="w-full p-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-indigo-500 focus:ring-0 text-slate-700 font-medium resize-none h-32"
+                onChange={e => setObservation(e.target.value)}
+                placeholder="e.g. I have 20 minutes, use the oven..."
+                className="w-full h-24 p-3 bg-slate-50 rounded-xl border border-slate-200 text-sm focus:border-rose-500 outline-none resize-none"
               />
             </div>
+
+            {/* Generate Button */}
+            <button
+              onClick={handleGenerateRecipe}
+              disabled={isGenerating}
+              className="w-full py-5 bg-rose-600 rounded-2xl text-white font-black text-lg shadow-lg hover:bg-rose-700 transition-all flex items-center justify-center gap-3"
+            >
+              {isGenerating ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-magic"></i>}
+              {isGenerating ? 'Cooking Magic...' : 'Generate Recipe'}
+            </button>
+
+            {error && <p className="text-center text-red-500 font-bold text-sm">{error}</p>}
           </div>
-        </section>
-
-        {/* Main Action Button */}
-        <div className="flex flex-col items-center gap-4 py-4">
-          <button
-            disabled={isGenerating || activeDiners.length === 0}
-            onClick={handleGenerateRecipe}
-            className="w-full md:w-auto px-16 py-6 rounded-3xl text-xl font-black transition-all flex items-center justify-center gap-4 btn-primary group"
-          >
-            {isGenerating ? (
-              <><i className="fas fa-brain fa-spin"></i> Generating...</>
-            ) : (
-              <><i className="fas fa-hat-chef group-hover:rotate-12 transition-transform"></i> Generate Chef Recipe</>
-            )}
-          </button>
-          {error && (
-            <div className="bg-red-50 px-6 py-3 rounded-2xl border border-red-200 text-red-600 font-bold text-xs tracking-wider animate-bounce uppercase">
-              {error}
-            </div>
-          )}
-        </div>
-
-        {/* Recipe Result display */}
-        {recipe && (
-          <RecipeCard
-            recipe={recipe}
-            dishImage={dishImage}
-            setDishImage={setDishImage}
-            lang={lang}
-            onSaved={refreshHistory}
-          />
         )}
-      </main>
 
-      <Footer lang={lang} />
+        {/* Result */}
+        {recipe && <RecipeCard recipe={recipe} onSaved={refreshHistory} />}
+
+        {/* Recent History (If no result shown and not generating) */}
+        {!recipe && !showGenerator && history.length > 0 && (
+          <div className="mt-12">
+            <h3 className="text-lg font-black text-slate-800 mb-6">Recent Creations</h3>
+            <div className="space-y-4">
+              {history.slice(0, 3).map(rec => (
+                <Link href={`/history/${rec.id}`} key={rec.id} className="block bg-white p-4 rounded-2xl border border-slate-200 hover:border-slate-300 transition-all flex justify-between items-center group">
+                  <div>
+                    <h4 className="font-bold text-slate-900 group-hover:text-rose-600 transition-colors">{rec.recipe_title}</h4>
+                    <p className="text-xs text-slate-500">{new Date(rec.createdAt).toLocaleDateString()} • {rec.meal_type}</p>
+                  </div>
+                  <i className="fas fa-chevron-right text-slate-300 group-hover:text-rose-400"></i>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+      </main>
+      <Footer />
     </div>
   );
 }

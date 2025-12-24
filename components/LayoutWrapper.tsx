@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import { ViewState } from '../types';
@@ -9,8 +9,13 @@ import { useApp } from './Providers';
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
     const router = useRouter();
-    const { lang, setLang } = useApp();
+    const pathname = usePathname();
+    const { setHousehold } = useApp();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    // Hide Header/Sidebar on auth pages
+    // Using simple includes check. Can be robustified if needed.
+    const isAuthPage = ['/login', '/register', '/recover'].includes(pathname || '');
 
     const handleNavigate = (view: ViewState) => {
         setIsSidebarOpen(false);
@@ -32,19 +37,23 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
 
     return (
         <>
-            <Header
-                lang={lang}
-                setLang={setLang}
-                onMenuClick={() => setIsSidebarOpen(true)}
-                onHomeClick={() => router.push('/')}
-            />
+            {!isAuthPage && (
+                <Header
+                    onMenuClick={() => setIsSidebarOpen(true)}
+                    onHomeClick={() => router.push('/')}
+                />
+            )}
 
-            <Sidebar
-                isOpen={isSidebarOpen}
-                onClose={() => setIsSidebarOpen(false)}
-                onNavigate={handleNavigate}
-                lang={lang}
-            />
+            {!isAuthPage && (
+                <Sidebar
+                    isOpen={isSidebarOpen}
+                    onClose={() => setIsSidebarOpen(false)}
+                    onNavigate={(path) => {
+                        router.push(path);
+                        setIsSidebarOpen(false);
+                    }}
+                />
+            )}
 
             <div className="pt-4">
                 {children}

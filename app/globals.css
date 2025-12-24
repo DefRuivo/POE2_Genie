@@ -16,6 +16,6 @@ body {
 
 @layer components {
   .btn-primary {
-    @apply bg-indigo-600 text-white hover:bg-indigo-700 transition-all active:scale-95 shadow-xl shadow-indigo-200 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none;
+    @apply bg-rose-600 text-white hover:bg-rose-700 transition-all active:scale-95 shadow-xl shadow-rose-200 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none;
   }
 }

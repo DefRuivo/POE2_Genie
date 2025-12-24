@@ -4,9 +4,9 @@ import { generateRecipe } from '../../../services/geminiService';
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-        const { household, context, language } = body;
+        const { household, context } = body;
 
-        const result = await generateRecipe(household, context, language);
+        const result = await generateRecipe(household, context);
 
         return NextResponse.json(result);
     } catch (error: any) {

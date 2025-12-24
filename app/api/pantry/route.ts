@@ -1,9 +1,17 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '../../../lib/prisma';
+import { verifyToken } from '@/lib/auth';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const items = await prisma.pantryItem.findMany();
+    const token = request.cookies.get('auth_token')?.value;
+    const payload = await verifyToken(token || '');
+    if (!payload || !payload.houseId) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+    const houseId = payload.houseId as string;
+
+    const items = await prisma.pantryItem.findMany({ where: { houseId } });
     return NextResponse.json(items.map(i => i.name));
   } catch (error) {
     console.error('GET /api/pantry error:', error);
@@ -11,15 +19,27 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const { name } = await request.json();
     if (!name) return NextResponse.json({ message: 'Name is required' }, { status: 400 });
-    
+
+    const token = request.cookies.get('auth_token')?.value;
+    const payload = await verifyToken(token || '');
+    if (!payload || !payload.houseId) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+    const houseId = payload.houseId as string;
+
     const item = await prisma.pantryItem.upsert({
-      where: { name },
+      where: {
+        name_houseId: {
+          name,
+          houseId
+        }
+      },
       update: {},
-      create: { name }
+      create: { name, houseId }
     });
     return NextResponse.json(item);
   } catch (error) {

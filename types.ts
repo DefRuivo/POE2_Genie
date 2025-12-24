@@ -38,22 +38,6 @@ export interface RecipeRecord extends GeneratedRecipe {
   id: string;
   isFavorite: boolean;
   createdAt: number;
-  dishImage?: string | null;
-  language?: string;
-}
-
-export enum ImageSize {
-  S1K = '1K',
-  S2K = '2K',
-  S4K = '4K'
-}
-
-export enum AspectRatio {
-  A1_1 = '1:1',
-  A3_4 = '3:4',
-  A4_3 = '4:3',
-  A9_16 = '9:16',
-  A16_9 = '16:9'
 }
 
 export type ViewState = 'home' | 'household' | 'pantry' | 'history';

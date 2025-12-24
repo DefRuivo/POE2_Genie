@@ -1,34 +1,21 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
-import { HouseholdMember, SessionContext, GeneratedRecipe, ImageSize, AspectRatio } from "../types";
+import { HouseholdMember, SessionContext, GeneratedRecipe } from "../types";
 
 /**
  * Generates a safe and creative recipe based on household profiles, pantry, and meal type.
  */
 export const generateRecipe = async (
   household_db: HouseholdMember[],
-  session_context: SessionContext,
-  language: 'en' | 'pt' = 'en'
+  session_context: SessionContext
 ): Promise<GeneratedRecipe> => {
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
   const isChefMode = session_context.difficulty_preference === 'chef';
   const obs = session_context.observation ? `\n\nUSER OBSERVATIONS (CRITICAL): ${session_context.observation}` : '';
-  const chefInstructionPt = isChefMode ? "MODO CHEF ATIVADO: O usuário deseja preparar tudo do zero (massas, molhos, bases). Receita complexa e técnica." : `Dificuldade solicitada: ${session_context.difficulty_preference}.`;
   const chefInstructionEn = isChefMode ? "CHEF MODE ACTIVATED: User wants to cook from scratch (doughs, sauces, stocks). Complex and technical recipe." : `Requested difficulty: ${session_context.difficulty_preference}.`;
 
-  const systemInstruction = language === 'pt'
-    ? `Você é o Chef Executivo do "Dinner?".
-OBJETIVOS:
-1. Respeite o tipo de refeição: ${session_context.requested_type}.
-2. ${chefInstructionPt}
-3. Preferência de tempo: ${session_context.prep_time_preference === 'quick' ? 'Rápido (menos de 30min)' : 'Pode levar tempo'}.
-4. Se for impossível criar uma receita de qualidade do tipo solicitado com os ingredientes disponíveis, use o analysis_log para explicar o porquê detalhadamente.
-5. Garanta SEGURANÇA TOTAL contra restrições alimentares.
-${obs}
-SAÍDA:
-Gere a resposta em PORTUGUÊS no formato JSON.`
-    : `You are the Executive Chef for "Dinner?".
+  const systemInstruction = `You are the Executive Chef for "Dinner?".
 OBJECTIVES:
 1. Follow the requested meal type: ${session_context.requested_type}.
 2. ${chefInstructionEn}
@@ -70,28 +57,4 @@ Localize the output to ENGLISH and respond ONLY with JSON.`;
   return JSON.parse(response.text) as GeneratedRecipe;
 };
 
-export const generateDishImage = async (
-  recipeName: string,
-  size: ImageSize,
-  ratio: AspectRatio
-): Promise<string> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-  const prompt = `Gourmet food photography of ${recipeName}, masterfully plated, elegant lighting, bokeh background. High contrast, professional culinary magazine style.`;
-
-  const response = await ai.models.generateContent({
-    model: 'gemini-3-pro-image-preview',
-    contents: { parts: [{ text: prompt }] },
-    config: {
-      imageConfig: {
-        aspectRatio: ratio as any,
-        imageSize: size as any
-      }
-    }
-  });
-
-  const part = response.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
-  if (!part?.inlineData?.data) throw new Error("Image generation failed");
-
-  return `data:image/png;base64,${part.inlineData.data}`;
-};

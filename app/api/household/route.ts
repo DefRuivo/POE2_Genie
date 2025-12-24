@@ -1,9 +1,18 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '../../../lib/prisma';
+import { verifyToken } from '@/lib/auth';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const token = request.cookies.get('auth_token')?.value;
+    const payload = await verifyToken(token || '');
+    if (!payload || !payload.houseId) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+    const houseId = payload.houseId as string;
+
     const members = await prisma.householdMember.findMany({
+      where: { houseId },
       include: {
         restrictions: true,
         likes: true,
@@ -26,8 +35,15 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    const token = request.cookies.get('auth_token')?.value;
+    const payload = await verifyToken(token || '');
+    if (!payload || !payload.houseId) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+    const houseId = payload.houseId as string;
+
     const data = await request.json();
 
     const processTags = (tags: string[]) => {
@@ -38,6 +54,19 @@ export async function POST(request: Request) {
     };
 
     let member;
+    let userIdToLink: string | undefined = undefined;
+
+    // Logic: If email is provided, try to find the user to link
+    if (data.email) {
+      const linkedUser = await prisma.user.findUnique({
+        where: { email: data.email }
+      });
+      if (!linkedUser) {
+        return NextResponse.json({ message: 'User with this email not found.' }, { status: 404 });
+      }
+      userIdToLink = linkedUser.id;
+    }
+
     // Check if it's an existing member or a new one
     if (data.id && !data.id.startsWith('h-') && !data.id.startsWith('g-') && !data.id.startsWith('temp-')) {
       member = await prisma.householdMember.update({
@@ -59,10 +88,12 @@ export async function POST(request: Request) {
       member = await prisma.householdMember.create({
         data: {
           name: data.name,
+          userId: userIdToLink,
           restrictions: { create: (data.restrictions || []).map((n: string) => ({ name: n })) },
           likes: { create: (data.likes || []).map((n: string) => ({ name: n })) },
           dislikes: { create: (data.dislikes || []).map((n: string) => ({ name: n })) },
-          isGuest: data.isGuest || false
+          isGuest: !!userIdToLink ? false : (data.isGuest || true),
+          houseId: houseId
         },
         include: {
           restrictions: true,

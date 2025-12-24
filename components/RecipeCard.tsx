@@ -1,91 +1,46 @@
 
 
 import React, { useState, useEffect } from 'react';
-import { GeneratedRecipe, ImageSize, AspectRatio, RecipeRecord, Difficulty } from '../types';
-import { Language, translations } from '../locales/translations';
+import { GeneratedRecipe, RecipeRecord, Difficulty } from '../types';
+import { translations } from '../locales/translations';
 import { storageService } from '../services/storageService';
 
 interface Props {
-  recipe: GeneratedRecipe | RecipeRecord;
-  dishImage: string | null;
-  setDishImage: React.Dispatch<React.SetStateAction<string | null>>;
-  lang: Language;
+  recipe: RecipeRecord;
   onSaved?: () => void;
 }
 
-const RecipeCard: React.FC<Props> = ({ recipe: initialRecipe, dishImage, setDishImage, lang, onSaved }) => {
-  const t = translations[lang];
-  const [recipe, setRecipe] = useState(initialRecipe);
-  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
-  const [isTranslating, setIsTranslating] = useState(false);
-  const [isSaved, setIsSaved] = useState((initialRecipe as RecipeRecord).isFavorite || false);
+const RecipeCard: React.FC<Props> = ({ recipe: initialRecipe, onSaved }) => {
+  const t = translations;
+  const [recipe, setRecipe] = useState<RecipeRecord>(initialRecipe);
+  // Initial favorite state comes from the record itself now
+  const [isFavorite, setIsFavorite] = useState(initialRecipe.isFavorite);
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [copyFeedback, setCopyFeedback] = useState(false);
 
   const isDev = process.env.NODE_ENV === 'development';
-  const originalLanguage = (recipe as RecipeRecord).language || 'en';
-  const showTranslate = originalLanguage !== lang;
 
   useEffect(() => {
     setRecipe(initialRecipe);
   }, [initialRecipe]);
 
-  const handleGenerateImage = async () => {
-    setIsGeneratingImage(true);
-    try {
-      const data = await fetch('/api/image', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          recipeName: recipe.recipe_title,
-          size: ImageSize.S1K,
-          ratio: AspectRatio.A1_1
-        }),
-      }).then(res => {
-        if (!res.ok) throw new Error('Image generation failed');
-        return res.json();
-      });
-      setDishImage(data.imageUrl);
-    } catch (err: any) {
-      console.error("Image generation error:", err);
-    } finally {
-      setIsGeneratingImage(false);
-    }
-  };
 
-  const handleTranslate = async () => {
-    setIsTranslating(true);
-    try {
-      const translated = await fetch('/api/recipe/translate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          recipe,
-          targetLanguage: lang
-        })
-      }).then(res => res.json());
 
-      // Preserve ID and other metadata, just update text fields
-      setRecipe(prev => ({ ...prev, ...translated }));
+
+
+  const toggleFavorite = async () => {
+    try {
+      await storageService.toggleFavorite(recipe.id);
+      const newStatus = !isFavorite;
+      setIsFavorite(newStatus);
+
+      // Update local recipe state too so if we translate/save image it has correct status
+      setRecipe(prev => ({ ...prev, isFavorite: newStatus }));
+
+      if (onSaved) onSaved(); // Refreshes history list in parent
     } catch (err) {
-      console.error("Translation failed", err);
-    } finally {
-      setIsTranslating(false);
+      console.error("Error toggling favorite:", err);
     }
-  };
-
-  const handleSave = async () => {
-    const record: RecipeRecord = {
-      ...recipe,
-      id: (recipe as RecipeRecord).id || Date.now().toString(),
-      isFavorite: false,
-      createdAt: (recipe as RecipeRecord).createdAt || Date.now(),
-      dishImage: dishImage,
-      language: showTranslate ? lang : originalLanguage // Save as new language if translated? Or keep original? User said "generate translated". I'll assume we keep current state.
-    };
-    await storageService.saveRecipe(record);
-    setIsSaved(true);
-    if (onSaved) onSaved();
   };
 
   const handleShare = (platform: 'whatsapp' | 'telegram' | 'email' | 'copy') => {
@@ -110,38 +65,20 @@ const RecipeCard: React.FC<Props> = ({ recipe: initialRecipe, dishImage, setDish
     <article className="bg-white rounded-[2.5rem] shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in slide-in-from-bottom-10 duration-700">
       {/* Dynamic Header Area */}
       <div className="relative min-h-[500px] bg-slate-900 flex flex-col items-center justify-end pb-16 pt-24 px-6 md:px-10">
-        {dishImage && (
-          <img
-            src={dishImage}
-            alt={recipe.recipe_title}
-            className="absolute inset-0 w-full h-full object-cover opacity-60 transition-opacity duration-1000"
-          />
-        )}
 
         {/* Title and Info Overlay (Persistent) */}
         <div className="relative z-10 text-center space-y-6 max-w-3xl w-full mx-auto">
           <div className="flex flex-wrap gap-3 justify-center">
             <div className="inline-flex px-3 py-1 bg-white/10 backdrop-blur-md text-white rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20">
-              {isGeneratingImage ? t.generating_photo : t.recipe_suggestion}
+              {t.recipe_suggestion}
             </div>
             {/* Difficulty Badge */}
             <div className={`inline-flex px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20 text-white ${recipe.difficulty === 'easy' ? 'bg-green-500/80' :
-                recipe.difficulty === 'intermediate' ? 'bg-yellow-500/80' :
-                  recipe.difficulty === 'chef' ? 'bg-slate-900 border-indigo-500/50' : 'bg-red-500/80'
+              recipe.difficulty === 'intermediate' ? 'bg-yellow-500/80' :
+                recipe.difficulty === 'chef' ? 'bg-slate-900 border-rose-500/50' : 'bg-red-500/80'
               }`}>
               {recipe.difficulty === 'chef' ? <><i className="fas fa-hat-chef mr-1"></i> CHEF</> : recipe.difficulty}
             </div>
-            {/* Translate Button */}
-            {showTranslate && (
-              <button
-                onClick={handleTranslate}
-                disabled={isTranslating}
-                className="inline-flex px-3 py-1 bg-indigo-600/80 hover:bg-indigo-500 backdrop-blur-md text-white rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20 transition-colors"
-              >
-                {isTranslating ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-language mr-2"></i>}
-                {t.translate_to_portuguese || "Translate"}
-              </button>
-            )}
           </div>
 
           <h3 className="text-4xl md:text-6xl font-black text-white tracking-tighter leading-tight drop-shadow-2xl">
@@ -155,16 +92,7 @@ const RecipeCard: React.FC<Props> = ({ recipe: initialRecipe, dishImage, setDish
             </p>
           </div>
 
-          <div className="pt-4 flex gap-4 justify-center flex-wrap">
-            <button
-              onClick={handleGenerateImage}
-              disabled={isGeneratingImage}
-              className="bg-white text-slate-900 px-8 py-4 rounded-2xl font-black hover:bg-indigo-50 transition-all text-xs uppercase shadow-2xl flex items-center gap-3 group"
-            >
-              {isGeneratingImage ? <i className="fas fa-circle-notch fa-spin"></i> : <i className="fas fa-magic group-hover:rotate-12 transition-transform"></i>}
-              {isGeneratingImage ? t.generating_photo : t.generate_photo}
-            </button>
-          </div>
+
         </div>
 
         {/* Persistent Dark Gradient for Readability */}
@@ -172,11 +100,15 @@ const RecipeCard: React.FC<Props> = ({ recipe: initialRecipe, dishImage, setDish
 
         <div className="absolute top-8 right-8 z-20">
           <button
-            disabled={isSaved}
-            onClick={handleSave}
-            className={`px-6 py-4 rounded-2xl font-black text-[10px] uppercase shadow-2xl transition-all tracking-widest ${isSaved ? 'bg-emerald-500 text-white' : 'bg-indigo-600 text-white hover:bg-indigo-700'}`}
+
+            onClick={toggleFavorite}
+            className={`px-6 py-4 rounded-2xl font-black text-[10px] uppercase shadow-2xl transition-all tracking-widest ${isFavorite ? 'bg-pink-500 text-white hover:bg-pink-600' : 'bg-slate-800 text-white hover:bg-slate-700'}`}
           >
-            {isSaved ? <><i className="fas fa-check mr-2"></i>Saved</> : t.save_recipe}
+            {isFavorite ? (
+              <><i className="fas fa-heart-broken mr-2"></i>{t.unfavorite_btn}</>
+            ) : (
+              <><i className="fas fa-heart mr-2"></i>{t.favorite_btn}</>
+            )}
           </button>
         </div>
       </div>
@@ -234,7 +166,7 @@ const RecipeCard: React.FC<Props> = ({ recipe: initialRecipe, dishImage, setDish
                         <button onClick={() => handleShare('telegram')} className="w-full flex items-center gap-3 p-4 hover:bg-sky-50 rounded-xl text-xs font-black text-slate-700 transition-colors">
                           <i className="fab fa-telegram text-sky-500 text-lg"></i> {t.telegram}
                         </button>
-                        <button onClick={() => handleShare('copy')} className="w-full flex items-center gap-3 p-4 hover:bg-indigo-50 rounded-xl text-xs font-black text-indigo-600 transition-colors">
+                        <button onClick={() => handleShare('copy')} className="w-full flex items-center gap-3 p-4 hover:bg-rose-50 rounded-xl text-xs font-black text-rose-600 transition-colors">
                           <i className="fas fa-copy text-lg"></i> {copyFeedback ? t.copied : t.copy_clipboard}
                         </button>
                       </div>
@@ -256,14 +188,14 @@ const RecipeCard: React.FC<Props> = ({ recipe: initialRecipe, dishImage, setDish
 
           <div className="md:col-span-7">
             <h4 className="text-xl font-black text-slate-900 flex items-center gap-3 mb-10">
-              <i className="fas fa-list-ol text-indigo-500"></i>
+              <i className="fas fa-list-ol text-rose-500"></i>
               {t.step_by_step}
             </h4>
             <div className="space-y-12 relative">
               <div className="absolute left-[15px] top-4 bottom-4 w-0.5 bg-slate-100"></div>
               {recipe.step_by_step.map((step, idx) => (
                 <div key={idx} className="relative pl-14">
-                  <div className="absolute left-0 w-8 h-8 bg-white border-4 border-indigo-500 rounded-full flex items-center justify-center font-black text-xs text-indigo-600 z-10 shadow-lg">{idx + 1}</div>
+                  <div className="absolute left-0 w-8 h-8 bg-white border-4 border-rose-500 rounded-full flex items-center justify-center font-black text-xs text-rose-600 z-10 shadow-lg">{idx + 1}</div>
                   <p className="text-slate-700 text-lg leading-relaxed font-medium pt-0.5">{step}</p>
                 </div>
               ))}

@@ -8,7 +8,7 @@ import { storageService } from '../../services/storageService';
 import { RecipeRecord } from '../../types';
 
 export default function HistoryPage() {
-    const { lang } = useApp();
+    // const { lang } = useApp(); // Removed
     const router = useRouter();
     const [history, setHistory] = useState<RecipeRecord[]>([]);
 
@@ -26,7 +26,6 @@ export default function HistoryPage() {
             <HistorySection
                 history={history}
                 onUpdate={refreshHistory}
-                lang={lang}
                 onViewRecipe={(recipe) => router.push(`/history/${recipe.id}`)}
             />
         </div>

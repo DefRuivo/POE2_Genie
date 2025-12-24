@@ -1,13 +1,12 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import { HouseholdMember, MealType, Difficulty, PrepTimePreference } from '../types';
 import { storageService } from '../services/storageService';
-import { Language } from '../locales/translations';
+
 
 interface AppContextType {
-    lang: Language;
-    setLang: (lang: Language) => void;
     household: HouseholdMember[];
     setHousehold: React.Dispatch<React.SetStateAction<HouseholdMember[]>>;
     pantry: string[];
@@ -25,8 +24,8 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-    const [lang, setLang] = useState<Language>('en');
-
+    const pathname = usePathname();
+    const router = useRouter();
     // Initial state (Empty - Load from DB)
     const [household, setHousehold] = useState<HouseholdMember[]>([]);
 
@@ -38,6 +37,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     // Load initial data from storageService if available (optional enhancement)
     useEffect(() => {
+        // Skip fetching on auth pages
+        if (pathname === '/login' || pathname === '/register' || pathname === '/recover') {
+            return;
+        }
+
         async function loadData() {
             try {
                 const storedPantry = await storageService.getPantry();
@@ -49,16 +53,22 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
                 if (storedHousehold && storedHousehold.length > 0) {
                     setHousehold(storedHousehold);
                 }
-            } catch (e) {
-                console.error("Failed to load initial data", e);
+            } catch (e: any) {
+                // If unauthorized, just ignore (user likely session expired or not logged in yet)
+                if (e.message.includes('Unauthorized') || e.message.includes('401')) {
+                    // Redirect to login if potentially valid session but unauthorized (expired)
+                    // Use window.location to ensure full refresh and clear state if needed, or router.push
+                    router.push('/login');
+                } else {
+                    console.error("Failed to load initial data", e);
+                }
             }
         }
         loadData();
-    }, []);
+    }, [pathname]);
 
     return (
         <AppContext.Provider value={{
-            lang, setLang,
             household, setHousehold,
             pantry, setPantry,
             activeDiners, setActiveDiners,
@@ -66,6 +76,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
             difficulty, setDifficulty,
             prepTime, setPrepTime
         }}>
+
             {children}
         </AppContext.Provider>
     );

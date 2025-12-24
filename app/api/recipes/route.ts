@@ -1,9 +1,18 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '../../../lib/prisma';
+import { verifyToken } from '@/lib/auth';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const token = request.cookies.get('auth_token')?.value;
+    const payload = await verifyToken(token || '');
+    if (!payload || !payload.houseId) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+    const houseId = payload.houseId as string;
+
     const recipes = await prisma.recipe.findMany({
+      where: { houseId },
       orderBy: { createdAt: 'desc' }
     });
     return NextResponse.json(recipes || []);
@@ -13,9 +22,19 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
+    const token = request.cookies.get('auth_token')?.value;
+    const payload = await verifyToken(token || '');
+    if (!payload || !payload.houseId) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+    const houseId = payload.houseId as string;
+
+    // Clean up ingredients/shopping list strings if they come as strings
+    const parse = (val: any) => typeof val === 'string' ? JSON.parse(val) : val;
+
     const recipe = await prisma.recipe.create({
       data: {
         recipe_title: data.recipe_title,
@@ -31,10 +50,16 @@ export async function POST(request: Request) {
         dishImage: data.dishImage,
         isFavorite: data.isFavorite || false,
         language: data.language || 'en',
+        houseId: houseId,
         pantryItems: {
-          connectOrCreate: (Array.isArray(data.ingredients_from_pantry) ? data.ingredients_from_pantry : []).map((name: string) => ({
-            where: { name },
-            create: { name }
+          connectOrCreate: (Array.isArray(parse(data.ingredients_from_pantry)) ? parse(data.ingredients_from_pantry) : []).map((name: string) => ({
+            where: {
+              name_houseId: {
+                name,
+                houseId
+              }
+            },
+            create: { name, houseId }
           }))
         }
       }

@@ -1,5 +1,6 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '../../../lib/prisma';
+import { verifyToken } from '@/lib/auth';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -41,15 +42,24 @@ export async function GET(request: Request) {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const { category, tag } = await request.json();
     if (!category || !tag) return NextResponse.json({ message: 'Category and tag are required' }, { status: 400 });
 
+    const token = request.cookies.get('auth_token')?.value;
+    const payload = await verifyToken(token || '');
+    if (!payload || !payload.houseId) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+    const houseId = payload.houseId as string;
+
     const suggestion = await prisma.tagSuggestion.upsert({
-      where: { category_tag: { category, tag } },
+      where: {
+        category_tag_houseId: { category, tag, houseId }
+      },
       update: {},
-      create: { category, tag }
+      create: { category, tag, houseId }
     });
     return NextResponse.json(suggestion);
   } catch (error) {
