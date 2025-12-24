@@ -151,12 +151,12 @@ export default function Home() {
               <p className="text-sm text-slate-500 font-medium">Update ingredients.</p>
             </Link>
 
-            <Link href="/household" className="p-8 bg-white rounded-3xl border-2 border-slate-200 shadow-sm hover:border-indigo-500 hover:shadow-indigo-100 transition-all group text-left">
+            <Link href="/kitchens" className="p-8 bg-white rounded-3xl border-2 border-slate-200 shadow-sm hover:border-indigo-500 hover:shadow-indigo-100 transition-all group text-left">
               <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 text-xl mb-4 group-hover:scale-110 transition-transform">
-                <i className="fas fa-users"></i>
+                <i className="fas fa-utensils"></i>
               </div>
-              <h3 className="text-xl font-black text-slate-800 mb-1">Household</h3>
-              <p className="text-sm text-slate-500 font-medium">Add members/guests.</p>
+              <h3 className="text-xl font-black text-slate-800 mb-1">Kitchen Check</h3>
+              <p className="text-sm text-slate-500 font-medium">Manage members & settings.</p>
             </Link>
           </div>
         )}
@@ -182,7 +182,7 @@ export default function Home() {
                     {m.name}
                   </button>
                 ))}
-                {household.length === 0 && <Link href="/household" className="text-sm text-rose-600 font-bold underline">Add members first</Link>}
+                {household.length === 0 && <Link href="/kitchens" className="text-sm text-rose-600 font-bold underline">Add members first</Link>}
               </div>
             </div>
 

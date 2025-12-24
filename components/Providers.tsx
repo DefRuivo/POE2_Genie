@@ -2,13 +2,13 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { HouseholdMember, MealType, Difficulty, PrepTimePreference, PantryItem } from '../types';
+import { KitchenMember, MealType, Difficulty, PrepTimePreference, PantryItem } from '../types';
 import { storageService } from '../services/storageService';
 
 
 interface AppContextType {
-    household: HouseholdMember[];
-    setHousehold: React.Dispatch<React.SetStateAction<HouseholdMember[]>>;
+    household: KitchenMember[];
+    setHousehold: React.Dispatch<React.SetStateAction<KitchenMember[]>>;
     pantry: PantryItem[];
     setPantry: React.Dispatch<React.SetStateAction<PantryItem[]>>;
     activeDiners: string[];
@@ -27,7 +27,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const router = useRouter();
     // Initial state (Empty - Load from DB)
-    const [household, setHousehold] = useState<HouseholdMember[]>([]);
+    const [household, setHousehold] = useState<KitchenMember[]>([]);
 
     const [pantry, setPantry] = useState<PantryItem[]>([]);
     const [activeDiners, setActiveDiners] = useState<string[]>([]);
@@ -49,9 +49,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
                     setPantry(storedPantry);
                 }
 
-                const storedHousehold = await storageService.getHousehold();
-                if (storedHousehold && storedHousehold.length > 0) {
-                    setHousehold(storedHousehold);
+                const storedMembers = await storageService.getKitchenMembers();
+                if (storedMembers && storedMembers.length > 0) {
+                    setHousehold(storedMembers);
                 }
             } catch (e: any) {
                 // If unauthorized, just ignore (user likely session expired or not logged in yet)

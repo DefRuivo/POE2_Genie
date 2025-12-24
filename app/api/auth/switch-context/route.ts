@@ -1,4 +1,4 @@
-```typescript
+
 import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifyToken, signToken } from '@/lib/auth';

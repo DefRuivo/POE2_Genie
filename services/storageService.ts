@@ -35,7 +35,31 @@ async function apiRequest(path: string, options: RequestInit = {}) {
 }
 
 export const storageService = {
-  // ... recipes methods ...
+  // --- Recipes / History ---
+  getAllRecipes: async (): Promise<RecipeRecord[]> => {
+    const data = await apiRequest('/recipes');
+    return data || [];
+  },
+
+  saveRecipe: async (recipe: any): Promise<void> => {
+    await apiRequest('/recipes', {
+      method: 'POST',
+      body: JSON.stringify(recipe),
+    });
+  },
+
+  getRecipeById: async (id: string): Promise<RecipeRecord | null> => {
+    const data = await apiRequest(`/recipes/${id}`);
+    return data || null;
+  },
+
+  deleteRecipe: async (id: string): Promise<void> => {
+    await apiRequest(`/recipes/${id}`, { method: 'DELETE' });
+  },
+
+  toggleFavorite: async (id: string): Promise<void> => {
+    await apiRequest(`/recipes/${id}/favorite`, { method: 'PATCH' });
+  },
 
   // --- Kitchen Members ---
   getKitchenMembers: async (): Promise<KitchenMember[]> => {

@@ -15,13 +15,13 @@ export interface Kitchen {
 export interface KitchenMember {
   id: string;
   name: string;
-  isGuest: boolean;
+  isGuest?: boolean;
   userId?: string;
   kitchenId: string;
   kitchen?: Kitchen;
-  restrictions: string[] | any[];
-  likes: string[] | any[];
-  dislikes: string[] | any[];
+  restrictions?: string[];
+  likes?: string[];
+  dislikes?: string[];
 }
 
 // --- Pantry & Shopping ---

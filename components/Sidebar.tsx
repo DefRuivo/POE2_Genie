@@ -97,18 +97,25 @@ const Sidebar: React.FC<Props> = ({ isOpen, onClose, onNavigate }) => {
               Saved Recipes
             </button>
             <button
-              onClick={() => onNavigate('shoppingList')}
+              onClick={() => onNavigate('shopping-list')}
               className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-slate-600 font-bold hover:bg-slate-50 hover:text-rose-600 transition-all group"
             >
               <i className="fas fa-shopping-basket w-6 group-hover:scale-110 transition-transform"></i>
               Shopping List
             </button>
             <button
-              onClick={() => onNavigate('houses')}
+              onClick={() => onNavigate('members')}
+              className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-slate-600 font-bold hover:bg-slate-50 hover:text-rose-600 transition-all group"
+            >
+              <i className="fas fa-users w-6 group-hover:scale-110 transition-transform"></i>
+              Kitchen Members
+            </button>
+            <button
+              onClick={() => onNavigate('kitchens')}
               className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-slate-600 font-bold hover:bg-slate-50 hover:text-rose-600 transition-all group"
             >
               <i className="fas fa-home w-6 group-hover:scale-110 transition-transform"></i>
-              Manage Houses
+              Manage Kitchens
             </button>
           </nav>
 
