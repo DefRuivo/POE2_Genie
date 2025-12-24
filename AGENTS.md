@@ -1,28 +1,54 @@
-# Dinner? - Culinary Intelligence Agents
+# Dinner Chef AI - Agent & Developer Guide
 
-This project utilizes a multi-layered reasoning approach powered by Gemini 3 Pro to solve the "what's for dinner" dilemma while ensuring absolute food safety.
+## 1. Project Overview
+"Dinner?" is an AI-powered culinary assistant designed to solve decision fatigue and minimize food waste. It generates recipes based on available pantry items, dietary restrictions of household members, and the user's creative desires.
 
-## 1. The Executive Chef Agent
-**Role:** Recipe Creation & Creative Synthesis.
-**Reasoning Process:**
-- **Pantry Analysis:** Scans the available ingredients and prioritizes their use to minimize waste.
-- **Preference Matching:** Cross-references the likes and dislikes of all active diners to find a "Culinary Sweet Spot."
-- **Cultural Adaptation:** Adjusts the recipe style based on the requested meal type (Appetizer, Main, Dessert, or Snack) and complexity settings.
+## 2. Technology Stack
+- **Framework**: Next.js 15+ (App Router)
+- **Database**: MySQL (via Prisma ORM)
+- **Styling**: Tailwind CSS
+- **AI Integration**: Google Gemini 1.5 Pro via `@google/genai`
+- **Testing**: Jest, React Testing Library, `user-event`
 
-## 2. The Safety Auditor Agent
-**Role:** Critical Risk Assessment.
-**Reasoning Process:**
-- **Restriction Aggregation:** Compiles a master list of all medical restrictions and allergies for the selected group.
-- **Ingredient Filtering:** Performs a "Hard Stop" check. If a pantry item or a required ingredient violates a safety rule (e.g., Peanut Allergy vs. Peanuts in pantry), it is strictly excluded.
-- **Explanation Logic:** Provides the `analysis_log`, explaining why certain ingredients were skipped and how the substitution maintains safety.
+## 3. Domain Model & Architecture
+The application is built around the concept of a **Kitchen** (formerly House).
 
-## 3. The Visual Stylist Agent
-**Role:** Multi-modal Image Generation.
-**Reasoning Process:**
-- **Contextual Prompting:** Converts the generated recipe title into a high-fidelity photographic prompt.
-- **Aesthetic Control:** Uses Gemini's image generation capabilities to produce professional, magazine-quality culinary photography that matches the dish's description.
+- **Kitchen**: The central tenant. All data (Recipes, Pantry, Shopping List) is scoped to a specific Kitchen ID.
+- **KitchenMember**: Represents a person in the kitchen. Stores:
+    - **Demographics**: Name, Email (for invites).
+    - **Dietary Preferences**: Restrictions (Allergies), Likes, Dislikes.
+- **Recipe**: A culinary creation.
+    - Stores structured `ingredients` and relational `shoppingItems`.
+    - `step_by_step` instructions stored as JSON.
+- **Pantry & Shopping List**:
+    - **PantryItem**: Items available in stock.
+    - **ShoppingItem**: Items needed for purchase. Can be "checked" to replenish the Pantry.
 
-## 4. Development Protocols
-**Role:** Code Maintainance & Quality Assurance.
-**Instructions for Agents:**
-- **Linting:** Always run `pnpm run lint` and `pnpm run lint:fix` after making changes to the codebase to ensure code quality and consistency.
+## 4. Agent Personas (Services)
+The logic is distributed across specialized "Agents" (Simulated in `geminiService.ts`):
+- **Executive Chef**: Analyzes pantry + preferences to generate recipe concepts.
+- **Safety Auditor**: enforcing "Hard Stop" rules for allergies/restrictions.
+- **Visual Stylist**: Generates photorealistic images of the final dish.
+
+## 5. Development Protocols
+### Code Quality
+- **Linting**: Run `pnpm run lint` and `pnpm run lint:fix` before committing.
+- **Formatting**: Adhere to the existing code style.
+
+### Testing Standard (Enforced)
+- **Minimum Coverage**: **85%** Line Coverage.
+- **Command**: `pnpm run test:coverage`
+- **Location**: Tests must be co-located in `__tests__` directories mirroring the `app/` or `components/` structure.
+- **Tooling**: Use `screen` and `userEvent` for robust integration tests.
+
+### Database Workflow
+- **Schema**: Defined in `prisma/schema.prisma`.
+- **Changes**:
+    1. Modify `schema.prisma`.
+    2. Run `pnpm db:push` to sync with the database.
+    3. Run `pnpm db:generate` to update the Prisma Client.
+
+### Terminology
+- Use **"Kitchen"** instead of "House".
+- Use **"Member"** instead of "User" (unless referring to Auth User).
+
