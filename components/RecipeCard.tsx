@@ -1,7 +1,7 @@
 
-
 import React, { useState, useEffect } from 'react';
 import { GeneratedRecipe, RecipeRecord, Difficulty } from '../types';
+import Link from 'next/link';
 import { storageService } from '../services/storageService';
 
 interface Props {
@@ -158,7 +158,15 @@ const RecipeCard: React.FC<Props> = ({ recipe: initialRecipe, onSaved }) => {
                     To Buy
                   </h4>
 
-                  <div className="relative">
+                  <div className="flex gap-2 relative">
+                    <Link
+                      href={`/history/${recipe.id}/edit`}
+                      className="w-10 h-10 bg-white border border-slate-200 text-slate-500 rounded-xl flex items-center justify-center hover:bg-slate-50 hover:text-slate-700 transition-all shadow-sm"
+                      title="Edit Recipe"
+                    >
+                      <i className="fas fa-edit"></i>
+                    </Link>
+
                     <button
                       onClick={() => setShowShareMenu(!showShareMenu)}
                       className="w-10 h-10 bg-white border border-orange-200 text-orange-600 rounded-xl flex items-center justify-center hover:bg-orange-100 transition-all shadow-sm"

@@ -84,10 +84,10 @@ export async function POST(request: NextRequest) {
     const recipe = await prisma.recipe.create({
       data: {
         recipe_title: data.recipe_title,
-        analysis_log: data.analysis_log,
-        match_reasoning: data.match_reasoning,
+        analysis_log: data.analysis_log || 'Manual Entry',
+        match_reasoning: data.match_reasoning || 'User Created',
         step_by_step: data.step_by_step, // Stored as JSON
-        safety_badge: data.safety_badge,
+        safety_badge: data.safety_badge ?? true, // Default to true if not provided (manual trust)
         meal_type: data.meal_type,
         difficulty: data.difficulty,
         prep_time: data.prep_time,

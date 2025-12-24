@@ -53,7 +53,7 @@ export default function RecipeDetailsPage() {
                 onClick={() => router.back()}
                 className="flex items-center gap-2 text-slate-500 hover:text-rose-600 font-bold transition-colors"
             >
-                <i className="fas fa-arrow-left"></i> Back to History
+                <i className="fas fa-arrow-left"></i> Back to Recipes
             </button>
 
             <RecipeCard

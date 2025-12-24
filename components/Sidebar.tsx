@@ -75,7 +75,7 @@ const Sidebar: React.FC<Props> = ({ isOpen, onClose, onNavigate }) => {
 
           <nav className="flex-1 space-y-2">
             <button
-              onClick={() => onNavigate('home')}
+              onClick={() => onNavigate('/')}
               className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-slate-600 font-bold hover:bg-slate-50 hover:text-rose-600 transition-all group"
             >
               <i className="fas fa-home w-6 group-hover:scale-110 transition-transform"></i>
@@ -83,42 +83,42 @@ const Sidebar: React.FC<Props> = ({ isOpen, onClose, onNavigate }) => {
             </button>
 
             <button
-              onClick={() => onNavigate('pantry')}
+              onClick={() => onNavigate('/pantry')}
               className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-slate-600 font-bold hover:bg-slate-50 hover:text-rose-600 transition-all group"
             >
               <i className="fas fa-box-open w-6 group-hover:scale-110 transition-transform"></i>
               Pantry & Fridge
             </button>
             <button
-              onClick={() => onNavigate('history')}
+              onClick={() => onNavigate('/recipes')}
               className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-slate-600 font-bold hover:bg-slate-50 hover:text-rose-600 transition-all group"
             >
-              <i className="fas fa-history w-6 group-hover:scale-110 transition-transform"></i>
-              Saved Recipes
+              <i className="fas fa-book-open w-6 group-hover:scale-110 transition-transform"></i>
+              Recipes
             </button>
             <button
-              onClick={() => onNavigate('shopping-list')}
+              onClick={() => onNavigate('/shopping-list')}
               className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-slate-600 font-bold hover:bg-slate-50 hover:text-rose-600 transition-all group"
             >
               <i className="fas fa-shopping-basket w-6 group-hover:scale-110 transition-transform"></i>
               Shopping List
             </button>
             <button
-              onClick={() => onNavigate('members')}
+              onClick={() => onNavigate('/members')}
               className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-slate-600 font-bold hover:bg-slate-50 hover:text-rose-600 transition-all group"
             >
               <i className="fas fa-users w-6 group-hover:scale-110 transition-transform"></i>
               Kitchen Members
             </button>
             <button
-              onClick={() => onNavigate('kitchens')}
+              onClick={() => onNavigate('/kitchens')}
               className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-slate-600 font-bold hover:bg-slate-50 hover:text-rose-600 transition-all group"
             >
               <i className="fas fa-home w-6 group-hover:scale-110 transition-transform"></i>
               Manage Kitchens
             </button>
             <button
-              onClick={() => onNavigate('settings')}
+              onClick={() => onNavigate('/settings')}
               className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-slate-600 font-bold hover:bg-slate-50 hover:text-rose-600 transition-all group"
             >
               <i className="fas fa-cog w-6 group-hover:scale-110 transition-transform"></i>
@@ -168,7 +168,7 @@ const Sidebar: React.FC<Props> = ({ isOpen, onClose, onNavigate }) => {
                     ))}
                   </div>
                   <div className="p-2 border-t border-slate-100">
-                    <button onClick={() => { setIsHouseDropdownOpen(false); onNavigate('kitchens'); }} className="w-full py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 rounded-lg">
+                    <button onClick={() => { setIsHouseDropdownOpen(false); onNavigate('/kitchens'); }} className="w-full py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 rounded-lg">
                       <i className="fas fa-plus mr-1"></i> New Kitchen
                     </button>
                   </div>

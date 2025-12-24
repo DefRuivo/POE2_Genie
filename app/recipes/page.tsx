@@ -53,7 +53,7 @@ export default function HistoryPage() {
                 <HistorySection
                     history={filteredHistory}
                     onUpdate={refreshHistory}
-                    onViewRecipe={(recipe) => router.push(`/history/${recipe.id}`)}
+                    onViewRecipe={(recipe) => router.push(`/recipes/${recipe.id}`)}
                 />
             ) : (
                 <div className="text-center py-20 bg-white rounded-3xl border border-slate-100">

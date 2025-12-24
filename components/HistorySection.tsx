@@ -24,63 +24,79 @@ const HistorySection: React.FC<Props> = ({ history, onUpdate, onViewRecipe }) =>
   if (history.length === 0) return null;
 
   return (
-    <section className="bg-slate-50 rounded-[2.5rem] p-10 border border-slate-200">
+    <section className="bg-slate-50 rounded-[2.5rem] p-8 md:p-10 border border-slate-200">
       <h2 className="text-2xl font-black text-slate-900 mb-8 flex items-center gap-3">
-        <i className="fas fa-history text-rose-500"></i>
-        Saved Recipes
+        <i className="fas fa-book-open text-rose-500"></i>
+        Recipes
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Grid: 1 col on mobile, max 2 cols on larger screens */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {history.map(recipe => (
           <div
             key={recipe.id}
-            className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex flex-col group hover:shadow-xl transition-all duration-300"
+            className="bg-white rounded-[2rem] p-5 shadow-sm border border-slate-100 flex flex-col group hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
           >
+            {/* Image Area */}
             <div
-              className={`relative h-40 rounded-2xl overflow-hidden mb-4 cursor-pointer bg-slate-900 flex items-center justify-center`}
+              className={`relative h-48 rounded-2xl overflow-hidden mb-5 cursor-pointer bg-slate-900 flex items-center justify-center`}
               onClick={() => onViewRecipe?.(recipe)}
             >
-              <i className="fas fa-utensils text-slate-800 text-4xl"></i>
+              <i className="fas fa-utensils text-slate-800 text-5xl"></i>
+
+              {/* Favorite Button */}
               <button
                 onClick={(e) => { e.stopPropagation(); toggleFavorite(recipe.id); }}
-                className={`absolute top-3 right-3 w-10 h-10 rounded-xl flex items-center justify-center shadow-lg transition-all ${recipe.isFavorite ? 'bg-red-500 text-white' : 'bg-white/80 text-slate-400 hover:text-red-500'}`}
+                className={`absolute top-4 right-4 w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg transition-all ${recipe.isFavorite ? 'bg-rose-500 text-white shadow-rose-200' : 'bg-white/90 text-slate-400 hover:text-rose-500 hover:bg-white'}`}
               >
-                <i className={`fas fa-heart ${recipe.isFavorite ? '' : 'far'}`}></i>
+                <i className={`fas fa-heart ${recipe.isFavorite ? '' : 'far'} text-lg`}></i>
               </button>
             </div>
 
+            {/* Content Area */}
             <div
-              className="flex-1 cursor-pointer"
+              className="flex-1 cursor-pointer space-y-3 px-2"
               onClick={() => onViewRecipe?.(recipe)}
             >
-              <div className="flex items-center gap-2 mb-2">
-                <span className="px-2 py-0.5 rounded-lg bg-rose-50 text-rose-600 text-[10px] font-black uppercase">
-                  {recipe.meal_type === 'main' ? 'Main Course' : recipe.meal_type}
+              {/* Metadata Badges */}
+              <div className="flex items-center gap-3">
+                <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border ${recipe.meal_type === 'main' ? 'bg-rose-50 text-rose-600 border-rose-100' :
+                    recipe.meal_type === 'dessert' ? 'bg-purple-50 text-purple-600 border-purple-100' :
+                      'bg-slate-50 text-slate-600 border-slate-100'
+                  }`}>
+                  {recipe.meal_type}
                 </span>
-                <span className="text-slate-400 text-[10px] font-bold">
+                <span className="text-slate-400 text-xs font-bold flex items-center gap-1">
+                  <i className="far fa-calendar-alt"></i>
                   {new Date(recipe.createdAt).toLocaleDateString()}
                 </span>
               </div>
-              <h3 className="font-black text-slate-900 text-lg tracking-tight mb-2 group-hover:text-rose-600 transition-colors">
+
+              <h3 className="font-black text-slate-900 text-xl md:text-2xl tracking-tight leading-snug group-hover:text-rose-600 transition-colors">
                 {recipe.recipe_title}
               </h3>
-              <p className="text-slate-500 text-xs line-clamp-2 leading-relaxed">
-                {recipe.match_reasoning}
-              </p>
+
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                <p className="text-slate-600 text-sm line-clamp-3 leading-relaxed font-medium">
+                  {recipe.match_reasoning}
+                </p>
+              </div>
             </div>
 
-            <div className="mt-6 flex justify-between items-center pt-4 border-t border-slate-50">
+            {/* Actions Footer */}
+            <div className="mt-8 flex justify-between items-center pt-5 border-t border-slate-100 px-2">
               <button
                 onClick={() => removeRecipe(recipe.id)}
-                className="text-slate-300 hover:text-red-500 text-xs font-bold transition-colors"
+                className="text-slate-400 hover:text-red-500 text-xs font-bold transition-colors flex items-center gap-2 px-2 py-1 hover:bg-red-50 rounded-lg"
               >
-                Delete
+                <i className="fas fa-trash"></i> Delete
               </button>
+
               <button
                 onClick={() => onViewRecipe?.(recipe)}
-                className="text-[10px] font-black text-rose-600 uppercase tracking-widest hover:underline"
+                className="flex items-center gap-2 px-5 py-2.5 bg-rose-50 text-rose-600 rounded-xl text-xs font-black uppercase tracking-wider hover:bg-rose-100 hover:text-rose-700 transition-all border border-rose-100"
               >
-                View Recipe
+                View Recipe <i className="fas fa-arrow-right"></i>
               </button>
             </div>
           </div>
