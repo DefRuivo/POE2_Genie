@@ -56,13 +56,13 @@ export default function RegisterPage() {
                         </div>
                         <h1 className="text-2xl font-black text-slate-900 mb-2">Check your email</h1>
                         <p className="text-slate-600">
-                            We've sent a verification link to <span className="font-bold text-slate-800">{formData.email}</span>.
+                            We&apos;ve sent a verification link to <span className="font-bold text-slate-800">{formData.email}</span>.
                             Please check your inbox to activate your account.
                         </p>
                     </div>
                     <div className="space-y-4">
                         <p className="text-sm text-slate-500">
-                            Didn't receive the email? Check your spam folder.
+                            Didn&apos;t receive the email? Check your spam folder.
                         </p>
                         <Link href="/login" className="block w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition-colors">
                             Return to Login

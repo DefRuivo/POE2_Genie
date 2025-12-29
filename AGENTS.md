@@ -51,6 +51,7 @@ The logic is distributed across specialized "Agents" (Simulated in `geminiServic
 ## 6. Development Protocols
 ### Code Quality
 - **Linting**: Run `pnpm run lint` and `pnpm run lint:fix` before committing.
+- **Verification**: ALWAYS run `pnpm lint && pnpm build` before marking a task as done.
 - **Formatting**: Adhere to the existing code style.
 
 ### Testing Standard (Enforced)
