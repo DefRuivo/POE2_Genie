@@ -41,3 +41,36 @@ export async function sendKitchenJoinRequestEmail(
     console.error('[Email Service] Error sending email:', error);
   }
 }
+
+export async function sendVerificationEmail(email: string, token: string) {
+  if (!process.env.SMTP_PASSWORD) {
+    console.warn('[Email Service] SMTP_PASSWORD not set. Skipping verification email.');
+    return;
+  }
+
+  const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/verify-email?token=${token}`;
+
+  const fromName = process.env.SMTP_EMAIL_FROM_NAME || 'Dinner Chef AI';
+  const fromEmail = process.env.SMTP_EMAIL_FROM || 'onboarding@resend.dev';
+
+  try {
+    const info = await transporter.sendMail({
+      from: `"${fromName}" <${fromEmail}>`,
+      to: email,
+      subject: 'Verify your email address',
+      text: `Welcome to Dinner Chef AI!\n\nPlease click the link below to verify your email address:\n${verificationUrl}\n\nIf you did not sign up, please ignore this email.`,
+      html: `
+        <div style="font-family: sans-serif; padding: 20px;">
+          <h2>Welcome to Dinner Chef AI!</h2>
+          <p>Please click the button below to verify your email address:</p>
+          <a href="${verificationUrl}" style="background-color: #0070f3; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">Verify Email</a>
+          <p style="margin-top: 20px; font-size: 14px; color: #666;">Or copy this link: <a href="${verificationUrl}">${verificationUrl}</a></p>
+        </div>
+      `,
+    });
+
+    console.log(`[Email Service] Verification email sent: ${info.messageId}`);
+  } catch (error) {
+    console.error('[Email Service] Error sending verification email:', error);
+  }
+}

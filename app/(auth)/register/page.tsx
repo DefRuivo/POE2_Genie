@@ -14,6 +14,7 @@ export default function RegisterPage() {
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -33,14 +34,44 @@ export default function RegisterPage() {
                 throw new Error(data.error || 'Registration failed');
             }
 
-            // On success, redirect to login so they can sign in with new credentials
-            router.push('/login');
+            // Show success message
+            setSuccess(true);
+            setFormData({ name: '', surname: '', email: '', password: '' });
         } catch (err: any) {
             setError(err.message);
         } finally {
             setLoading(false);
         }
     };
+
+    if (success) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-10">
+                <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-10 border border-slate-100 text-center">
+                    <div className="mb-6">
+                        <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <h1 className="text-2xl font-black text-slate-900 mb-2">Check your email</h1>
+                        <p className="text-slate-600">
+                            We've sent a verification link to <span className="font-bold text-slate-800">{formData.email}</span>.
+                            Please check your inbox to activate your account.
+                        </p>
+                    </div>
+                    <div className="space-y-4">
+                        <p className="text-sm text-slate-500">
+                            Didn't receive the email? Check your spam folder.
+                        </p>
+                        <Link href="/login" className="block w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition-colors">
+                            Return to Login
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-10">

@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { signToken } from '@/lib/auth';
 import { hashPassword } from '@/lib/password';
 import { generateKitchenCode } from '@/lib/kitchen-code';
+import { sendVerificationEmail } from '@/lib/email-service';
 
 export async function POST(req: NextRequest) {
     try {
@@ -29,6 +30,7 @@ export async function POST(req: NextRequest) {
                 password: hashedPassword,
                 name,
                 surname,
+                verificationToken: crypto.randomUUID(),
                 kitchenMemberships: {
                     create: {
                         name: name,
@@ -49,20 +51,10 @@ export async function POST(req: NextRequest) {
             }
         });
 
-        // Don't return the password
-        const { password: _, ...userWithoutPassword } = user;
+        // Send verification email
+        await sendVerificationEmail(user.email, user.verificationToken!);
 
-        const kitchenId = user.kitchenMemberships[0].kitchenId;
-
-        const token = await signToken({
-            userId: user.id,
-            email: user.email,
-            name: user.name,
-            kitchenId: kitchenId,
-            houseId: kitchenId // Backwards compat
-        });
-
-        return NextResponse.json({ user: userWithoutPassword, token }, { status: 201 });
+        return NextResponse.json({ message: 'Registration successful. Please check your email to verify your account.' }, { status: 201 });
     } catch (error) {
         console.error('Registration error:', error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

@@ -61,6 +61,10 @@ model User {
   // User can belong to multiple kitchens via memberships
   kitchenMemberships KitchenMember[]
   geminiUsage        GeminiUsage[]
+
+  // Verification
+  emailVerified      DateTime?
+  verificationToken  String?           @db.Text
 }
 
 model KitchenMember {
