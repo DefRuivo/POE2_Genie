@@ -4,6 +4,7 @@ export type Difficulty = 'easy' | 'intermediate' | 'advanced' | 'chef';
 export type PrepTimePreference = 'quick' | 'plenty';
 export type ReplenishmentRule = 'ALWAYS' | 'ONE_SHOT' | 'NEVER';
 export type MeasurementSystem = 'METRIC' | 'IMPERIAL';
+export type Language = 'en' | 'pt-BR';
 
 // --- User & Kitchen ---
 
@@ -60,6 +61,7 @@ export interface SessionContext {
   prep_time_preference: PrepTimePreference;
   observation?: string;
   measurement_system?: MeasurementSystem;
+  language?: string;
 }
 
 // Raw output from the AI Generator
@@ -82,8 +84,14 @@ export interface RecipeRecord extends GeneratedRecipe {
   isFavorite: boolean; // Computed for the current member/user
   createdAt: number;
   dishImage?: string;
-  language?: string;
+  language?: Language;
   image_base64?: string;
+  originalRecipeId?: string | null;
+  translations?: {
+    id: string;
+    language: Language;
+    recipe_title: string;
+  }[];
 }
 
 export type ViewState = 'home' | 'members' | 'pantry' | 'history' | 'shopping_list';

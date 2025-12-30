@@ -36,8 +36,9 @@ async function apiRequest(path: string, options: RequestInit = {}) {
 
 export const storageService = {
   // --- Recipes / History ---
-  getAllRecipes: async (): Promise<RecipeRecord[]> => {
-    const data = await apiRequest('/recipes');
+  getAllRecipes: async (lang?: string): Promise<RecipeRecord[]> => {
+    const query = lang ? `?lang=${encodeURIComponent(lang)}` : '';
+    const data = await apiRequest(`/recipes${query}`);
     return data || [];
   },
 
@@ -53,8 +54,8 @@ export const storageService = {
   },
 
 
-  saveRecipe: async (recipe: any): Promise<void> => {
-    await apiRequest('/recipes', {
+  saveRecipe: async (recipe: any): Promise<RecipeRecord> => {
+    return await apiRequest('/recipes', {
       method: 'POST',
       body: JSON.stringify(recipe),
     });
@@ -138,6 +139,10 @@ export const storageService = {
     await apiRequest(`/shopping-list/${id}`, { method: 'DELETE' });
   },
 
+  clearShoppingList: async (): Promise<void> => {
+    await apiRequest('/shopping-list', { method: 'DELETE' });
+  },
+
   // --- Suggestions ---
   getTags: async (category: string): Promise<string[]> => {
     const data = await apiRequest(`/tags?category=${category}`);
@@ -163,7 +168,7 @@ export const storageService = {
     return await apiRequest('/auth/me');
   },
 
-  updateProfile: async (data: { name: string; surname: string; measurementSystem: string; password?: string }): Promise<any> => {
+  updateProfile: async (data: { name: string; surname: string; measurementSystem: string; password?: string; language?: string }): Promise<any> => {
     return await apiRequest('/auth/me', {
       method: 'PUT',
       body: JSON.stringify(data)
