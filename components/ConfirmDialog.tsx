@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface Props {
     isOpen: boolean;
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export const ConfirmDialog: React.FC<Props> = ({ isOpen, onClose, onConfirm, title, message }) => {
+    const { t } = useTranslation();
     if (!isOpen) return null;
 
     return (
@@ -23,7 +25,7 @@ export const ConfirmDialog: React.FC<Props> = ({ isOpen, onClose, onConfirm, tit
                         onClick={onClose}
                         className="px-6 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-100 transition-colors"
                     >
-                        Cancel
+                        {t('common.cancel')}
                     </button>
                     <button
                         onClick={() => {
@@ -32,7 +34,7 @@ export const ConfirmDialog: React.FC<Props> = ({ isOpen, onClose, onConfirm, tit
                         }}
                         className="px-6 py-3 rounded-xl font-bold bg-red-500 text-white hover:bg-red-600 shadow-lg shadow-red-200 transition-colors"
                     >
-                        Confirm
+                        {t('common.confirm')}
                     </button>
                 </div>
             </div>
