@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useApp } from '../components/Providers';
-import Footer from '../components/Footer';
 import { RecipeRecord, Kitchen, ShoppingItem } from '../types';
 import { storageService } from '../services/storageService';
 import Link from 'next/link';
@@ -184,7 +183,6 @@ export default function Home() {
         )}
 
       </main>
-      <Footer />
       <MessageDialog
         isOpen={errorDialog.isOpen}
         onClose={() => setErrorDialog({ ...errorDialog, isOpen: false })}

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Header from './Header';
 import Sidebar from './Sidebar';
+import Footer from './Footer';
 
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
@@ -19,13 +20,6 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     return (
         <>
             {!isAuthPage && (
-                <Header
-                    onMenuClick={() => setIsSidebarOpen(true)}
-                    onHomeClick={() => router.push('/')}
-                />
-            )}
-
-            {!isAuthPage && (
                 <Sidebar
                     isOpen={isSidebarOpen}
                     onClose={() => setIsSidebarOpen(false)}
@@ -36,8 +30,20 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                 />
             )}
 
-            <div className="pt-4">
-                {children}
+            {/* Main Content Wrapper (Pushed by Sidebar on Desktop) */}
+            <div className={`transition-all duration-300 ${!isAuthPage ? 'lg:pl-80' : ''}`}>
+                {!isAuthPage && (
+                    <Header
+                        onMenuClick={() => setIsSidebarOpen(true)}
+                        onHomeClick={() => router.push('/')}
+                    />
+                )}
+
+                <div className="pt-4 min-h-[calc(100vh-200px)]">
+                    {children}
+                </div>
+
+                {!isAuthPage && <Footer />}
             </div>
         </>
     );

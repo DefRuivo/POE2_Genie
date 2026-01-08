@@ -108,7 +108,7 @@ export default function GenerateRecipePage() {
     return (
         <div className="min-h-screen bg-slate-50 selection:bg-rose-100 pb-20">
             <header className="bg-white border-b border-slate-200">
-                <div className="max-w-2xl mx-auto px-6 py-4 flex items-center gap-4">
+                <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-4">
                     <Link href="/" className="text-slate-400 hover:text-slate-600 transition-colors">
                         <i className="fas fa-arrow-left text-xl"></i>
                     </Link>
@@ -118,7 +118,7 @@ export default function GenerateRecipePage() {
                 </div>
             </header>
 
-            <main className="max-w-2xl mx-auto px-4 mt-6 space-y-6">
+            <main className="max-w-7xl mx-auto px-4 mt-6 space-y-6">
 
                 {/* Who (Simplified Select) */}
                 <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
