@@ -1,6 +1,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/hooks/useTranslation';
 
 interface Props {
@@ -10,7 +11,18 @@ interface Props {
 }
 
 const Sidebar: React.FC<Props> = ({ isOpen, onClose, onNavigate }) => {
+  const router = useRouter();
   const { t } = useTranslation();
+
+  const handleLogout = async () => {
+      try {
+          await fetch('/api/auth/logout', { method: 'POST' });
+          router.push('/login');
+          router.refresh();
+      } catch (error) {
+          console.error("Logout failed:", error);
+      }
+  };
 
   const handleLinkClick = () => {
     // Only close if we are on mobile (where isOpen drives visibility)
@@ -67,6 +79,16 @@ const Sidebar: React.FC<Props> = ({ isOpen, onClose, onNavigate }) => {
             <NavItem href="/kitchens" icon="fas fa-home" label={t('nav.kitchens')} />
             <NavItem href="/settings" icon="fas fa-cog" label={t('nav.settings')} />
           </nav>
+
+          <div className="border-t border-slate-100 pt-4 mt-2">
+            <button
+               onClick={handleLogout}
+               className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-rose-600 font-bold hover:bg-rose-50 transition-all group"
+            >
+               <i className="fas fa-sign-out-alt w-6 group-hover:scale-110 transition-transform"></i>
+               {t('nav.logout')}
+            </button>
+          </div>
         </div>
       </aside>
     </>
