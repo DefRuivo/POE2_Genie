@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { verifyToken } from './lib/auth';
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
     const path = request.nextUrl.pathname;
 
     // Redirect /home to /
@@ -27,8 +27,8 @@ export async function middleware(request: NextRequest) {
 
     // Verify token
     const payload = await verifyToken(token);
-    // Strict check: must have payload and houseId (multi-tenancy)
-    const isAuthenticated = !!payload && !!payload.houseId;
+    // Strict check: must have payload and kitchenId (multi-tenancy)
+    const isAuthenticated = !!payload && !!payload.kitchenId;
 
     // Case 1: User is accessing a public path but is already logged in
     if (isPublicPath && isAuthenticated) {
