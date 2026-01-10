@@ -41,6 +41,7 @@ export const ptBR = {
     },
     members: {
         title: "Membros da Cozinha",
+        subtitle: "Gerencie quem tem acesso à sua cozinha.",
         invite: "Convidar Membro",
         admin: "Admin",
         guest: "Convidado",
@@ -98,6 +99,7 @@ export const ptBR = {
     },
     shopping: {
         title: "Lista de Compras",
+        subtitle: "Lista inteligente para sua próxima compra.",
         loading: "Carregando Lista...",
         addItem: "Adicionar item...",
         readOnly: "Lista de Compras é genérica para a Cozinha (Apenas Leitura)",
@@ -117,6 +119,7 @@ export const ptBR = {
     },
     kitchens: {
         title: "Gerenciar Cozinhas",
+        subtitle: "Alterne entre cozinhas ou crie uma nova.",
         loading: "Carregando Cozinhas...",
         yourKitchens: "Suas Cozinhas",
         active: "Ativa",
@@ -138,6 +141,8 @@ export const ptBR = {
         backToRecipes: "Voltar para Receitas"
     },
     recipes: {
+        title: "Receitas",
+        subtitle: "Gerencie suas receitas salvas.",
         searchPlaceholder: "Buscar por título ou ingrediente...",
         noResults: "Nenhuma receita encontrada",
         noResultsSearch: "Sem resultados para \"{term}\". Tente outra palavra-chave!",

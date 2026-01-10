@@ -101,7 +101,6 @@ describe('KitchensPage', () => {
     it('allows creating a new kitchen', async () => {
         render(<KitchensPage />);
 
-        await waitFor(() => screen.getByTestId('sidebar'));
         // Wait for loading to finish
         await waitFor(() => expect(screen.queryByText('kitchens.loading')).not.toBeInTheDocument());
 
@@ -122,7 +121,7 @@ describe('KitchensPage', () => {
         await waitFor(() => screen.queryByText('kitchens.loading') === null);
 
         // Find delete button for Admin Kitchen
-        const deleteButtons = screen.getAllByTitle('Delete Kitchen');
+        const deleteButtons = await waitFor(() => screen.getAllByTitle('Delete Kitchen'));
         fireEvent.click(deleteButtons[0]);
 
         await waitFor(() => {

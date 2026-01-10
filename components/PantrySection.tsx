@@ -124,15 +124,7 @@ const PantrySection: React.FC<Props> = ({ pantry, setPantry }) => {
     <section className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
       {/* Header & Add */}
       <div className="p-6 border-b border-slate-100 bg-slate-50/50 space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-lg font-bold flex items-center gap-2 text-slate-800">
-              <i className="fas fa-box-open text-amber-500"></i>
-              {t('pantry.title')}
-            </h2>
-            <p className="text-sm text-slate-500 mt-1">{t('pantry.subtitle')}</p>
-          </div>
-        </div>
+
 
         {/* Add New Bar */}
         {!isGuest && (

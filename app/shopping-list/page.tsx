@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Sidebar from '@/components/Sidebar';
+
 import { storageService } from '@/services/storageService';
 import { ShoppingItem } from '@/types';
 import { useCurrentMember } from '@/hooks/useCurrentMember';
@@ -11,7 +11,7 @@ import Link from 'next/link';
 export default function ShoppingListPage() {
     const { isGuest } = useCurrentMember();
     const { t } = useTranslation();
-    const [isSidebarOpen, setSidebarOpen] = useState(false);
+
     const [items, setItems] = useState<ShoppingItem[]>([]);
     const [newItemName, setNewItemName] = useState('');
     const [loading, setLoading] = useState(true);
@@ -123,40 +123,26 @@ export default function ShoppingListPage() {
 
 
     return (
-        <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-rose-100">
-            <Sidebar
-                isOpen={isSidebarOpen}
-                onClose={() => setSidebarOpen(false)}
-                onNavigate={(view) => {
-                    if (view !== 'shoppingList') {
-                        window.location.href = view === 'home' ? '/' : `/${view}`;
-                    }
-                }}
-            />
-
-            <header className="fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-200">
-                <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <button
-                            onClick={() => setSidebarOpen(true)}
-                            className="w-10 h-10 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-600 transition-colors"
-                        >
-                            <i className="fas fa-bars"></i>
-                        </button>
-                        <h1 className="font-black text-xl tracking-tight text-slate-900">{t('shopping.title')}</h1>
+        <>
+            <main className="max-w-7xl mx-auto px-4 pt-6 pb-32 space-y-6 animate-in fade-in duration-500">
+                <header className="flex items-start justify-between mb-8">
+                    <div>
+                        <div className="flex items-center gap-3 mb-2">
+                             
+                            <h1 className="text-3xl font-black text-slate-900 tracking-tight">{t('shopping.title')}</h1>
+                        </div>
+                        <p className="text-slate-500 font-medium">{t('shopping.subtitle') || t('nav.shopping')}</p>
                     </div>
                     {!isGuest && items.length > 0 && (
                         <button
                             onClick={() => setShowClearConfirm(true)}
-                            className="text-xs font-bold text-rose-500 hover:text-rose-700 bg-rose-50 px-3 py-1.5 rounded-lg transition-colors"
+                            className="text-xs font-bold text-rose-500 hover:text-rose-700 bg-rose-50 px-4 py-2 rounded-xl transition-colors flex items-center gap-2"
                         >
+                            <i className="fas fa-trash-alt"></i>
                             {t('shopping.clearAll')}
                         </button>
                     )}
-                </div>
-            </header>
-
-            <main className="max-w-7xl mx-auto px-4 pt-24 pb-32 space-y-4 animate-in fade-in duration-500">
+                </header>
                 {loading ? (
                     <div className="text-center py-20 text-slate-400 font-bold animate-pulse">{t('shopping.loading')}</div>
                 ) : (
@@ -333,6 +319,7 @@ export default function ShoppingListPage() {
                     </div>
                 </div>
             )}
-        </div>
+        </>
     );
 }
+

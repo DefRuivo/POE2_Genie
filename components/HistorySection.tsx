@@ -71,47 +71,52 @@ const HistorySection: React.FC<Props> = ({ history, onUpdate, onViewRecipe, isGu
               onClick={() => onViewRecipe?.(recipe)}
             >
               {/* Metadata Badges */}
-              <div className="flex items-center gap-3">
-                <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border ${recipe.meal_type === 'main' ? 'bg-rose-50 text-rose-600 border-rose-100' :
-                  recipe.meal_type === 'dessert' ? 'bg-purple-50 text-purple-600 border-purple-100' :
-                    'bg-slate-50 text-slate-600 border-slate-100'
-                  }`}>
-                  {recipe.meal_type}
-                </span>
-                <span className="text-slate-400 text-xs font-bold flex items-center gap-1">
-                  <i className="far fa-calendar-alt"></i>
-                  {new Date(recipe.createdAt).toLocaleDateString()}
-                </span>
-                <span className="text-slate-400 text-xs font-bold flex items-center gap-1">
-                  <i className="far fa-clock"></i>
-                  {recipe.prep_time_minutes ? `${recipe.prep_time_minutes} min` : recipe.prep_time}
-                </span>
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border ${recipe.meal_type === 'main' ? 'bg-rose-50 text-rose-600 border-rose-100' :
+                    recipe.meal_type === 'dessert' ? 'bg-purple-50 text-purple-600 border-purple-100' :
+                      'bg-slate-50 text-slate-600 border-slate-100'
+                    }`}>
+                    {(() => {
+                        const type = recipe.meal_type?.toLowerCase().trim() || '';
+                        if (type === 'main' || type === 'main course' || type === 'maincourse') return t('recipeForm.mainCourse');
+                        if (type === 'appetizer' || type === 'starter') return t('recipeForm.appetizer');
+                        if (type === 'dessert') return t('recipeForm.dessert');
+                        if (type === 'snack') return t('recipeForm.snack');
+                        return recipe.meal_type; 
+                    })()}
+                  </span>
+                  <span className="text-slate-400 text-xs font-bold flex items-center gap-1">
+                    <i className="far fa-calendar-alt"></i>
+                    {new Date(recipe.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
                 
-                {/* Available Translations Badges */}
-                {recipe.translations && recipe.translations.length > 0 && (
-                  <div className="flex gap-1">
-                    {recipe.translations.map(t => (
-                      <span 
-                        key={t.id} 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          // Hacky: We want to view the translated recipe.
-                          // onViewRecipe expects a record. We only have partial data.
-                          // Ideally parent handles this or we fetch full.
-                          // For now, let's just act as if we clicked the main card but override ID?
-                          // Actually easier: Let's just visually show they exist. 
-                          // The main card view handles switching translations? No, that's inside the card.
-                          // Let's redirect to that specific ID
-                          window.location.href = `/recipes/${t.id}`;
-                        }}
-                        className="w-6 h-4 flex items-center justify-center bg-slate-100 rounded text-[8px] font-bold text-slate-500 border border-slate-200 hover:bg-rose-100 hover:text-rose-600 hover:border-rose-200 cursor-pointer"
-                        title={t.recipe_title}
-                      >
-                        {t.language === 'pt-BR' ? 'PT' : 'EN'}
-                      </span>
-                    ))}
-                  </div>
-                )}
+                <div className="flex items-center gap-3">
+                  <span className="text-slate-500 text-xs font-bold flex items-center gap-1.5 bg-slate-50 px-2 py-1 rounded-md border border-slate-100 w-fit">
+                    <i className="far fa-clock text-slate-400"></i>
+                    {recipe.prep_time_minutes ? `${recipe.prep_time_minutes} min` : recipe.prep_time}
+                  </span>
+
+                  {/* Available Translations Badges */}
+                  {recipe.translations && recipe.translations.length > 0 && (
+                    <div className="flex gap-1">
+                      {recipe.translations.map(t => (
+                        <span 
+                          key={t.id} 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.location.href = `/recipes/${t.id}`;
+                          }}
+                          className="w-10 h-6 flex items-center justify-center bg-slate-100 rounded text-[9px] font-bold text-slate-500 border border-slate-200 hover:bg-rose-100 hover:text-rose-600 hover:border-rose-200 cursor-pointer uppercase"
+                          title={t.recipe_title}
+                        >
+                          {t.language === 'pt-BR' ? 'PT' : 'EN'}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <h3 className="font-black text-slate-900 text-xl md:text-2xl tracking-tight leading-snug group-hover:text-rose-600 transition-colors">

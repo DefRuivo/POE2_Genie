@@ -118,7 +118,7 @@ export default function SettingsPage() {
     }
 
     return (
-        <div className="max-w-7xl mx-auto px-4 mt-8 pb-20 space-y-8 animate-in fade-in duration-500">
+        <div className="max-w-7xl mx-auto px-4 mt-8 pb-20 space-y-8">
             <header>
                 <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-2">{t('settings.title')}</h1>
                 <p className="text-slate-500 font-medium">{t('settings.subtitle')}</p>

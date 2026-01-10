@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import Sidebar from '@/components/Sidebar';
+
 import { storageService } from '@/services/storageService';
 import { KitchenMember, Kitchen } from '@/types';
 import { TagInput } from '@/components/ui/TagInput';
@@ -11,7 +11,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 
 export default function MembersPage() {
     const { t } = useTranslation();
-    const [isSidebarOpen, setSidebarOpen] = useState(false);
+
     const [members, setMembers] = useState<KitchenMember[]>([]);
     const [kitchen, setKitchen] = useState<Kitchen | null>(null);
     const [loading, setLoading] = useState(true);
@@ -215,35 +215,17 @@ export default function MembersPage() {
     const canShowForm = !loading && currentUserMember && (!currentUserMember.isGuest || (currentUserMember.isGuest && editingMember?.id === currentUserMember.id));
 
     return (
-        <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-rose-100">
-            <Sidebar
-                isOpen={isSidebarOpen}
-                onClose={() => setSidebarOpen(false)}
-                onNavigate={(view) => {
-                    if (view !== 'members') {
-                        window.location.href = view === 'home' ? '/' : `/${view}`;
-                    }
-                }}
-            />
+        <>
+            <main className="max-w-7xl mx-auto px-4 pt-6 pb-32 space-y-6 animate-in fade-in duration-500">
+                <header className="flex items-start justify-between mb-8">
+                    <div>
+                        <div className="flex items-center gap-3 mb-2">
 
-            {/* Header */}
-            <header className="fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-200">
-                <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <button
-                            onClick={() => setSidebarOpen(true)}
-                            className="w-10 h-10 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-600 transition-colors"
-                        >
-                            <i className="fas fa-bars"></i>
-                        </button>
-                        <h1 className="font-black text-xl tracking-tight text-slate-900">{t('members.title')}</h1>
+                            <h1 className="text-3xl font-black text-slate-900 tracking-tight">{t('members.title')}</h1>
+                        </div>
+                        <p className="text-slate-500 font-medium">{t('members.subtitle') || t('nav.members')}</p>
                     </div>
-                </div>
-            </header>
-
-
-
-            <main className="max-w-5xl mx-auto px-4 pt-24 pb-32 space-y-4 animate-in fade-in duration-500">
+                </header>
                 {kitchen?.inviteCode && currentUserMember && !currentUserMember.isGuest && (
                     <div className="bg-indigo-50 border border-indigo-100 rounded-3xl p-6 text-center space-y-2 mb-6">
                         <h3 className="text-xs font-black text-indigo-400 uppercase tracking-widest">{t('kitchens.inviteCode')}</h3>
@@ -575,6 +557,6 @@ export default function MembersPage() {
                     </div>
                 </div>
             )}
-        </div>
+        </>
     );
 }

@@ -41,6 +41,7 @@ export const en = {
     },
     members: {
         title: "Kitchen Members",
+        subtitle: "Manage who has access to your kitchen.",
         invite: "Invite Member",
         admin: "Admin",
         guest: "Guest",
@@ -98,6 +99,7 @@ export const en = {
     },
     shopping: {
         title: "Shopping List",
+        subtitle: "Smart checklist for your next grocery run.",
         loading: "Loading List...",
         addItem: "Add item...",
         readOnly: "Shopping List is generic for the Kitchen (Read Only)",
@@ -117,6 +119,7 @@ export const en = {
     },
     kitchens: {
         title: "Manage Kitchens",
+        subtitle: "Switch between kitchens or create a new one.",
         loading: "Loading Kitchens...",
         yourKitchens: "Your Kitchens",
         active: "Active",
@@ -138,6 +141,8 @@ export const en = {
         backToRecipes: "Back to Recipes"
     },
     recipes: {
+        title: "Recipes",
+        subtitle: "Manage your saved recipes.",
         searchPlaceholder: "Search by title or ingredient...",
         noResults: "No recipes found",
         noResultsSearch: "No results for \"{term}\". Try another keyword!",

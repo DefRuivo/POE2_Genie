@@ -28,7 +28,7 @@ const MOCK_ADMIN_MEMBER = { id: "m1", userId: MOCK_USER_ID, role: "ADMIN", isGue
 const MOCK_GUEST_MEMBER = { id: "m2", userId: MOCK_USER_ID, role: "GUEST", isGuest: true };
 
 const mockRecipes = [
-    { id: 'r1', recipe_title: 'Test Recipe', shopping_list: [], step_by_step: [], createdAt: new Date() }
+    { id: 'r1', recipe_title: 'Test Recipe', shopping_list: [], step_by_step: [], createdAt: new Date(), meal_type: 'main', prep_time: '30 min' }
 ];
 const mockPantry = [
     { id: 'p1', name: 'Carrot', inStock: true }
