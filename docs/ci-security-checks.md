@@ -20,6 +20,19 @@ This repository uses separate quality and security checks on GitHub Actions.
 - Nightly schedule at `06:00 UTC`
 - Manual run (`workflow_dispatch`)
 
+## Dependency Review Prerequisite
+
+`security-dependency-review` requires GitHub Dependency Graph to be enabled.
+
+Enable in:
+- `Settings > Security & analysis > Dependency graph`
+
+Recommended related toggles:
+- Dependabot alerts
+- Dependabot security updates
+- Secret scanning
+- Push protection
+
 ## Security Gate Policy
 
 - Threshold: High/Critical
@@ -53,11 +66,24 @@ Recommended additional options:
 - Secret scanning
 - Push protection (if your plan supports it)
 
+## CVE Remediation Flow
+
+When `security-pnpm-audit` or `security-trivy-fs` fails with High/Critical:
+
+1. Update direct dependencies first (for example `next`).
+2. Add or adjust `pnpm.overrides` for vulnerable transitive dependencies.
+3. Regenerate `pnpm-lock.yaml`.
+4. Re-run:
+   - `pnpm audit --audit-level=high`
+   - `pnpm lint`
+   - `pnpm test`
+   - `pnpm build`
+
 ## Temporary Exception Process
 
 When a false positive or temporary exception is required:
 
 1. Open an issue describing the finding, impact, and mitigation.
 2. Link the issue in the PR.
-3. Add a time-boxed exception with clear expiration date.
+3. Add a time-boxed exception with clear expiration date (only if no patched version exists yet).
 4. Remove the exception as soon as mitigation is merged.

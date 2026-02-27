@@ -87,12 +87,14 @@ function parseSingleItemBlockWithDetails(block: string): ParsedStashImportDetail
   const nominalLines = extractNominalLines(lines, rarityIndex);
   if (nominalLines.length === 0) return null;
 
-  const isGem = rarity.toLowerCase() === 'gem';
+  const normalizedRarity = rarity.toLowerCase();
+  const isGem = normalizedRarity === 'gem';
+  const isUnique = normalizedRarity === 'unique';
   const primaryName = nominalLines[0];
   if (!primaryName) return null;
 
   const baseType = nominalLines[1];
-  const name = !isGem && baseType
+  const name = !isGem && !isUnique && baseType
     ? `${primaryName} (${baseType})`
     : primaryName;
 
