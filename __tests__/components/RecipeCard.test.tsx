@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import RecipeCard from '../../components/RecipeCard';
-import { RecipeRecord } from '../../types';
+import { BuildRecord } from '../../types';
 
 // Mock dependencies
 // Mock dependencies
@@ -27,8 +27,9 @@ jest.mock('next/navigation', () => ({
 
 jest.mock('../../services/storageService', () => ({
     storageService: {
-        toggleFavorite: jest.fn().mockResolvedValue(undefined),
-        addPantryItem: jest.fn().mockResolvedValue({ id: '1', name: 'Milk' }),
+        toggleBuildFavorite: jest.fn().mockResolvedValue(undefined),
+        addStashItem: jest.fn().mockResolvedValue({ id: '1', name: 'Milk' }),
+        deleteBuild: jest.fn().mockResolvedValue(undefined),
     },
 }));
 
@@ -38,7 +39,7 @@ jest.mock('@/hooks/useCurrentMember', () => ({
 
 import { storageService } from '../../services/storageService';
 
-const mockRecipe: RecipeRecord = {
+const mockRecipe: BuildRecord = {
     id: '1',
     recipe_title: 'Test Recipe',
     meal_type: 'main',
@@ -78,7 +79,19 @@ describe('RecipeCard', () => {
 
     it('renders difficulty badge correctly', () => {
         render(<RecipeCard recipe={{ ...mockRecipe, difficulty: 'chef' }} />);
-        expect(screen.getByText('CHEF')).toBeInTheDocument();
+        expect(screen.getByText('Mirror of Kalandra')).toBeInTheDocument();
+    });
+
+    it('renders analysis log without decorative quotes in dev mode', () => {
+        const previousEnv = process.env.NODE_ENV;
+        process.env.NODE_ENV = 'development';
+
+        render(<RecipeCard recipe={{ ...mockRecipe, analysis_log: 'Planner note' }} />);
+
+        expect(screen.getByText('Planner note')).toBeInTheDocument();
+        expect(screen.queryByText('"Planner note"')).not.toBeInTheDocument();
+
+        process.env.NODE_ENV = previousEnv;
     });
 
     it('calls toggleFavorite when favorite button is clicked', async () => {
@@ -89,7 +102,7 @@ describe('RecipeCard', () => {
             await act(async () => {
                 fireEvent.click(btn);
             });
-            expect(storageService.toggleFavorite).toHaveBeenCalledWith('1');
+            expect(storageService.toggleBuildFavorite).toHaveBeenCalledWith('1');
         } else {
             throw new Error('Favorite button not found');
         }
@@ -97,7 +110,7 @@ describe('RecipeCard', () => {
 
     it('handles error when toggleFavorite fails', async () => {
         const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
-        (storageService.toggleFavorite as jest.Mock).mockRejectedValueOnce(new Error('Failed'));
+        (storageService.toggleBuildFavorite as jest.Mock).mockRejectedValueOnce(new Error('Failed'));
 
         const { container } = render(<RecipeCard recipe={mockRecipe} />);
         const btn = container.querySelector('.fa-heart')?.closest('button');
@@ -153,7 +166,7 @@ describe('RecipeCard', () => {
         const recipeWithList = { ...mockRecipe, shopping_list: [{ name: 'Milk', quantity: '1', unit: 'L' }] };
         render(<RecipeCard recipe={recipeWithList} />);
 
-        const addBtns = screen.getAllByTitle('Add to Shopping List');
+        const addBtns = screen.getAllByTitle('Add to Checklist');
         await user.click(addBtns[0]);
 
         expect(screen.getByText(/Add "Milk" to List/)).toBeInTheDocument();
@@ -162,7 +175,7 @@ describe('RecipeCard', () => {
         if (alwaysBtn) {
             await user.click(alwaysBtn);
             await waitFor(() => {
-                expect(storageService.addPantryItem).toHaveBeenCalledWith('Milk', 'ALWAYS', false);
+                expect(storageService.addStashItem).toHaveBeenCalledWith('Milk', 'ALWAYS', false);
             });
         }
     });

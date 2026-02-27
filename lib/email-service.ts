@@ -31,10 +31,10 @@ export async function sendKitchenJoinRequestEmail(
   try {
     const html = kitchenJoinRequestTemplate(requesterName, kitchenName, appUrl);
     const info = await transporter.sendMail({
-      from: '"Dinner Chef AI" <onboarding@resend.dev>', // Update this with your verified sender
+      from: '"POE2 Genie" <onboarding@resend.dev>',
       to: adminEmail,
-      subject: `${requesterName} wants to join ${kitchenName}`,
-      text: `Hello Admin,\n\n${requesterName} has requested to join your kitchen "${kitchenName}".\n\nPlease log in to the dashboard to approve or reject this request.`,
+      subject: `${requesterName} wants to join ${kitchenName} hideout`,
+      text: `Hello Party Leader,\n\n${requesterName} has requested to join your hideout "${kitchenName}".\n\nPlease log in to approve or reject this request.`,
       html,
     });
 
@@ -52,14 +52,14 @@ export async function sendVerificationEmail(email: string, token: string, langua
 
   const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/verify-email?token=${token}`;
 
-  const fromName = process.env.SMTP_EMAIL_FROM_NAME || 'Dinner Chef AI';
+  const fromName = process.env.SMTP_EMAIL_FROM_NAME || 'POE2 Genie';
   const fromEmail = process.env.SMTP_EMAIL_FROM || 'onboarding@resend.dev';
 
   const isPt = language.toLowerCase().startsWith('pt');
   const subject = isPt ? 'Verifique seu endereço de email' : 'Verify your email address';
   const text = isPt
-    ? `Bem-vindo ao Dinner Chef AI!\n\nClique no link abaixo para verificar seu endereço de email:\n${verificationUrl}\n\nSe você não se cadastrou, ignore este email.`
-    : `Welcome to Dinner Chef AI!\n\nPlease click the link below to verify your email address:\n${verificationUrl}\n\nIf you did not sign up, please ignore this email.`;
+    ? `Bem-vindo ao POE2 Genie!\n\nClique no link abaixo para verificar seu endereço de email:\n${verificationUrl}\n\nSe você não se cadastrou, ignore este email.`
+    : `Welcome to POE2 Genie!\n\nPlease click the link below to verify your email address:\n${verificationUrl}\n\nIf you did not sign up, please ignore this email.`;
 
   try {
     const html = verificationEmailTemplate(verificationUrl, language);
@@ -91,15 +91,15 @@ export async function sendInvitationEmail(
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
   const ctaUrl = isExistingUser ? `${appUrl}/login` : `${appUrl}/register?email=${encodeURIComponent(email)}`;
-  const ctaText = isExistingUser ? 'Login to Dashboard' : 'Create Account';
+  const ctaText = isExistingUser ? 'Enter Hideout' : 'Create Account';
 
   const subject = isExistingUser
     ? `You have been added to ${kitchenName}`
-    : `You have been invited to join ${kitchenName}`;
+    : `You have been invited to join ${kitchenName} hideout`;
 
   const messageText = isExistingUser
-    ? `Hello,\n\nYou have been added to the kitchen "${kitchenName}".\n\nLog in to your account to access the kitchen:\n${ctaUrl}`
-    : `Hello,\n\n${inviterName} has invited you to join their kitchen "${kitchenName}".\n\nTo accept the invitation, please create an account using this email address:\n${ctaUrl}\n\nKitchen Invite Code: ${inviteCode}`;
+    ? `Hello,\n\nYou have been added to the hideout "${kitchenName}".\n\nLog in to access this hideout:\n${ctaUrl}`
+    : `Hello,\n\n${inviterName} has invited you to join their hideout "${kitchenName}".\n\nTo accept the invitation, please create an account using this email address:\n${ctaUrl}\n\nHideout Invite Code: ${inviteCode}`;
 
   const html = invitationEmailTemplate(
     inviterName,
@@ -110,7 +110,7 @@ export async function sendInvitationEmail(
     isExistingUser
   );
 
-  const fromName = process.env.SMTP_EMAIL_FROM_NAME || 'Dinner Chef AI';
+  const fromName = process.env.SMTP_EMAIL_FROM_NAME || 'POE2 Genie';
   const fromEmail = process.env.SMTP_EMAIL_FROM || 'onboarding@resend.dev';
 
   try {
@@ -136,7 +136,7 @@ export async function sendPasswordChangedEmail(email: string, name: string, lang
   }
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-  const fromName = process.env.SMTP_EMAIL_FROM_NAME || 'Dinner Chef AI';
+  const fromName = process.env.SMTP_EMAIL_FROM_NAME || 'POE2 Genie';
   const fromEmail = process.env.SMTP_EMAIL_FROM || 'onboarding@resend.dev';
 
   // Normalize language
@@ -174,7 +174,7 @@ export async function sendPasswordResetEmail(email: string, name: string, token:
 
   const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/reset-password?token=${token}`;
 
-  const fromName = process.env.SMTP_EMAIL_FROM_NAME || 'Dinner Chef AI';
+  const fromName = process.env.SMTP_EMAIL_FROM_NAME || 'POE2 Genie';
   const fromEmail = process.env.SMTP_EMAIL_FROM || 'onboarding@resend.dev';
 
   // Normalize language

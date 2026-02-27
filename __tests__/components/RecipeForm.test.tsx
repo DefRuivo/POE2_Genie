@@ -4,10 +4,10 @@ import RecipeForm from '../../components/RecipeForm';
 // Mock types
 const mockRecipe: any = {
     recipe_title: 'Test Recipe',
-    meal_type: 'main',
+    meal_type: 'league_starter',
     difficulty: 'easy',
     prep_time: '30 mins',
-    ingredients_from_pantry: [{ name: 'Ingredient 1', quantity: '1', unit: 'cup' }],
+    ingredients_from_pantry: [{ name: 'Ingredient 1', quantity: '1', unit: 'stack' }],
     shopping_list: [],
     step_by_step: ['Step 1'],
 };
@@ -37,34 +37,34 @@ describe('RecipeForm', () => {
     it('renders empty form with default values', () => {
         render(<RecipeForm onSubmit={mockSubmit} isSubmitting={false} title="Create Recipe" />);
 
-        expect(screen.getByPlaceholderText("Recipe Title (e.g. Mom's Lasagna)")).toHaveValue('');
-        expect(screen.getByText('Main Course')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText("Build Title (e.g. Arc League Starter)")).toHaveValue('');
+        expect(screen.getByText('League Starter')).toBeInTheDocument();
     });
 
     it('calls onSubmit with form data', () => {
         render(<RecipeForm onSubmit={mockSubmit} isSubmitting={false} title="Create Recipe" />);
 
-        fireEvent.change(screen.getByPlaceholderText("Recipe Title (e.g. Mom's Lasagna)"), { target: { value: 'New Recipe' } });
-        fireEvent.click(screen.getByText('Save Recipe'));
+        fireEvent.change(screen.getByPlaceholderText("Build Title (e.g. Arc League Starter)"), { target: { value: 'New Build' } });
+        fireEvent.click(screen.getByText('Save Build'));
 
         expect(mockSubmit).toHaveBeenCalledWith(expect.objectContaining({
-            recipe_title: 'New Recipe'
+            recipe_title: 'New Build'
         }));
     });
 
     it('adds an ingredient to the list', () => {
         render(<RecipeForm onSubmit={mockSubmit} isSubmitting={false} title="Create Recipe" />);
 
-        const nameInput = screen.getByPlaceholderText('Ingredient Name');
+        const nameInput = screen.getByPlaceholderText('Gear/Gem Name');
         fireEvent.change(nameInput, { target: { value: 'New Ingredient' } });
         fireEvent.change(screen.getAllByPlaceholderText('Qty')[0], { target: { value: '2' } });
-        fireEvent.change(screen.getAllByLabelText('Unit')[0], { target: { value: 'kg' } });
+        fireEvent.change(screen.getAllByLabelText('Unit')[0], { target: { value: 'stack' } });
 
         // Find the specific add button for ingredients (the first one)
         const addButtons = screen.getAllByTitle('Add');
         fireEvent.click(addButtons[0]);
 
-        expect(screen.getByText(/2 kg New Ingredient/)).toBeInTheDocument();
+        expect(screen.getByText(/2 Stack New Ingredient/)).toBeInTheDocument();
     });
 
     it('adds a step', () => {
@@ -80,19 +80,19 @@ describe('RecipeForm', () => {
         render(<RecipeForm onSubmit={mockSubmit} isSubmitting={false} title="Create Recipe" />);
 
         // Add one first
-        const nameInput = screen.getByPlaceholderText('Ingredient Name');
+        const nameInput = screen.getByPlaceholderText('Gear/Gem Name');
         fireEvent.change(nameInput, { target: { value: 'To Remove' } });
         fireEvent.change(screen.getAllByPlaceholderText('Qty')[0], { target: { value: '1' } });
-        fireEvent.change(screen.getAllByLabelText('Unit')[0], { target: { value: 'cup' } });
+        fireEvent.change(screen.getAllByLabelText('Unit')[0], { target: { value: 'set' } });
         fireEvent.click(screen.getAllByTitle('Add')[0]);
 
-        expect(screen.getByText(/1 cup To Remove/)).toBeInTheDocument();
+        expect(screen.getByText(/1 Set To Remove/)).toBeInTheDocument();
 
         // Find remove button (red X)
         const removeBtn = screen.getByText(/To Remove/).closest('li')?.querySelector('button');
         if (removeBtn) {
             fireEvent.click(removeBtn);
-            expect(screen.queryByText(/1 cup To Remove/)).not.toBeInTheDocument();
+            expect(screen.queryByText(/1 Set To Remove/)).not.toBeInTheDocument();
         } else {
             throw new Error('Remove button not found');
         }
@@ -101,13 +101,13 @@ describe('RecipeForm', () => {
     it('submits form with correct data', () => {
         render(<RecipeForm onSubmit={mockSubmit} isSubmitting={false} title="Create Recipe" />);
 
-        fireEvent.change(screen.getByLabelText('Recipe Title'), { target: { value: 'My Recipe' } });
+        fireEvent.change(screen.getByLabelText('Build Title'), { target: { value: 'My Recipe' } });
 
         // Add step text
         const stepInput = screen.getByPlaceholderText(/Step 1 instructions/);
         fireEvent.change(stepInput, { target: { value: 'Mix it' } });
 
-        fireEvent.click(screen.getByText('Save Recipe'));
+        fireEvent.click(screen.getByText('Save Build'));
 
         expect(mockSubmit).toHaveBeenCalledWith(expect.objectContaining({
             recipe_title: 'My Recipe',
@@ -127,19 +127,19 @@ describe('RecipeForm', () => {
 
         // Index 1 is for shopping list (Index 0 is ingredients)
         fireEvent.change(qtyInputs[1], { target: { value: '1' } });
-        fireEvent.change(unitInputs[1], { target: { value: 'package' } });
+        fireEvent.change(unitInputs[1], { target: { value: 'slot' } });
         fireEvent.change(nameInputs[0], { target: { value: 'Pasta' } }); // Use index 0
 
         const addBtns = screen.getAllByTitle('Add');
         fireEvent.click(addBtns[1]); // Second Add button
 
-        expect(screen.getByText(/1 package Pasta/)).toBeInTheDocument();
+        expect(screen.getByText(/1 Slot Pasta/)).toBeInTheDocument();
 
         // Remove it
-        const removeBtn = screen.getByText(/1 package Pasta/).closest('li')?.querySelector('button');
+        const removeBtn = screen.getByText(/1 Slot Pasta/).closest('li')?.querySelector('button');
         if (removeBtn) {
             fireEvent.click(removeBtn);
-            expect(screen.queryByText(/1 package Pasta/)).not.toBeInTheDocument();
+            expect(screen.queryByText(/1 Slot Pasta/)).not.toBeInTheDocument();
         }
     });
 
@@ -165,7 +165,7 @@ describe('RecipeForm', () => {
         const alertMock = jest.spyOn(window, 'alert').mockImplementation();
         render(<RecipeForm onSubmit={mockSubmit} isSubmitting={false} title="Create Recipe" initialData={{ recipe_title: '' }} />);
 
-        const titleInput = screen.getByPlaceholderText("Recipe Title (e.g. Mom's Lasagna)");
+        const titleInput = screen.getByPlaceholderText("Build Title (e.g. Arc League Starter)");
         expect(titleInput).toBeRequired();
 
         alertMock.mockRestore();

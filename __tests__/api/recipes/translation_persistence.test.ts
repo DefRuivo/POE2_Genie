@@ -1,7 +1,7 @@
 
 import { POST } from '@/app/api/recipes/[id]/translate/route';
 import { prisma } from '@/lib/prisma';
-import { translateRecipe } from '@/services/geminiService';
+import { translateBuild } from '@/services/geminiService';
 import { NextRequest } from 'next/server';
 
 jest.mock('@/lib/prisma', () => ({
@@ -87,7 +87,7 @@ describe('Recipe Translation Persistence API', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         (prisma.recipe.findUnique as jest.Mock).mockResolvedValue(mockOriginalRecipe);
-        (translateRecipe as jest.Mock).mockResolvedValue(mockTranslatedData);
+        (translateBuild as jest.Mock).mockResolvedValue(mockTranslatedData);
     });
 
     it('should create a new recipe linked to the original when translating', async () => {

@@ -1,0 +1,461 @@
+{
+  "snapshotDate": "2026-02-27",
+  "confirmedOfficial": [
+    {
+      "itemClass": "Socketable",
+      "status": "confirmed",
+      "source": {
+        "origin": "GGG Forum",
+        "url": "https://www.pathofexile.com/forum/view-thread/3610113"
+      },
+      "priority": "high",
+      "fixtureFile": "socketable.md"
+    },
+    {
+      "itemClass": "Stackable Currency",
+      "status": "confirmed",
+      "source": {
+        "origin": "GGG Forum",
+        "url": "https://www.pathofexile.com/forum/view-thread/3610113"
+      },
+      "priority": "high",
+      "fixtureFile": "stackable_currency.md"
+    },
+    {
+      "itemClass": "Omen",
+      "status": "confirmed",
+      "source": {
+        "origin": "GGG Forum",
+        "url": "https://www.pathofexile.com/forum/view-thread/3610113"
+      },
+      "priority": "high",
+      "fixtureFile": "omen.md"
+    },
+    {
+      "itemClass": "Waystones",
+      "status": "confirmed",
+      "source": {
+        "origin": "GGG Forum",
+        "url": "https://www.pathofexile.com/forum/view-thread/3610113"
+      },
+      "priority": "high",
+      "fixtureFile": "waystones.md"
+    },
+    {
+      "itemClass": "Expedition Logbooks",
+      "status": "confirmed",
+      "source": {
+        "origin": "GGG Forum",
+        "url": "https://www.pathofexile.com/forum/view-thread/3610113"
+      },
+      "priority": "high",
+      "fixtureFile": "expedition_logbooks.md"
+    },
+    {
+      "itemClass": "Inscribed Ultimatum",
+      "status": "confirmed",
+      "source": {
+        "origin": "GGG Forum",
+        "url": "https://www.pathofexile.com/forum/view-thread/3610113"
+      },
+      "priority": "high",
+      "fixtureFile": "inscribed_ultimatum.md"
+    },
+    {
+      "itemClass": "Tablet",
+      "status": "confirmed",
+      "source": {
+        "origin": "GGG Forum",
+        "url": "https://www.pathofexile.com/forum/view-thread/3610113"
+      },
+      "priority": "high",
+      "fixtureFile": "tablet.md"
+    },
+    {
+      "itemClass": "Trial Coins",
+      "status": "confirmed",
+      "source": {
+        "origin": "GGG Forum",
+        "url": "https://www.pathofexile.com/forum/view-thread/3610113"
+      },
+      "priority": "high",
+      "fixtureFile": "trial_coins.md"
+    },
+    {
+      "itemClass": "Pinnacle Keys",
+      "status": "confirmed",
+      "source": {
+        "origin": "GGG Forum",
+        "url": "https://www.pathofexile.com/forum/view-thread/3610113"
+      },
+      "priority": "high",
+      "fixtureFile": "pinnacle_keys.md"
+    },
+    {
+      "itemClass": "Map Fragments",
+      "status": "confirmed",
+      "source": {
+        "origin": "GGG Forum",
+        "url": "https://www.pathofexile.com/forum/view-thread/3610113"
+      },
+      "priority": "high",
+      "fixtureFile": "map_fragments.md"
+    },
+    {
+      "itemClass": "Uncut Skill Gems",
+      "status": "confirmed",
+      "source": {
+        "origin": "GGG Forum",
+        "url": "https://www.pathofexile.com/forum/view-thread/3610113"
+      },
+      "priority": "high",
+      "fixtureFile": "uncut_skill_gems.md"
+    },
+    {
+      "itemClass": "Uncut Support Gems",
+      "status": "confirmed",
+      "source": {
+        "origin": "GGG Forum",
+        "url": "https://www.pathofexile.com/forum/view-thread/3610113"
+      },
+      "priority": "high",
+      "fixtureFile": "uncut_support_gems.md"
+    },
+    {
+      "itemClass": "Uncut Spirit Gems",
+      "status": "confirmed",
+      "source": {
+        "origin": "GGG Forum",
+        "url": "https://www.pathofexile.com/forum/view-thread/3610113"
+      },
+      "priority": "high",
+      "fixtureFile": "uncut_spirit_gems.md"
+    },
+    {
+      "itemClass": "Vault Keys",
+      "status": "confirmed",
+      "source": {
+        "origin": "GGG Forum",
+        "url": "https://www.pathofexile.com/forum/view-thread/3610113"
+      },
+      "priority": "high",
+      "fixtureFile": "vault_keys.md"
+    },
+    {
+      "itemClass": "Jewels",
+      "status": "confirmed",
+      "source": {
+        "origin": "GGG Forum",
+        "url": "https://www.pathofexile.com/forum/view-thread/3610113"
+      },
+      "priority": "high",
+      "fixtureFile": "jewel.md"
+    }
+  ],
+  "confirmedCommunity": [
+    {
+      "itemClass": "Amulets",
+      "status": "confirmed",
+      "source": {
+        "origin": "NeverSink PoE2",
+        "url": "https://github.com/NeverSinkDev/NeverSink-Filter-for-PoE2"
+      },
+      "priority": "high",
+      "fixtureFile": "amulet.md"
+    },
+    {
+      "itemClass": "Belts",
+      "status": "confirmed",
+      "source": {
+        "origin": "NeverSink PoE2",
+        "url": "https://github.com/NeverSinkDev/NeverSink-Filter-for-PoE2"
+      },
+      "priority": "high",
+      "fixtureFile": "belts.md"
+    },
+    {
+      "itemClass": "Body Armours",
+      "status": "confirmed",
+      "source": {
+        "origin": "NeverSink PoE2",
+        "url": "https://github.com/NeverSinkDev/NeverSink-Filter-for-PoE2"
+      },
+      "priority": "high",
+      "fixtureFile": "body_armour.md"
+    },
+    {
+      "itemClass": "Boots",
+      "status": "confirmed",
+      "source": {
+        "origin": "NeverSink PoE2",
+        "url": "https://github.com/NeverSinkDev/NeverSink-Filter-for-PoE2"
+      },
+      "priority": "high",
+      "fixtureFile": "boots.md"
+    },
+    {
+      "itemClass": "Bows",
+      "status": "confirmed",
+      "source": {
+        "origin": "NeverSink PoE2",
+        "url": "https://github.com/NeverSinkDev/NeverSink-Filter-for-PoE2"
+      },
+      "priority": "high",
+      "fixtureFile": "bows.md"
+    },
+    {
+      "itemClass": "Bucklers",
+      "status": "confirmed",
+      "source": {
+        "origin": "NeverSink PoE2",
+        "url": "https://github.com/NeverSinkDev/NeverSink-Filter-for-PoE2"
+      },
+      "priority": "high",
+      "fixtureFile": "bucklers.md"
+    },
+    {
+      "itemClass": "Charms",
+      "status": "confirmed",
+      "source": {
+        "origin": "NeverSink PoE2",
+        "url": "https://github.com/NeverSinkDev/NeverSink-Filter-for-PoE2"
+      },
+      "priority": "high",
+      "fixtureFile": "charms.md"
+    },
+    {
+      "itemClass": "Crossbows",
+      "status": "confirmed",
+      "source": {
+        "origin": "NeverSink PoE2",
+        "url": "https://github.com/NeverSinkDev/NeverSink-Filter-for-PoE2"
+      },
+      "priority": "high",
+      "fixtureFile": "crossbows.md"
+    },
+    {
+      "itemClass": "Foci",
+      "status": "confirmed",
+      "source": {
+        "origin": "NeverSink PoE2",
+        "url": "https://github.com/NeverSinkDev/NeverSink-Filter-for-PoE2"
+      },
+      "priority": "high",
+      "fixtureFile": "foci.md"
+    },
+    {
+      "itemClass": "Gloves",
+      "status": "confirmed",
+      "source": {
+        "origin": "NeverSink PoE2",
+        "url": "https://github.com/NeverSinkDev/NeverSink-Filter-for-PoE2"
+      },
+      "priority": "high",
+      "fixtureFile": "gloves.md"
+    },
+    {
+      "itemClass": "Helmets",
+      "status": "confirmed",
+      "source": {
+        "origin": "NeverSink PoE2",
+        "url": "https://github.com/NeverSinkDev/NeverSink-Filter-for-PoE2"
+      },
+      "priority": "high",
+      "fixtureFile": "helmets.md"
+    },
+    {
+      "itemClass": "Life Flasks",
+      "status": "confirmed",
+      "source": {
+        "origin": "NeverSink PoE2",
+        "url": "https://github.com/NeverSinkDev/NeverSink-Filter-for-PoE2"
+      },
+      "priority": "high",
+      "fixtureFile": "flask.md"
+    },
+    {
+      "itemClass": "Mana Flasks",
+      "status": "confirmed",
+      "source": {
+        "origin": "NeverSink PoE2",
+        "url": "https://github.com/NeverSinkDev/NeverSink-Filter-for-PoE2"
+      },
+      "priority": "high",
+      "fixtureFile": "mana_flasks.md"
+    },
+    {
+      "itemClass": "One Hand Maces",
+      "status": "confirmed",
+      "source": {
+        "origin": "NeverSink PoE2",
+        "url": "https://github.com/NeverSinkDev/NeverSink-Filter-for-PoE2"
+      },
+      "priority": "high",
+      "fixtureFile": "one_hand_maces.md"
+    },
+    {
+      "itemClass": "Quarterstaves",
+      "status": "confirmed",
+      "source": {
+        "origin": "NeverSink PoE2",
+        "url": "https://github.com/NeverSinkDev/NeverSink-Filter-for-PoE2"
+      },
+      "priority": "high",
+      "fixtureFile": "weapon.md"
+    },
+    {
+      "itemClass": "Quivers",
+      "status": "confirmed",
+      "source": {
+        "origin": "NeverSink PoE2",
+        "url": "https://github.com/NeverSinkDev/NeverSink-Filter-for-PoE2"
+      },
+      "priority": "high",
+      "fixtureFile": "quivers.md"
+    },
+    {
+      "itemClass": "Rings",
+      "status": "confirmed",
+      "source": {
+        "origin": "NeverSink PoE2",
+        "url": "https://github.com/NeverSinkDev/NeverSink-Filter-for-PoE2"
+      },
+      "priority": "high",
+      "fixtureFile": "ring.md"
+    },
+    {
+      "itemClass": "Sceptres",
+      "status": "confirmed",
+      "source": {
+        "origin": "NeverSink PoE2",
+        "url": "https://github.com/NeverSinkDev/NeverSink-Filter-for-PoE2"
+      },
+      "priority": "high",
+      "fixtureFile": "sceptres.md"
+    },
+    {
+      "itemClass": "Shields",
+      "status": "confirmed",
+      "source": {
+        "origin": "NeverSink PoE2",
+        "url": "https://github.com/NeverSinkDev/NeverSink-Filter-for-PoE2"
+      },
+      "priority": "high",
+      "fixtureFile": "shields.md"
+    },
+    {
+      "itemClass": "Spears",
+      "status": "confirmed",
+      "source": {
+        "origin": "NeverSink PoE2",
+        "url": "https://github.com/NeverSinkDev/NeverSink-Filter-for-PoE2"
+      },
+      "priority": "high",
+      "fixtureFile": "spears.md"
+    },
+    {
+      "itemClass": "Staves",
+      "status": "confirmed",
+      "source": {
+        "origin": "NeverSink PoE2",
+        "url": "https://github.com/NeverSinkDev/NeverSink-Filter-for-PoE2"
+      },
+      "priority": "high",
+      "fixtureFile": "staves.md"
+    },
+    {
+      "itemClass": "Two Hand Maces",
+      "status": "confirmed",
+      "source": {
+        "origin": "NeverSink PoE2",
+        "url": "https://github.com/NeverSinkDev/NeverSink-Filter-for-PoE2"
+      },
+      "priority": "high",
+      "fixtureFile": "two_hand_maces.md"
+    },
+    {
+      "itemClass": "Wands",
+      "status": "confirmed",
+      "source": {
+        "origin": "NeverSink PoE2",
+        "url": "https://github.com/NeverSinkDev/NeverSink-Filter-for-PoE2"
+      },
+      "priority": "high",
+      "fixtureFile": "wands.md"
+    }
+  ],
+  "confirmedLocalFixtures": [
+    {
+      "itemClass": "Skill Gems",
+      "status": "confirmed",
+      "source": {
+        "origin": "Local fixture",
+        "url": "local:item_examples/skill_gem.md"
+      },
+      "priority": "high",
+      "fixtureFile": "skill_gem.md"
+    },
+    {
+      "itemClass": "Support Gems",
+      "status": "confirmed",
+      "source": {
+        "origin": "Local fixture",
+        "url": "local:item_examples/support_gem.md"
+      },
+      "priority": "high",
+      "fixtureFile": "support_gem.md"
+    },
+    {
+      "itemClass": "Body Armours",
+      "status": "confirmed",
+      "source": {
+        "origin": "Local fixture",
+        "url": "local:item_examples/body_armour.md"
+      },
+      "priority": "high",
+      "fixtureFile": "body_armour.md"
+    }
+  ],
+  "candidatesPendingValidation": [
+    {
+      "itemClass": "Talismans",
+      "status": "candidate",
+      "source": {
+        "origin": "PoE2DB",
+        "url": "https://poe2db.tw/us/"
+      },
+      "priority": "medium",
+      "fixtureFile": "candidate_talismans.md"
+    },
+    {
+      "itemClass": "Flasks",
+      "status": "candidate",
+      "source": {
+        "origin": "PoE2 Wiki",
+        "url": "https://www.poe2wiki.net/wiki/Item_filter"
+      },
+      "priority": "medium",
+      "fixtureFile": "candidate_flasks.md"
+    },
+    {
+      "itemClass": "Relics",
+      "status": "candidate",
+      "source": {
+        "origin": "PoE2DB",
+        "url": "https://poe2db.tw/us/"
+      },
+      "priority": "medium",
+      "fixtureFile": "candidate_relics.md"
+    },
+    {
+      "itemClass": "Spirit Gems",
+      "status": "candidate",
+      "source": {
+        "origin": "PoE2DB",
+        "url": "https://poe2db.tw/us/"
+      },
+      "priority": "medium",
+      "fixtureFile": "candidate_spirit_gems.md"
+    }
+  ]
+}

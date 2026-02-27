@@ -1,88 +1,88 @@
-name: Build
+#name: Build
 
-on:
-  push:
-    branches:
-      - main
+#on:
+#  push:
+#    branches:
+#      - main
 
-jobs:
-  quality:
-    name: Code quality
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 10.13.1
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22.16.0
-          cache: 'pnpm'
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      - name: Run lint
-        run: pnpm lint
-      - name: Run tests
-        run: pnpm test
-  test_build:
-    name: Test NextJS build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 10.13.1
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22.16.0
-          cache: 'pnpm'
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      - name: Verify if the build is ok
-        run: pnpm build
+#jobs:
+#  quality:
+#    name: Code quality
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#        with:
+#          fetch-depth: 0
+#      - uses: pnpm/action-setup@v3
+#        with:
+#          version: 10.13.1
+#      - uses: actions/setup-node@v4
+#        with:
+#          node-version: 22.16.0
+#          cache: 'pnpm'
+#      - name: Install dependencies
+#        run: pnpm install --frozen-lockfile
+#      - name: Run lint
+#        run: pnpm lint
+#      - name: Run tests
+#        run: pnpm test
+#  test_build:
+#    name: Test NextJS build
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#        with:
+#          fetch-depth: 0
+#      - uses: pnpm/action-setup@v3
+#        with:
+#          version: 10.13.1
+#      - uses: actions/setup-node@v4
+#        with:
+#          node-version: 22.16.0
+#          cache: 'pnpm'
+#      - name: Install dependencies
+#        run: pnpm install --frozen-lockfile
+#      - name: Verify if the build is ok
+#        run: pnpm build
 
-  build_docker:
-    name: Build Docker image (main)
-    runs-on: ubuntu-latest
-    needs: [quality, test_build]
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ghcr.io/${{ github.repository }}:main
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-      - name: Trigger Deployment Webhook
-        if: success()
-        run: |
-          curl --location --silent --show-error --fail \
-            --request POST 'https://n8n.ops.makecodes.dev/webhook/qa-dinner' \
-            --header 'Content-Type: application/json' \
-            --user "${{ secrets.DEPLOY_WEBHOOK_USER }}:${{ secrets.DEPLOY_WEBHOOK_PASS }}" \
-            --data-raw '{
-              "image": "ghcr.io/${{ github.repository }}",
-              "version": "${{ github.ref_name }}",
-              "pipeline": "${{ github.run_number }}",
-              "repository": "${{ github.repository }}"
-            }'
+#  build_docker:
+#    name: Build Docker image (main)
+#    runs-on: ubuntu-latest
+#    needs: [quality, test_build]
+#    permissions:
+#      contents: read
+#      packages: write
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#      - name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v3
+#      - name: Log in to GitHub Container Registry
+#        uses: docker/login-action@v3
+#        with:
+#          registry: ghcr.io
+#          username: ${{ github.actor }}
+#          password: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Build and push
+#        uses: docker/build-push-action@v5
+#        with:
+#          context: .
+#          push: true
+#          tags: ghcr.io/${{ github.repository }}:main
+#          cache-from: type=gha
+#          cache-to: type=gha,mode=max
+#      - name: Trigger Deployment Webhook
+#        if: success()
+#        run: |
+#          curl --location --silent --show-error --fail \
+#            --request POST 'https://n8n.ops.makecodes.dev/webhook/qa-dinner' \
+#            --header 'Content-Type: application/json' \
+#            --user "${{ secrets.DEPLOY_WEBHOOK_USER }}:${{ secrets.DEPLOY_WEBHOOK_PASS }}" \
+#            --data-raw '{
+#              "image": "ghcr.io/${{ github.repository }}",
+#              "version": "${{ github.ref_name }}",
+#              "pipeline": "${{ github.run_number }}",
+#              "repository": "${{ github.repository }}"
+#            }'

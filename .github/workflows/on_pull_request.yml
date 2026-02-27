@@ -5,9 +5,13 @@ on:
     branches:
       - main
 
+concurrency:
+  group: pr-quality-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  quality:
-    name: Code quality
+  quality-lint-test:
+    name: quality-lint-test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,8 +30,8 @@ jobs:
       - name: Run tests
         run: pnpm test
 
-  test_build:
-    name: Test NextJS build
+  quality-build:
+    name: quality-build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

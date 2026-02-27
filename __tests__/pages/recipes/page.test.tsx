@@ -1,7 +1,7 @@
 
 
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import HistoryPage from '../../../app/recipes/page';
+import HistoryPage from '../../../app/builds/page';
 import { storageService } from '../../../services/storageService';
 
 // Mock mocks
@@ -15,7 +15,7 @@ jest.mock('../../../components/Providers', () => ({
 
 jest.mock('../../../services/storageService', () => ({
     storageService: {
-        getAllRecipes: jest.fn(),
+        getAllBuilds: jest.fn(),
         getCurrentUser: jest.fn().mockResolvedValue({ user: { id: 'u1' } }),
         getKitchenMembers: jest.fn().mockResolvedValue([{ userId: 'u1', isGuest: false }]),
     }
@@ -41,42 +41,42 @@ describe('HistoryPage', () => {
     ];
 
     beforeEach(() => {
-        (storageService.getAllRecipes as jest.Mock).mockResolvedValue(mockRecipes);
+        (storageService.getAllBuilds as jest.Mock).mockResolvedValue(mockRecipes);
     });
 
-    it('renders and fetches recipes', async () => {
+    it('renders and fetches builds', async () => {
         render(<HistoryPage />);
         await waitFor(() => expect(screen.getByText('Pasta')).toBeInTheDocument());
         expect(screen.getByText('Salad')).toBeInTheDocument();
     });
 
-    it('filters recipes by title', async () => {
+    it('filters builds by title', async () => {
         render(<HistoryPage />);
         await waitFor(() => expect(screen.getByText('Pasta')).toBeInTheDocument());
 
-        const searchInput = screen.getByPlaceholderText('Search by title or ingredient...');
+        const searchInput = screen.getByPlaceholderText('Search by title or gear/gem...');
         fireEvent.change(searchInput, { target: { value: 'Pasta' } });
 
         expect(screen.getByText('Pasta')).toBeInTheDocument();
         expect(screen.queryByText('Salad')).not.toBeInTheDocument();
     });
 
-    it('filters recipes by ingredient (string)', async () => {
+    it('filters builds by gear/gem (string)', async () => {
         render(<HistoryPage />);
         await waitFor(() => expect(screen.getByText('Pasta')).toBeInTheDocument());
 
-        const searchInput = screen.getByPlaceholderText('Search by title or ingredient...');
+        const searchInput = screen.getByPlaceholderText('Search by title or gear/gem...');
         fireEvent.change(searchInput, { target: { value: 'Tomato' } });
 
         expect(screen.getByText('Pasta')).toBeInTheDocument();
         expect(screen.queryByText('Salad')).not.toBeInTheDocument();
     });
 
-    it('filters recipes by ingredient (object)', async () => {
+    it('filters builds by gear/gem (object)', async () => {
         render(<HistoryPage />);
         await waitFor(() => expect(screen.getByText('Pasta')).toBeInTheDocument());
 
-        const searchInput = screen.getByPlaceholderText('Search by title or ingredient...');
+        const searchInput = screen.getByPlaceholderText('Search by title or gear/gem...');
         fireEvent.change(searchInput, { target: { value: 'Lettuce' } });
 
         expect(screen.getByText('Salad')).toBeInTheDocument();
@@ -87,7 +87,7 @@ describe('HistoryPage', () => {
         render(<HistoryPage />);
         await waitFor(() => expect(screen.getByText('Pasta')).toBeInTheDocument());
 
-        const searchInput = screen.getByPlaceholderText('Search by title or ingredient...');
+        const searchInput = screen.getByPlaceholderText('Search by title or gear/gem...');
         fireEvent.change(searchInput, { target: { value: 'Burger' } });
 
         expect(screen.getByText('No results for "Burger". Try another keyword!')).toBeInTheDocument();

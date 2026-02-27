@@ -1,4 +1,6 @@
 
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -24,22 +26,16 @@ const Sidebar: React.FC<Props> = ({ isOpen, onClose, onNavigate }) => {
     }
   };
 
-  const handleLinkClick = () => {
-    // Only close if we are on mobile (where isOpen drives visibility)
-    // Actually, onClose logic is handled by parent usually for overlay.
-    // But here we want to ensure sidebar closes on mobile selection.
-    if (window.innerWidth < 1280) { // xl breakpoint
-      onClose();
-    }
-  };
-
   const NavItem = ({ href, icon, label }: { href: string; icon: string; label: string }) => (
     <Link
       href={href}
-      onClick={onClose} // Always close on navigation (mobile drawer behavior). Desktop ignores it via CSS persistent state but logic might flicker state? 
-      // Actually, on Desktop, 'isOpen' state only affects the mobile drawer class toggle 'translate-x-0'. 
-      // But we added 'lg:translate-x-0' so it's always open on desktop regardless of 'isOpen'.
-      // So calling onClose() changes isOpen to false, but CSS keeps it open on desktop. This is SAFE.
+      onClick={(e) => {
+        if (onNavigate) {
+          e.preventDefault();
+          onNavigate(href);
+        }
+        onClose();
+      }}
       className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-slate-600 font-bold hover:bg-slate-50 hover:text-rose-600 transition-all group"
     >
       <i className={`${icon} w-6 group-hover:scale-110 transition-transform`}></i>
@@ -61,9 +57,9 @@ const Sidebar: React.FC<Props> = ({ isOpen, onClose, onNavigate }) => {
           <div className="flex justify-between items-center mb-12">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-rose-600 rounded-xl flex items-center justify-center text-white shadow-lg">
-                <i className="fas fa-utensils"></i>
+                <i className="fas fa-shield-halved"></i>
               </div>
-              <span className="font-black text-xl tracking-tighter">Dinner?</span>
+              <span className="font-black text-xl tracking-tighter">POE2 Genie</span>
             </div>
             <button onClick={onClose} className="p-2 text-slate-400 hover:text-slate-600 xl:hidden">
               <i className="fas fa-times"></i>
@@ -72,11 +68,11 @@ const Sidebar: React.FC<Props> = ({ isOpen, onClose, onNavigate }) => {
 
           <nav className="flex-1 space-y-2 overflow-y-auto custom-scrollbar pr-2">
             <NavItem href="/" icon="fas fa-home" label={t('nav.home')} />
-            <NavItem href="/pantry" icon="fas fa-box-open" label={t('nav.pantry')} />
-            <NavItem href="/recipes" icon="fas fa-book-open" label={t('nav.recipes')} />
-            <NavItem href="/shopping-list" icon="fas fa-shopping-basket" label={t('nav.shopping')} />
-            <NavItem href="/members" icon="fas fa-users" label={t('nav.members')} />
-            <NavItem href="/kitchens" icon="fas fa-home" label={t('nav.kitchens')} />
+            <NavItem href="/stash" icon="fas fa-box-open" label={t('nav.pantry')} />
+            <NavItem href="/checklist" icon="fas fa-shopping-basket" label={t('nav.shopping')} />
+            <NavItem href="/builds" icon="fas fa-book-open" label={t('nav.recipes')} />
+            <NavItem href="/party" icon="fas fa-users" label={t('nav.members')} />
+            <NavItem href="/hideouts" icon="fas fa-home" label={t('nav.kitchens')} />
             <NavItem href="/settings" icon="fas fa-cog" label={t('nav.settings')} />
           </nav>
 

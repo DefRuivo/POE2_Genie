@@ -47,10 +47,10 @@ export async function joinKitchen(inviteCode: string) {
       return { error: 'Join request already pending' };
     }
     if (existingMember.status === MembershipStatus.APPROVED) {
-      return { error: 'You are already a member of this kitchen' };
+      return { error: 'You are already a member of this hideout' };
     }
     // If REJECTED, maybe allow re-request? For now, return error.
-    return { error: 'Your request to join this kitchen was previously rejected' };
+    return { error: 'Your request to join this hideout was previously rejected' };
   }
 
   // Create pending membership
@@ -90,7 +90,7 @@ export async function approveMember(memberId: string) {
   const user = await getCurrentUser();
   if (!user) return { error: 'Unauthorized' };
 
-  // Verify requester is ADMIN of the target member's kitchen
+  // Verify requester is ADMIN of the target member's hideout
   const memberToApprove = await prisma.kitchenMember.findUnique({
     where: { id: memberId },
   });
@@ -107,7 +107,7 @@ export async function approveMember(memberId: string) {
   });
 
   if (!requesterMembership || requesterMembership.role !== KitchenRole.ADMIN) {
-    return { error: 'Only admins can approve members' };
+    return { error: 'Only party leaders can approve members' };
   }
 
   await prisma.kitchenMember.update({
@@ -138,7 +138,7 @@ export async function rejectMember(memberId: string) {
   });
 
   if (!requesterMembership || requesterMembership.role !== KitchenRole.ADMIN) {
-    return { error: 'Only admins can reject members' };
+    return { error: 'Only party leaders can reject members' };
   }
 
   // Option: Delete record or set to REJECTED.
@@ -166,7 +166,7 @@ export async function refreshKitchenCode(kitchenId: string) {
   });
 
   if (!requesterMembership || requesterMembership.role !== KitchenRole.ADMIN) {
-    return { error: 'Only admins can refresh the code' };
+    return { error: 'Only party leaders can refresh the code' };
   }
 
   let newCode = generateKitchenCode();

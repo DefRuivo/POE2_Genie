@@ -3,8 +3,8 @@ import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { storageService } from '@/services/storageService';
 import Home from '@/app/page';
-import HistoryPage from '@/app/recipes/page';
-import ShoppingListPage from '@/app/shopping-list/page';
+import HistoryPage from '@/app/builds/page';
+import ShoppingListPage from '@/app/checklist/page';
 
 // Mocks
 jest.mock('@/services/storageService');
@@ -41,10 +41,10 @@ describe('Guest Restrictions', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        (storageService.getAllRecipes as jest.Mock).mockResolvedValue(mockRecipes);
+        (storageService.getAllBuilds as jest.Mock).mockResolvedValue(mockRecipes);
         (storageService.getCurrentKitchen as jest.Mock).mockResolvedValue({ id: 'k1', name: 'Test Kitchen' });
         (storageService.getPantry as jest.Mock).mockResolvedValue(mockPantry);
-        (storageService.getShoppingList as jest.Mock).mockResolvedValue(mockShopping);
+        (storageService.getBuildItems as jest.Mock).mockResolvedValue(mockShopping);
     });
 
     const setupUser = (isGuest: boolean) => {
@@ -55,20 +55,20 @@ describe('Guest Restrictions', () => {
     };
 
     describe('Home Page', () => {
-        test('Guest cannot see Generate Recipe card', async () => {
+        test('Guest cannot see Craft Build card', async () => {
             setupUser(true);
             render(<Home />);
 
-            await waitFor(() => expect(screen.queryByText('Generate Recipe')).not.toBeInTheDocument());
-            expect(screen.getAllByText('Pantry').length).toBeGreaterThan(0);
+            await waitFor(() => expect(screen.queryByText('Craft Build')).not.toBeInTheDocument());
+            expect(screen.getAllByText('Stash').length).toBeGreaterThan(0);
         });
 
-        test('Admin can see Generate Recipe card', async () => {
+        test('Admin can see Craft Build card', async () => {
             setupUser(false);
             render(<Home />);
 
             await waitFor(() => {
-                const elements = screen.getAllByText(/Generate Recipe/i);
+                const elements = screen.getAllByText(/Craft Build/i);
                 expect(elements.length).toBeGreaterThan(0);
             });
         });
@@ -81,7 +81,7 @@ describe('Guest Restrictions', () => {
 
             await waitFor(() => expect(screen.getByText('Test Recipe')).toBeInTheDocument());
             expect(screen.queryByText('Delete')).not.toBeInTheDocument();
-            expect(screen.getByText('View Recipe')).toBeInTheDocument();
+            expect(screen.getByText('View Build')).toBeInTheDocument();
         });
 
         test('Admin can see Delete button', async () => {
@@ -93,7 +93,7 @@ describe('Guest Restrictions', () => {
         });
     });
 
-    describe('Shopping List', () => {
+    describe('Checklist', () => {
         test('Guest cannot see Add Item form or Delete button', async () => {
             setupUser(true);
             render(<ShoppingListPage />);
@@ -104,7 +104,7 @@ describe('Guest Restrictions', () => {
             expect(screen.queryByPlaceholderText('Add item...')).not.toBeInTheDocument();
 
             // Read Only Notice
-            expect(screen.getByText(/Shopping List is generic for the Kitchen/)).toBeInTheDocument();
+            expect(screen.getByText(/Checklist is shared for the Hideout/)).toBeInTheDocument();
 
             // Toggle should not be clickable (class check difficult, but behaviorally:)
             // We can check if onClick handler is present? Testing-library clicks anyway.

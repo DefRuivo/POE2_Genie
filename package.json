@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p ${APP_PORT:-3000}",
-    "build": "prisma generate && next build",
+    "build": "NODE_ENV=production prisma generate && NODE_ENV=production next build",
     "start": "next start",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -17,7 +17,10 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "typecheck": "tsc --noEmit --noUnusedLocals --noUnusedParameters"
+    "test:coverage:strict": "jest --coverage",
+    "coverage:report": "ts-node --esm scripts/coverage-report.ts",
+    "typecheck": "tsc --noEmit --noUnusedLocals --noUnusedParameters",
+    "cleanup:culinary-legacy": "ts-node --esm scripts/cleanup-culinary-legacy.ts"
   },
   "dependencies": {
     "@google/genai": "^1.34.0",
@@ -27,7 +30,7 @@
     "bcryptjs": "^3.0.3",
     "jose": "^6.1.3",
     "mariadb": "^3.4.5",
-    "next": "^16.1.0",
+    "next": "^16.1.6",
     "node-cron": "^4.2.1",
     "nodemailer": "^7.0.12",
     "prisma": "^7.2.0",
@@ -56,5 +59,13 @@
     "tailwindcss": "^3.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "fast-xml-parser": "5.3.6",
+      "hono": "4.11.4",
+      "minimatch@3.1.2": "3.1.4",
+      "minimatch@9.0.5": "9.0.7"
+    }
   }
 }

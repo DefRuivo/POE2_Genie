@@ -23,8 +23,8 @@ describe('LoadingOverlay', () => {
   it('should render loading overlay when isVisible is true', () => {
     render(<LoadingOverlay isVisible={true} />);
     
-    expect(screen.getByText('Cooking up something special...')).toBeInTheDocument();
-    expect(screen.getByText('Selecting the best ingredients...')).toBeInTheDocument();
+    expect(screen.getByText('Forging a powerful build...')).toBeInTheDocument();
+    expect(screen.getByText('Scanning stash gear and gems...')).toBeInTheDocument();
     expect(screen.getByText('Please do not close your browser. This may take a moment.')).toBeInTheDocument();
   });
 
@@ -41,19 +41,19 @@ describe('LoadingOverlay', () => {
     render(<LoadingOverlay isVisible={true} />);
     
     // Initial step
-    expect(screen.getByText('Selecting the best ingredients...')).toBeInTheDocument();
+    expect(screen.getByText('Scanning stash gear and gems...')).toBeInTheDocument();
     
     // After 2500ms - should show step 2
     act(() => {
       jest.advanceTimersByTime(2500);
     });
-    expect(screen.getByText('Consulting our AI Chef...')).toBeInTheDocument();
+    expect(screen.getByText('Consulting the AI build strategist...')).toBeInTheDocument();
     
     // After another 2500ms - should show step 3
     act(() => {
       jest.advanceTimersByTime(2500);
     });
-    expect(screen.getByText('Ideas: Creating your dish...')).toBeInTheDocument();
+    expect(screen.getByText('Drafting your build path...')).toBeInTheDocument();
     
     // After another 2500ms - should loop back to step 1 (actually step 4 in the 7-step sequence, but let's just loop back to 1 for this test or check all)
     // Let's just update the loop test instead.
@@ -67,14 +67,14 @@ describe('LoadingOverlay', () => {
     act(() => {
       jest.advanceTimersByTime(2500);
     });
-    expect(screen.getByText('Consulting our AI Chef...')).toBeInTheDocument();
+    expect(screen.getByText('Consulting the AI build strategist...')).toBeInTheDocument();
     
     // Hide the overlay
     rerender(<LoadingOverlay isVisible={false} />);
     
     // Show it again - should be back at step 0
     rerender(<LoadingOverlay isVisible={true} />);
-    expect(screen.getByText('Selecting the best ingredients...')).toBeInTheDocument();
+    expect(screen.getByText('Scanning stash gear and gems...')).toBeInTheDocument();
   });
 
   it('should cleanup interval on unmount', () => {
@@ -101,16 +101,16 @@ describe('LoadingOverlay', () => {
     render(<LoadingOverlay isVisible={true} />);
     
     // Check that all translation keys are being used
-    expect(screen.getByText('Cooking up something special...')).toBeInTheDocument(); // loading.title
-    expect(screen.getByText('Selecting the best ingredients...')).toBeInTheDocument(); // loading.step1
+    expect(screen.getByText('Forging a powerful build...')).toBeInTheDocument(); // loading.title
+    expect(screen.getByText('Scanning stash gear and gems...')).toBeInTheDocument(); // loading.step1
     expect(screen.getByText('Please do not close your browser. This may take a moment.')).toBeInTheDocument(); // loading.warning
   });
 
-  it('should display chef hat icon', () => {
+  it('should display craft icon', () => {
     const { container } = render(<LoadingOverlay isVisible={true} />);
     
-    const chefIcon = container.querySelector('.fa-hat-chef');
-    expect(chefIcon).toBeInTheDocument();
+    const craftIcon = container.querySelector('.fa-wand-magic-sparkles');
+    expect(craftIcon).toBeInTheDocument();
   });
 
   it('should display warning icon', () => {
@@ -139,13 +139,13 @@ describe('LoadingOverlay', () => {
     
     // Verify it cycles through all 7 steps
     const steps = [
-      'Selecting the best ingredients...',
-      'Consulting our AI Chef...',
-      'Ideas: Creating your dish...',
+      'Scanning stash gear and gems...',
+      'Consulting the AI build strategist...',
+      'Drafting your build path...',
       'Adjusting preferences...',
-      'Checking dislikes...',
-      'Checking restrictions...',
-      'Adjusting portions...'
+      'Checking avoid lists...',
+      'Applying hard restrictions...',
+      'Balancing setup curve...'
     ];
     
     for (let i = 0; i < steps.length; i++) {

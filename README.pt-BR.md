@@ -1,37 +1,37 @@
-
-# Dinner? 🥗
-**Acabe com a indecisão e cozinhe melhor.**
+# POE2 Genie ⚔️
+**Planeje builds melhores para sua Party no Hideout.**
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Next.js](https://img.shields.io/badge/Next.js-16.0-black)
+![Next.js](https://img.shields.io/badge/Next.js-16.1.x-black)
 ![Prisma](https://img.shields.io/badge/Prisma-ORM-blueviolet)
-![Gemini AI](https://img.shields.io/badge/AI-Gemini%201.5-orange)
+![Gemini AI](https://img.shields.io/badge/AI-Gemini%20API-orange)
 
-**Dinner?** é um assistente de cozinha inteligente, desenvolvido para resolver a eterna pergunta: *"O que vamos comer hoje?"*. Ele combina uma despensa digital, listas de compras colaborativas e um poderoso Chef IA para transformar os ingredientes que você já tem em receitas deliciosas e personalizadas.
+**POE2 Genie** é um assistente inteligente para Path of Exile, criado para planejar builds melhores. Ele combina perfis de Party no Hideout, controle de Stash, gestão de Checklist e um estrategista de builds com IA para transformar seus recursos em builds práticas e personalizadas.
 
 ---
 
 ## ✨ Funcionalidades
 
-### 👨‍🍳 Chef Executivo IA
-*   **Geração Inteligente**: Cria receitas únicas baseadas no que você *realmente* tem na despensa.
-*   **Personalizado**: Respeita restrições alimentares, tipos de refeição (Rápida, Jantar, Lanche) e tempo de preparo.
-*   **Modo Chef**: Guia interativo passo a passo para você não se perder no preparo.
-*   **Cozinha Global**: Traduza instantaneamente qualquer receita para o seu idioma preferido (Português/Inglês).
+### 🧠 Estrategista IA de Builds
+*   **Craft Inteligente**: Cria builds práticas com base no que você *realmente* tem no Stash.
+*   **Foco na Party**: Respeita restrições da Party, archetypes preferidos e tempo de setup.
+*   **Planejamento por Custo**: Suporta tiers de custo, de setups baratos até planejamento mirror-level.
+*   **Tradução Global**: Traduza instantaneamente qualquer build para seu idioma (Português/Inglês).
 
-### 🏠 Cozinhas Conectadas
-*   **Sincronia Familiar**: Convide familiares ou colegas de quarto para sua cozinha digital.
-*   **Gestão Compartilhada**: Todos veem a mesma despensa e lista de compras em tempo real.
-*   **Controle de Acesso**: Gerencie permissões com funções de Administrador e Membro.
+### 🏠 Hideouts Conectados
+*   **Sincronia da Party**: Convide amigos para o Hideout e compartilhe o contexto.
+*   **Gestão Compartilhada**: Todos veem o mesmo Stash e Checklist.
+*   **Controle de Acesso**: Gerencie permissões com funções de Party Leader e Party Member.
 
-### 🛒 Compras Inteligentes
-*   **Fluxo Contínuo**: Adicione ingredientes faltantes das receitas direto para sua lista de compras.
-*   **Organização Esperta**: Visualize itens filtrados por receita ou veja a lista geral.
-*   **Compartilhamento Fácil**: Copie sua lista filtrada para a área de transferência e mande no WhatsApp.
+### 🛒 Fluxo de Checklist
+*   **Fluxo Contínuo**: Adicione Gear/Gems faltantes das builds direto no Checklist.
+*   **Status Claro**: Organize itens nas abas Pending e Completed.
+*   **Compartilhamento Fácil**: Copie itens filtrados do Checklist para WhatsApp ou texto.
 
-### 🍱 Despensa Digital
-*   **Inventário na Mão**: Saiba exatamente o que tem na geladeira sem precisar abrir a porta.
-*   **Desperdício Zero**: A IA prioriza ingredientes que você já possui, economizando dinheiro e evitando desperdício.
+### 📦 Controle de Stash
+*   **Inventário na Mão**: Mantenha visibilidade completa do que já existe no Stash.
+*   **Import por Colar**: Importe conteúdo de item copiado do Path of Exile direto para o Stash.
+*   **Sugestões Inteligentes**: A IA prioriza o que você já possui antes de sugerir novos itens.
 
 ---
 
@@ -41,14 +41,14 @@ Construído com tecnologias web modernas para performance e escala:
 
 *   **Framework**: [Next.js 16](https://nextjs.org/) (App Router, Server Actions)
 *   **Banco de Dados**: [MariaDB](https://mariadb.org/) & [Prisma ORM](https://www.prisma.io/)
-*   **Motor de IA**: [Google Gemini 1.5](https://deepmind.google/technologies/gemini/) (Pro & Flash)
+*   **Motor de IA**: [Google Gemini API](https://deepmind.google/technologies/gemini/) (modelos configuráveis)
 *   **Estilização**: [TailwindCSS](https://tailwindcss.com/)
 *   **Autenticação**: JWT próprio com fluxo seguro de recuperação de senha.
 *   **Infraestrutura**: Pronto para Docker & Docker Compose.
 
 ---
 
-## 🚀 Como Começar (Getting Started)
+## 🚀 Como Começar
 
 ### Pré-requisitos
 *   Node.js 18+
@@ -59,13 +59,13 @@ Construído com tecnologias web modernas para performance e escala:
 
 1.  **Clone o repositório**:
     ```bash
-    git clone https://github.com/imakecodes/dinner.git
-    cd dinner
+    git clone https://github.com/DefRuivo/POE2_Genie.git
+    cd POE2_Genie
     ```
 
 2.  **Configure o ambiente**:
     ```bash
-    cp .env.example .env
+    cp .env-sample .env
     # Edite o .env com sua GEMINI_API_KEY e credenciais do banco
     ```
 
@@ -85,13 +85,32 @@ Construído com tecnologias web modernas para performance e escala:
     pnpm dev
     ```
 
-Acesse `http://localhost:3000` e comece a cozinhar!
+Acesse `http://localhost:3000` e comece a craftar builds.
+
+---
+
+## 🧭 Rotas Canônicas
+
+*   `/hideouts`
+*   `/party`
+*   `/builds`
+*   `/stash`
+*   `/checklist`
+
+---
+
+## 🔒 Security Checks
+
+Referências de política de segurança e CI:
+
+*   [CI Security Checks](docs/ci-security-checks.md)
+*   [Guia de Migração Canônica](MIGRATION.md)
 
 ---
 
 ## 🤝 Contribuição
 
-Contribuições são bem-vindas! Seja corrigindo um bug (como nossas melhorias recentes na codificação UTF-8!) ou adicionando uma nova funcionalidade, sinta-se à vontade para abrir um Pull Request.
+Contribuições são bem-vindas. Seja corrigindo um bug ou adicionando uma nova funcionalidade de planejamento de builds, sinta-se à vontade para abrir um Pull Request.
 
 ## 📄 Licença
 

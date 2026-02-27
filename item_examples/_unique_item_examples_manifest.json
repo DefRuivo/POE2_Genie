@@ -1,0 +1,189 @@
+{
+  "snapshotDate": "2026-02-27",
+  "entries": [
+    {
+      "itemClass": "Amulets",
+      "fixtureFile": "unique_amulets.md",
+      "expectedName": "The Everlasting Gaze",
+      "sourceUrl": "https://poe2db.tw/us/The_Everlasting_Gaze",
+      "sourceType": "poe2db",
+      "validationStatus": "verified"
+    },
+    {
+      "itemClass": "Belts",
+      "fixtureFile": "unique_belts.md",
+      "expectedName": "Coward's Legacy",
+      "sourceUrl": "https://poe2db.tw/us/Cowards_Legacy",
+      "sourceType": "poe2db",
+      "validationStatus": "verified"
+    },
+    {
+      "itemClass": "Body Armours",
+      "fixtureFile": "unique_body_armours.md",
+      "expectedName": "Deepest Tower",
+      "sourceUrl": "https://poe2db.tw/us/Deepest_Tower",
+      "sourceType": "poe2db",
+      "validationStatus": "verified"
+    },
+    {
+      "itemClass": "Boots",
+      "fixtureFile": "unique_boots.md",
+      "expectedName": "Seven-League Step",
+      "sourceUrl": "https://poe2db.tw/us/Seven-League_Step",
+      "sourceType": "poe2db",
+      "validationStatus": "verified"
+    },
+    {
+      "itemClass": "Bows",
+      "fixtureFile": "unique_bows.md",
+      "expectedName": "Death's Harp",
+      "sourceUrl": "https://poe2db.tw/us/Deaths_Harp",
+      "sourceType": "poe2db",
+      "validationStatus": "verified"
+    },
+    {
+      "itemClass": "Bucklers",
+      "fixtureFile": "unique_bucklers.md",
+      "expectedName": "Horned Barrier",
+      "sourceUrl": "https://poe2db.tw/us/Horned_Barrier",
+      "sourceType": "poe2db",
+      "validationStatus": "verified"
+    },
+    {
+      "itemClass": "Charms",
+      "fixtureFile": "synthetic_unique_charms.md",
+      "expectedName": "Synthetic Charm Prototype",
+      "sourceUrl": "https://poe2db.tw/us/Unique_item",
+      "sourceType": "synthetic_temp",
+      "validationStatus": "pending_real_clipboard"
+    },
+    {
+      "itemClass": "Crossbows",
+      "fixtureFile": "unique_crossbows.md",
+      "expectedName": "Gaslantern's",
+      "sourceUrl": "https://poe2db.tw/us/Gaslaterns",
+      "sourceType": "poe2db",
+      "validationStatus": "verified"
+    },
+    {
+      "itemClass": "Foci",
+      "fixtureFile": "unique_foci.md",
+      "expectedName": "Ayah of Tawho'a",
+      "sourceUrl": "https://poe2db.tw/us/Ayah_of_Tawhoa",
+      "sourceType": "poe2db",
+      "validationStatus": "verified"
+    },
+    {
+      "itemClass": "Gloves",
+      "fixtureFile": "unique_gloves.md",
+      "expectedName": "Snakebite",
+      "sourceUrl": "https://poe2db.tw/us/Snakebite",
+      "sourceType": "poe2db",
+      "validationStatus": "verified"
+    },
+    {
+      "itemClass": "Helmets",
+      "fixtureFile": "unique_helmets.md",
+      "expectedName": "Alpha's Howl",
+      "sourceUrl": "https://poe2db.tw/us/Alphas_Howl",
+      "sourceType": "poe2db",
+      "validationStatus": "verified"
+    },
+    {
+      "itemClass": "Life Flasks",
+      "fixtureFile": "unique_life_flasks.md",
+      "expectedName": "Olroth's Resolve",
+      "sourceUrl": "https://poe2db.tw/us/Olroths_Resolve",
+      "sourceType": "poe2db",
+      "validationStatus": "verified"
+    },
+    {
+      "itemClass": "Mana Flasks",
+      "fixtureFile": "synthetic_unique_mana_flasks.md",
+      "expectedName": "Synthetic Mana Flask Prototype",
+      "sourceUrl": "https://poe2db.tw/us/Unique_item",
+      "sourceType": "synthetic_temp",
+      "validationStatus": "pending_real_clipboard"
+    },
+    {
+      "itemClass": "One Hand Maces",
+      "fixtureFile": "unique_one_hand_maces.md",
+      "expectedName": "Echoing Etchings",
+      "sourceUrl": "https://poe2db.tw/us/Echoing_Etchings",
+      "sourceType": "poe2db",
+      "validationStatus": "verified"
+    },
+    {
+      "itemClass": "Quarterstaves",
+      "fixtureFile": "unique_quarterstaves.md",
+      "expectedName": "Pillar of the Caged God",
+      "sourceUrl": "https://poe2db.tw/us/Pillar_of_the_Caged_God",
+      "sourceType": "poe2db",
+      "validationStatus": "verified"
+    },
+    {
+      "itemClass": "Quivers",
+      "fixtureFile": "unique_quivers.md",
+      "expectedName": "Maloney's Nightfall",
+      "sourceUrl": "https://poe2db.tw/us/Maloneys_Nightfall",
+      "sourceType": "poe2db",
+      "validationStatus": "verified"
+    },
+    {
+      "itemClass": "Rings",
+      "fixtureFile": "unique_rings.md",
+      "expectedName": "Dream Fragments",
+      "sourceUrl": "https://poe2db.tw/us/Dream_Fragments",
+      "sourceType": "poe2db",
+      "validationStatus": "verified"
+    },
+    {
+      "itemClass": "Sceptres",
+      "fixtureFile": "unique_sceptres.md",
+      "expectedName": "Font of Power",
+      "sourceUrl": "https://poe2db.tw/us/Font_of_Power",
+      "sourceType": "poe2db",
+      "validationStatus": "verified"
+    },
+    {
+      "itemClass": "Shields",
+      "fixtureFile": "unique_shields.md",
+      "expectedName": "The Surrender",
+      "sourceUrl": "https://poe2db.tw/us/The_Surrender",
+      "sourceType": "poe2db",
+      "validationStatus": "verified"
+    },
+    {
+      "itemClass": "Spears",
+      "fixtureFile": "unique_spears.md",
+      "expectedName": "The Last Lament",
+      "sourceUrl": "https://poe2db.tw/us/The_Last_Lament",
+      "sourceType": "poe2db",
+      "validationStatus": "verified"
+    },
+    {
+      "itemClass": "Staves",
+      "fixtureFile": "unique_staves.md",
+      "expectedName": "Atziri's Disdain",
+      "sourceUrl": "https://poe2db.tw/us/Atziris_Disdain",
+      "sourceType": "poe2db",
+      "validationStatus": "verified"
+    },
+    {
+      "itemClass": "Two Hand Maces",
+      "fixtureFile": "unique_two_hand_maces.md",
+      "expectedName": "Wings of Caelyn",
+      "sourceUrl": "https://poe2db.tw/us/Wings_of_Caelyn",
+      "sourceType": "poe2db",
+      "validationStatus": "verified"
+    },
+    {
+      "itemClass": "Wands",
+      "fixtureFile": "unique_wands.md",
+      "expectedName": "Lifesprig",
+      "sourceUrl": "https://poe2db.tw/us/Lifesprig",
+      "sourceType": "poe2db",
+      "validationStatus": "verified"
+    }
+  ]
+}

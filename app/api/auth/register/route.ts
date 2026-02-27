@@ -27,11 +27,11 @@ export async function POST(req: NextRequest) {
 
         const { t, lang } = getServerTranslator(req);
 
-        // Get localized format (e.g., "{name}'s Kitchen" or "Cozinha de {name}")
+        // Get localized format (e.g., "{name}'s Hideout")
         const kitchenNameFormat = t('auth.defaultKitchenName');
         const kitchenName = kitchenNameFormat.replace('{name}', name);
 
-        // Create User, linked to a new House via HouseholdMember
+        // Create user linked to a new hideout through membership.
         const user = await prisma.user.create({
             data: {
                 email,

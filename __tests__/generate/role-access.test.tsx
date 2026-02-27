@@ -1,6 +1,6 @@
 
 import { render, screen } from '@testing-library/react';
-import GeneratePage from '@/app/generate/page';
+import GeneratePage from '@/app/builds/craft/page';
 import { useCurrentMember } from '@/hooks/useCurrentMember';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/components/Providers';

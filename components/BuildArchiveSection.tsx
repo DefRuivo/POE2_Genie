@@ -1,0 +1,214 @@
+
+'use client';
+
+import React from 'react';
+import { BuildRecord } from '../types';
+import { storageService } from '../services/storageService';
+import { useTranslation } from '@/hooks/useTranslation';
+
+interface Props {
+  history: BuildRecord[];
+  onUpdate: () => void;
+  onViewRecipe?: (recipe: BuildRecord) => void;
+  isGuest?: boolean;
+}
+
+const BuildArchiveSection: React.FC<Props> = ({ history, onUpdate, onViewRecipe, isGuest }) => {
+  const { t } = useTranslation();
+
+  const [itemToDelete, setItemToDelete] = React.useState<string | null>(null);
+
+  const toggleFavorite = async (id: string) => {
+    await storageService.toggleBuildFavorite(id);
+    onUpdate();
+  };
+
+  const requestDelete = (id: string) => {
+    setItemToDelete(id);
+  };
+
+  const confirmDelete = async () => {
+    if (itemToDelete) {
+      await storageService.deleteBuild(itemToDelete);
+      setItemToDelete(null);
+      onUpdate();
+    }
+  };
+
+  if (history.length === 0) return null;
+
+  const resolveArchetype = (record: BuildRecord) => {
+    const raw = String(record.build_archetype || record.meal_type || '').toLowerCase().trim();
+    if (raw === 'league_starter' || raw === 'main' || raw === 'main course' || raw === 'maincourse') {
+      return 'league_starter';
+    }
+    if (raw === 'mapper' || raw === 'appetizer' || raw === 'starter') {
+      return 'mapper';
+    }
+    if (raw === 'bossing' || raw === 'dessert') {
+      return 'bossing';
+    }
+    if (raw === 'hybrid' || raw === 'snack') {
+      return 'hybrid';
+    }
+    return raw;
+  };
+
+  return (
+    <section className="bg-slate-50 rounded-[2.5rem] p-8 md:p-10 border border-slate-200">
+      <h2 className="text-2xl font-black text-slate-900 mb-8 flex items-center gap-3">
+        <i className="fas fa-book-open text-rose-500"></i>
+        {t('nav.recipes')}
+      </h2>
+
+      {/* Grid: 1 col on mobile, 3 cols on larger screens */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {history.map(recipe => (
+          <div
+            key={recipe.id}
+            className="bg-white rounded-[2rem] p-5 shadow-sm border border-slate-100 flex flex-col group hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+          >
+            {/* Image Area */}
+            <div
+              className={`relative h-48 rounded-2xl overflow-hidden mb-5 cursor-pointer bg-slate-900 flex items-center justify-center`}
+              onClick={() => onViewRecipe?.(recipe)}
+            >
+              <i className="fas fa-scroll text-slate-800 text-5xl"></i>
+
+              {/* Favorite Button */}
+              <button
+                onClick={(e) => { e.stopPropagation(); toggleFavorite(recipe.id); }}
+                className={`absolute top-4 right-4 w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg transition-all ${recipe.isFavorite ? 'bg-rose-500 text-white shadow-rose-200' : 'bg-white/90 text-slate-400 hover:text-rose-500 hover:bg-white'}`}
+              >
+                <i className={`fas fa-heart ${recipe.isFavorite ? '' : 'far'} text-lg`}></i>
+              </button>
+            </div>
+
+            {/* Content Area */}
+            <div
+              className="flex-1 cursor-pointer space-y-3 px-2"
+              onClick={() => onViewRecipe?.(recipe)}
+            >
+              {/* Metadata Badges */}
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border ${resolveArchetype(recipe) === 'league_starter'
+                    ? 'bg-rose-50 text-rose-600 border-rose-100'
+                    : resolveArchetype(recipe) === 'mapper'
+                      ? 'bg-indigo-50 text-indigo-600 border-indigo-100'
+                      : resolveArchetype(recipe) === 'bossing'
+                        ? 'bg-purple-50 text-purple-600 border-purple-100'
+                        : 'bg-slate-50 text-slate-600 border-slate-100'
+                    }`}>
+                    {(() => {
+                        const type = resolveArchetype(recipe);
+                        if (type === 'league_starter') return t('recipeForm.leagueStarter');
+                        if (type === 'mapper') return t('recipeForm.mapper');
+                        if (type === 'bossing') return t('recipeForm.bossing');
+                        if (type === 'hybrid') return t('recipeForm.hybrid');
+                        return recipe.meal_type || recipe.build_archetype;
+                    })()}
+                  </span>
+                  <span className="text-slate-400 text-xs font-bold flex items-center gap-1">
+                    <i className="far fa-calendar-alt"></i>
+                    {new Date(recipe.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+                
+                <div className="flex items-center gap-3">
+                  <span className="text-slate-500 text-xs font-bold flex items-center gap-1.5 bg-slate-50 px-2 py-1 rounded-md border border-slate-100 w-fit">
+                    <i className="far fa-clock text-slate-400"></i>
+                    {(recipe.setup_time_minutes ?? recipe.prep_time_minutes) ? `${recipe.setup_time_minutes ?? recipe.prep_time_minutes} min` : (recipe.setup_time || recipe.prep_time)}
+                  </span>
+
+                  {/* Available Translations Badges */}
+                  {recipe.translations && recipe.translations.length > 0 && (
+                    <div className="flex gap-1">
+                      {recipe.translations.map(t => (
+                        <span 
+                          key={t.id} 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.location.href = `/builds/${t.id}`;
+                          }}
+                          className="w-10 h-6 flex items-center justify-center bg-slate-100 rounded text-[9px] font-bold text-slate-500 border border-slate-200 hover:bg-rose-100 hover:text-rose-600 hover:border-rose-200 cursor-pointer uppercase"
+                          title={t.build_title || t.recipe_title}
+                        >
+                          {t.language === 'pt-BR' ? 'PT' : 'EN'}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <h3 className="font-black text-slate-900 text-xl md:text-2xl tracking-tight leading-snug group-hover:text-rose-600 transition-colors">
+                {recipe.build_title || recipe.recipe_title}
+              </h3>
+
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                <p className="text-slate-600 text-sm line-clamp-3 leading-relaxed font-medium">
+                  {recipe.build_reasoning || recipe.match_reasoning}
+                </p>
+              </div>
+            </div>
+
+            {/* Actions Footer */}
+            <div className="mt-8 flex justify-between items-center pt-5 border-t border-slate-100 px-2">
+              {!isGuest && (
+                <button
+                  onClick={() => requestDelete(recipe.id)}
+                  className="text-slate-400 hover:text-red-500 text-xs font-bold transition-colors flex items-center gap-2 px-2 py-1 hover:bg-red-50 rounded-lg"
+                >
+                  <i className="fas fa-trash"></i> {t('common.delete')}
+                </button>
+              )}
+              {isGuest && <div></div>} {/* Spacer if delete hidden */}
+
+              <button
+                onClick={() => onViewRecipe?.(recipe)}
+                className="flex items-center gap-2 px-5 py-2.5 bg-rose-50 text-rose-600 rounded-xl text-xs font-black uppercase tracking-wider hover:bg-rose-100 hover:text-rose-700 transition-all border border-rose-100"
+              >
+                {t('recipes.view')} <i className="fas fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Delete Confirmation Modal */}
+      {itemToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl space-y-6 animate-in zoom-in-95 duration-200 border border-slate-100">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500">
+                <i className="fas fa-exclamation-triangle text-2xl"></i>
+              </div>
+              <h3 className="text-xl font-black text-slate-900">{t('recipes.deleteTitle')}</h3>
+              <p className="text-slate-500 text-sm font-medium mt-2">
+                {t('recipes.deleteDesc')}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => setItemToDelete(null)}
+                className="py-3 px-4 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-colors"
+              >
+                {t('common.cancel')}
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="py-3 px-4 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition-colors shadow-lg shadow-red-200"
+              >
+                {t('common.delete')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+};
+
+export default BuildArchiveSection;
