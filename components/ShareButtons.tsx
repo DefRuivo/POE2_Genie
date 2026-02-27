@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { useTranslation } from '@/hooks/useTranslation';
 
@@ -9,7 +11,7 @@ interface ShareButtonsProps {
 
 export const ShareButtons: React.FC<ShareButtonsProps> = ({ 
     text, 
-    url = process.env.NEXT_PUBLIC_APP_URL || 'https://dinner.app', 
+    url = process.env.NEXT_PUBLIC_APP_URL || (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'),
     layout = 'icons'
 }) => {
     const { t } = useTranslation();
@@ -25,7 +27,7 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({
     const telegramUrl = `https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`;
 
     // Email
-    const emailSubject = 'Shared from Dinner App';
+    const emailSubject = 'Shared from POE2 Genie';
     const emailBody = `${text}\n\n${url}`;
     const emailUrl = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
 

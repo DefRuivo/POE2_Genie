@@ -1,7 +1,15 @@
-
+export type BuildArchetype = 'league_starter' | 'mapper' | 'bossing' | 'hybrid';
+export type BuildCostTier = 'cheap' | 'medium' | 'expensive' | 'mirror_of_kalandra';
+/** @deprecated Use BuildCostTier. */
+export type BuildComplexity = BuildCostTier;
+export type SetupTimePreference = 'quick' | 'plenty';
+export type BuildItemStatus = 'pending' | 'completed';
+/** @deprecated Use BuildArchetype. */
 export type MealType = 'appetizer' | 'main' | 'dessert' | 'snack';
-export type Difficulty = 'easy' | 'intermediate' | 'advanced' | 'chef';
-export type PrepTimePreference = 'quick' | 'plenty';
+/** @deprecated Use BuildCostTier. */
+export type Difficulty = 'easy' | 'intermediate' | 'advanced' | 'ascendant' | 'chef';
+/** @deprecated Use SetupTimePreference. */
+export type PrepTimePreference = SetupTimePreference;
 export type ReplenishmentRule = 'ALWAYS' | 'ONE_SHOT' | 'NEVER';
 export type MeasurementSystem = 'METRIC' | 'IMPERIAL';
 export type Language = 'en' | 'pt-BR';
@@ -58,33 +66,98 @@ export interface Ingredient {
   name: string;
 }
 
+export interface BuildEntry {
+  name: string;
+  quantity: string;
+  unit: string;
+}
+
+export interface BuildSessionContext {
+  party_member_ids: string[];
+  stash_gear_gems: string[];
+  requested_archetype: BuildArchetype;
+  cost_tier_preference: BuildCostTier;
+  setup_time_preference: SetupTimePreference;
+  build_notes?: string;
+  language?: string;
+  /** @deprecated Use cost_tier_preference. */
+  build_complexity?: BuildComplexity;
+}
+
+/**
+ * @deprecated Legacy compatibility shape accepted by old craft payloads.
+ * Use BuildSessionContext.
+ */
 export interface SessionContext {
-  who_is_eating: string[];
-  pantry_ingredients: string[];
-  requested_type: MealType;
-  difficulty_preference: Difficulty;
-  prep_time_preference: PrepTimePreference;
+  who_is_eating?: string[];
+  pantry_ingredients?: string[];
+  requested_type?: MealType | BuildArchetype;
+  difficulty_preference?: Difficulty | BuildCostTier;
+  prep_time_preference?: PrepTimePreference;
   observation?: string;
   measurement_system?: MeasurementSystem;
   language?: string;
+  party_member_ids?: string[];
+  stash_gear_gems?: string[];
+  requested_archetype?: BuildArchetype;
+  cost_tier_preference?: BuildCostTier;
+  /** @deprecated Use cost_tier_preference. */
+  build_complexity?: BuildComplexity;
+  setup_time_preference?: SetupTimePreference;
+  build_notes?: string;
 }
 
-// Raw output from the AI Generator
+// Raw output from AI (canonical)
+export interface GeneratedBuild {
+  analysis_log: string;
+  build_title: string;
+  build_reasoning: string;
+  gear_gems: BuildEntry[];
+  build_items: BuildEntry[];
+  build_steps: string[];
+  compliance_badge: boolean;
+  build_archetype: BuildArchetype;
+  build_cost_tier: BuildCostTier;
+  setup_time: string;
+  setup_time_minutes?: number | null;
+  build_image?: string;
+  language?: string;
+  /** @deprecated Use build_cost_tier. */
+  build_complexity?: BuildComplexity;
+}
+
+/**
+ * @deprecated Legacy compatibility payload.
+ * Use GeneratedBuild.
+ */
 export interface GeneratedRecipe {
   analysis_log: string;
   recipe_title: string;
   match_reasoning: string;
-  ingredients_from_pantry: { name: string; quantity: string; unit: string }[];
-  shopping_list: { name: string; quantity: string; unit: string }[];
+  ingredients_from_pantry: BuildEntry[];
+  shopping_list: BuildEntry[];
   step_by_step: string[];
   safety_badge: boolean;
-  meal_type: MealType;
-  difficulty: Difficulty;
+  meal_type: MealType | BuildArchetype;
+  difficulty: Difficulty | BuildCostTier;
   prep_time: string;
   prep_time_minutes?: number | null;
+  build_title?: string;
+  build_reasoning?: string;
+  gear_gems?: BuildEntry[];
+  build_items?: BuildEntry[];
+  build_steps?: string[];
+  compliance_badge?: boolean;
+  build_archetype?: BuildArchetype;
+  build_cost_tier?: BuildCostTier;
+  /** @deprecated Use build_cost_tier. */
+  build_complexity?: BuildComplexity;
+  setup_time?: string;
+  setup_time_minutes?: number | null;
+  build_image?: string;
 }
 
-// Frontend record extending generated data with DB fields
+// Frontend record extending legacy generated data with DB fields
 export interface RecipeRecord extends GeneratedRecipe {
   id: string;
   isFavorite: boolean; // Computed for the current member/user
@@ -97,8 +170,47 @@ export interface RecipeRecord extends GeneratedRecipe {
     id: string;
     language: Language;
     recipe_title: string;
+    build_title?: string;
   }[];
   prep_time_minutes?: number | null;
 }
 
-export type ViewState = 'home' | 'members' | 'pantry' | 'history' | 'shopping_list';
+export interface CanonicalBuildRecord extends GeneratedBuild {
+  id: string;
+  isFavorite: boolean;
+  createdAt: number;
+  image_base64?: string;
+  originalBuildId?: string | null;
+  translations?: {
+    id: string;
+    language: Language;
+    build_title: string;
+    recipe_title?: string;
+  }[];
+}
+
+// --- Canonical PoE aliases ---
+export interface Hideout extends Kitchen {}
+export interface PartyMember extends KitchenMember {}
+export interface StashItem extends PantryItem {}
+export interface BuildItem extends ShoppingItem {}
+export type BuildRecord = RecipeRecord &
+  Partial<Omit<CanonicalBuildRecord, 'translations'>> & {
+    translations?: {
+      id: string;
+      language: Language;
+      build_title?: string;
+      recipe_title?: string;
+    }[];
+  };
+
+export type ViewState =
+  | 'home'
+  | 'party'
+  | 'stash'
+  | 'builds'
+  | 'build_items'
+  | 'members'
+  | 'pantry'
+  | 'history'
+  | 'shopping_list';

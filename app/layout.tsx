@@ -7,8 +7,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Dinner? | Culinary Intelligence",
-  description: "Your Executive Chef and Food Safety Auditor.",
+  title: "POE2 Genie | Path of Exile Build Intelligence",
+  description: "Your hideout build strategist for Party, Stash, and Checklist.",
 };
 
 export default function RootLayout({
@@ -18,9 +18,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-      </head>
       <body className="bg-slate-50 text-slate-900 antialiased">
         <AppProvider>
           <LayoutWrapper>

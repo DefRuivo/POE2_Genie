@@ -248,33 +248,6 @@ export default function SettingsPage() {
                             </div>
                         </div>
 
-                        <div className="space-y-4">
-                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('settings.measurement')}</label>
-                            <div className="flex gap-4">
-                                <button
-                                    type="button"
-                                    onClick={() => setMeasurementSystem('METRIC')}
-                                    className={`flex-1 p-4 rounded-xl border-2 transition-all font-black flex flex-col items-center gap-2 ${measurementSystem === 'METRIC'
-                                        ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                                        : 'border-slate-100 bg-white text-slate-400 hover:border-slate-300'
-                                        }`}
-                                >
-                                    <span className="text-2xl">⚖️</span>
-                                    {t('settings.metric')}
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setMeasurementSystem('IMPERIAL')}
-                                    className={`flex-1 p-4 rounded-xl border-2 transition-all font-black flex flex-col items-center gap-2 ${measurementSystem === 'IMPERIAL'
-                                        ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                                        : 'border-slate-100 bg-white text-slate-400 hover:border-slate-300'
-                                        }`}
-                                >
-                                    <span className="text-2xl">lbs</span>
-                                    {t('settings.imperial')}
-                                </button>
-                            </div>
-                        </div>
                     </section>
                 </div>
 

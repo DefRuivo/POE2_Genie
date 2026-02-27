@@ -10,7 +10,7 @@ export const invitationEmailTemplate = (
   ctaText: string,
   isExistingUser: boolean
 ) => {
-  const title = isExistingUser ? `You've been added to a kitchen` : `You've been invited to a kitchen`;
+  const title = isExistingUser ? `You've been added to a hideout` : `You've been invited to a hideout`;
   const safeInviterName = escapeHtml(inviterName);
   const safeKitchenName = escapeHtml(kitchenName);
   const safeInviteCode = inviteCode ? escapeHtml(inviteCode) : '';
@@ -19,7 +19,7 @@ export const invitationEmailTemplate = (
   
   const inviteCodeSection = !isExistingUser && safeInviteCode
     ? `<div class="info-box" style="text-align: center;">
-         <p style="margin-bottom: 5px; font-size: 14px; color: #4a5568;">Your Join Code:</p>
+         <p style="margin-bottom: 5px; font-size: 14px; color: #4a5568;">Your Hideout Code:</p>
          <p style="font-size: 24px; font-weight: bold; letter-spacing: 2px; margin: 0; color: #1a202c;">${safeInviteCode}</p>
        </div>`
     : '';
@@ -27,12 +27,12 @@ export const invitationEmailTemplate = (
   const content = `
     <h2>${title}</h2>
     <p>Hello,</p>
-    <p><strong>${safeInviterName}</strong> has invited you to join their kitchen "<strong>${safeKitchenName}</strong>".</p>
+    <p><strong>${safeInviterName}</strong> has invited you to join their hideout "<strong>${safeKitchenName}</strong>".</p>
     
     ${inviteCodeSection}
     
     <p>${isExistingUser 
-      ? 'Log in to your account to access the kitchen.' 
+      ? 'Log in to your account to access the hideout.' 
       : 'To accept the invitation, please create an account using the button below.'
     }</p>
     

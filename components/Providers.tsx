@@ -1,21 +1,33 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
-import { KitchenMember, MealType, Difficulty, PrepTimePreference, PantryItem, Language } from '../types';
+import {
+    BuildCostTier,
+    Difficulty,
+    Language,
+    MealType,
+    PartyMember,
+    PrepTimePreference,
+    StashItem,
+} from '../types';
 import { storageService } from '../services/storageService';
+import { normalizeBuildCostTier, toLegacyDifficulty } from '@/lib/build-contract';
 
 
 interface AppContextType {
-    members: KitchenMember[];
-    setMembers: React.Dispatch<React.SetStateAction<KitchenMember[]>>;
-    pantry: PantryItem[];
-    setPantry: React.Dispatch<React.SetStateAction<PantryItem[]>>;
+    members: PartyMember[];
+    setMembers: React.Dispatch<React.SetStateAction<PartyMember[]>>;
+    pantry: StashItem[];
+    setPantry: React.Dispatch<React.SetStateAction<StashItem[]>>;
     activeDiners: string[];
     setActiveDiners: React.Dispatch<React.SetStateAction<string[]>>;
     mealType: MealType;
     setMealType: React.Dispatch<React.SetStateAction<MealType>>;
+    costTier: BuildCostTier;
+    setCostTier: React.Dispatch<React.SetStateAction<BuildCostTier>>;
+    /** @deprecated Use costTier/setCostTier. */
     difficulty: Difficulty;
+    /** @deprecated Use setCostTier. */
     setDifficulty: React.Dispatch<React.SetStateAction<Difficulty>>;
     prepTime: PrepTimePreference;
     setPrepTime: React.Dispatch<React.SetStateAction<PrepTimePreference>>;
@@ -25,22 +37,54 @@ interface AppContextType {
     setMeasurementSystem: React.Dispatch<React.SetStateAction<'METRIC' | 'IMPERIAL'>>;
 }
 
-const AppContext = createContext<AppContextType | undefined>(undefined);
+const noopSetter = <T,>(_value: React.SetStateAction<T>) => undefined;
 
-export function AppProvider({ children }: { children: React.ReactNode }) {
-    const pathname = usePathname();
-    const router = useRouter();
+const defaultAppContext: AppContextType = {
+    members: [],
+    setMembers: noopSetter as React.Dispatch<React.SetStateAction<PartyMember[]>>,
+    pantry: [],
+    setPantry: noopSetter as React.Dispatch<React.SetStateAction<StashItem[]>>,
+    activeDiners: [],
+    setActiveDiners: noopSetter as React.Dispatch<React.SetStateAction<string[]>>,
+    mealType: 'main',
+    setMealType: noopSetter as React.Dispatch<React.SetStateAction<MealType>>,
+    costTier: 'medium',
+    setCostTier: noopSetter as React.Dispatch<React.SetStateAction<BuildCostTier>>,
+    difficulty: 'intermediate',
+    setDifficulty: noopSetter as React.Dispatch<React.SetStateAction<Difficulty>>,
+    prepTime: 'quick',
+    setPrepTime: noopSetter as React.Dispatch<React.SetStateAction<PrepTimePreference>>,
+    language: 'en',
+    setLanguage: noopSetter as React.Dispatch<React.SetStateAction<Language>>,
+    measurementSystem: 'METRIC',
+    setMeasurementSystem: noopSetter as React.Dispatch<React.SetStateAction<'METRIC' | 'IMPERIAL'>>,
+};
+
+const AppContext = createContext<AppContextType>(defaultAppContext);
+
+function AppProviderClient({ children }: { children: React.ReactNode }) {
     // Initial state (Empty - Load from DB)
-    const [members, setMembers] = useState<KitchenMember[]>([]);
+    const [members, setMembers] = useState<PartyMember[]>([]);
 
-    const [pantry, setPantry] = useState<PantryItem[]>([]);
+    const [pantry, setPantry] = useState<StashItem[]>([]);
     const [activeDiners, setActiveDiners] = useState<string[]>([]);
     const [mealType, setMealType] = useState<MealType>('main');
-    const [difficulty, setDifficulty] = useState<Difficulty>('intermediate');
+    const [costTier, setCostTier] = useState<BuildCostTier>('medium');
     const [prepTime, setPrepTime] = useState<PrepTimePreference>('quick');
     const [measurementSystem, setMeasurementSystem] = useState<'METRIC' | 'IMPERIAL'>('METRIC');
 
     const [language, setLanguage] = useState<Language>('en');
+    const difficulty = toLegacyDifficulty(costTier) as Difficulty;
+
+    const setDifficulty: React.Dispatch<React.SetStateAction<Difficulty>> = (value) => {
+        setCostTier((previousCostTier) => {
+            const previousLegacyDifficulty = toLegacyDifficulty(previousCostTier) as Difficulty;
+            const nextLegacyDifficulty = typeof value === 'function'
+                ? (value as (prevState: Difficulty) => Difficulty)(previousLegacyDifficulty)
+                : value;
+            return normalizeBuildCostTier(nextLegacyDifficulty);
+        });
+    };
 
     // Detect browser language on mount
     useEffect(() => {
@@ -54,6 +98,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     // Load initial data from storageService if available (optional enhancement)
     useEffect(() => {
+        const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
+
         // Skip fetching data on auth pages, but we can still check local storage or existing session later
         if (pathname === '/login' || pathname === '/register' || pathname === '/recover' || pathname === '/verify-email' || pathname === '/reset-password') {
             return;
@@ -70,12 +116,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
                     setMeasurementSystem(storedUser.user.measurementSystem as 'METRIC' | 'IMPERIAL');
                 }
 
-                const storedPantry = await storageService.getPantry();
+                const storedPantry = await storageService.getStash();
                 if (storedPantry && storedPantry.length > 0) {
                     setPantry(storedPantry);
                 }
 
-                const storedMembers = await storageService.getKitchenMembers();
+                const storedMembers = await storageService.getPartyMembers();
                 if (storedMembers && storedMembers.length > 0) {
                     setMembers(storedMembers);
                 }
@@ -83,15 +129,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
                 // If unauthorized, just ignore (user likely session expired or not logged in yet)
                 if (e.message.includes('Unauthorized') || e.message.includes('401')) {
                     // Redirect to login if potentially valid session but unauthorized (expired)
-                    // Use window.location to ensure full refresh and clear state if needed, or router.push
-                    router.push('/login');
+                    // Use window.location to ensure full refresh and clear state if needed.
+                    if (typeof window !== 'undefined') {
+                        window.location.assign('/login');
+                    }
                 } else {
                     console.error("Failed to load initial data", e);
                 }
             }
         }
         loadData();
-    }, [pathname, router]);
+    }, []);
 
     return (
         <AppContext.Provider value={{
@@ -99,6 +147,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
             pantry, setPantry,
             activeDiners, setActiveDiners,
             mealType, setMealType,
+            costTier, setCostTier,
             difficulty, setDifficulty,
             prepTime, setPrepTime,
 
@@ -111,10 +160,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     );
 }
 
-export function useApp() {
-    const context = useContext(AppContext);
-    if (context === undefined) {
-        throw new Error('useApp must be used within an AppProvider');
+export function AppProvider({ children }: { children: React.ReactNode }) {
+    // Avoid stateful client hooks during static prerender.
+    if (typeof window === 'undefined') {
+        return (
+            <AppContext.Provider value={defaultAppContext}>
+                {children}
+            </AppContext.Provider>
+        );
     }
-    return context;
+
+    return <AppProviderClient>{children}</AppProviderClient>;
+}
+
+export function useApp() {
+    return useContext(AppContext);
 }

@@ -28,7 +28,7 @@ export const passwordChangedEmailTemplate = (name: string, appUrl: string, langu
 <body>
   <div class="container">
     <div class="header">
-      <h1 style="color: #111827; margin: 0;">Dinner App</h1>
+      <h1 style="color: #111827; margin: 0;">POE2 Genie</h1>
     </div>
     <div class="content">
       <h2 style="margin-top: 0; color: #1f2937;">${t.title}</h2>
@@ -43,7 +43,7 @@ export const passwordChangedEmailTemplate = (name: string, appUrl: string, langu
       </p>
     </div>
     <div class="footer">
-      <p>Dinner App - Smart Culinary Intelligence</p>
+      <p>POE2 Genie - Path of Exile Build Intelligence</p>
       <p>${t.footer}</p>
     </div>
   </div>

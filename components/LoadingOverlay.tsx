@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from '@/hooks/useTranslation';
 
@@ -49,7 +51,7 @@ export const LoadingOverlay: React.FC<Props> = ({ isVisible }) => {
         <div className="relative">
             {/* Animated Icon */}
             <div className="w-24 h-24 bg-rose-600 rounded-full mx-auto flex items-center justify-center shadow-xl shadow-rose-200 mb-6 animate-bounce relative">
-            <i className="fas fa-hat-chef text-4xl text-white"></i>
+            <i className="fas fa-wand-magic-sparkles text-4xl text-white"></i>
             <div className="absolute inset-0 border-4 border-rose-400/30 rounded-full animate-ping"></div>
             </div>
 

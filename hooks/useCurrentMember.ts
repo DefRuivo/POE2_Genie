@@ -1,4 +1,6 @@
 
+'use client';
+
 import { useState, useEffect } from 'react';
 import { storageService } from '@/services/storageService';
 import { KitchenMember } from '@/types';

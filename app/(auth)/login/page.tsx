@@ -51,7 +51,7 @@ export default function LoginPage() {
             <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-10 border border-slate-100">
                 <div className="text-center mb-10">
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-rose-100 text-rose-600 mb-6 shadow-lg shadow-rose-100">
-                        <i className="fas fa-utensils text-2xl"></i>
+                        <i className="fas fa-shield-halved text-2xl"></i>
                     </div>
                     <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-2">{t('auth.loginTitle')}</h1>
                     <p className="text-slate-500 font-medium">{t('auth.loginSubtitle')}</p>

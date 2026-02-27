@@ -1,37 +1,37 @@
 
-# Dinner? 🥗
-**Acabe com a indecisão e cozinhe melhor.**
+# POE2 Genie ⚔️
+**Planeje builds melhores para sua party no hideout.**
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Next.js](https://img.shields.io/badge/Next.js-16.0-black)
 ![Prisma](https://img.shields.io/badge/Prisma-ORM-blueviolet)
 ![Gemini AI](https://img.shields.io/badge/AI-Gemini%201.5-orange)
 
-**Dinner?** é um assistente de cozinha inteligente, desenvolvido para resolver a eterna pergunta: *"O que vamos comer hoje?"*. Ele combina uma despensa digital, listas de compras colaborativas e um poderoso Chef IA para transformar os ingredientes que você já tem em receitas deliciosas e personalizadas.
+**POE2 Genie** é um assistente inteligente para Path of Exile, criado para planejar builds melhores. Ele combina party do hideout, controle de stash, build items e um estrategista IA para transformar seus recursos em builds personalizadas e práticas.
 
 ---
 
 ## ✨ Funcionalidades
 
-### 👨‍🍳 Chef Executivo IA
-*   **Geração Inteligente**: Cria receitas únicas baseadas no que você *realmente* tem na despensa.
-*   **Personalizado**: Respeita restrições alimentares, tipos de refeição (Rápida, Jantar, Lanche) e tempo de preparo.
-*   **Modo Chef**: Guia interativo passo a passo para você não se perder no preparo.
-*   **Cozinha Global**: Traduza instantaneamente qualquer receita para o seu idioma preferido (Português/Inglês).
+### 🧠 Estrategista IA de Builds
+*   **Craft Inteligente**: Cria builds práticas com base no que você *realmente* tem no stash.
+*   **Foco na Party**: Respeita restrições da party, archetypes e tempo de setup.
+*   **Modo Theorycrafter**: Suporte a planejamento avançado e técnico de builds.
+*   **Tradução Global**: Traduza instantaneamente qualquer build para seu idioma (Português/Inglês).
 
-### 🏠 Cozinhas Conectadas
-*   **Sincronia Familiar**: Convide familiares ou colegas de quarto para sua cozinha digital.
-*   **Gestão Compartilhada**: Todos veem a mesma despensa e lista de compras em tempo real.
-*   **Controle de Acesso**: Gerencie permissões com funções de Administrador e Membro.
+### 🏠 Hideouts Conectados
+*   **Sincronia da Party**: Convide amigos para o hideout e compartilhe o contexto.
+*   **Gestão Compartilhada**: Todos veem o mesmo stash e Build Items em tempo real.
+*   **Controle de Acesso**: Gerencie permissões com funções de Party Leader e Party Member.
 
-### 🛒 Compras Inteligentes
-*   **Fluxo Contínuo**: Adicione ingredientes faltantes das receitas direto para sua lista de compras.
-*   **Organização Esperta**: Visualize itens filtrados por receita ou veja a lista geral.
-*   **Compartilhamento Fácil**: Copie sua lista filtrada para a área de transferência e mande no WhatsApp.
+### 🛒 Fluxo de Build Items
+*   **Fluxo Contínuo**: Adicione gear/gems faltantes das builds direto em Build Items.
+*   **Organização Esperta**: Filtre itens manuais ou vinculados a builds.
+*   **Compartilhamento Fácil**: Copie a lista filtrada para compartilhar no WhatsApp.
 
-### 🍱 Despensa Digital
-*   **Inventário na Mão**: Saiba exatamente o que tem na geladeira sem precisar abrir a porta.
-*   **Desperdício Zero**: A IA prioriza ingredientes que você já possui, economizando dinheiro e evitando desperdício.
+### 📦 Controle de Stash
+*   **Inventário na Mão**: Mantenha visibilidade completa do que já existe no stash.
+*   **Sugestões Inteligentes**: A IA prioriza o que você já possui antes de sugerir novos itens.
 
 ---
 
@@ -59,8 +59,8 @@ Construído com tecnologias web modernas para performance e escala:
 
 1.  **Clone o repositório**:
     ```bash
-    git clone https://github.com/imakecodes/dinner.git
-    cd dinner
+    git clone https://github.com/DefRuivo/POE2_Genie.git
+    cd POE2_Genie
     ```
 
 2.  **Configure o ambiente**:
@@ -85,13 +85,13 @@ Construído com tecnologias web modernas para performance e escala:
     pnpm dev
     ```
 
-Acesse `http://localhost:3000` e comece a cozinhar!
+Acesse `http://localhost:3000` e comece a craftar builds.
 
 ---
 
 ## 🤝 Contribuição
 
-Contribuições são bem-vindas! Seja corrigindo um bug (como nossas melhorias recentes na codificação UTF-8!) ou adicionando uma nova funcionalidade, sinta-se à vontade para abrir um Pull Request.
+Contribuições são bem-vindas. Seja corrigindo um bug ou adicionando uma nova funcionalidade de planejamento de builds, sinta-se à vontade para abrir um Pull Request.
 
 ## 📄 Licença
 

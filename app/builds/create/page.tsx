@@ -1,0 +1,62 @@
+"use client";
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import BuildForm from '@/components/BuildForm';
+import { storageService } from '@/services/storageService';
+import { useTranslation } from '@/hooks/useTranslation';
+
+export default function CreateBuildPage() {
+    const router = useRouter();
+    const { t } = useTranslation();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleSubmit = async (formData: any) => {
+        setIsSubmitting(true);
+        try {
+            // Prepare data for API
+            const newBuild = {
+                ...formData,
+                isFavorite: false, // Default
+                dishImage: '', // Placeholder
+                // Ensure array structure is what API expects if using JSON in Prisma for reading
+                // The API POST route creates relations from these arrays
+            };
+
+            const savedBuild = await storageService.saveBuild(newBuild);
+            router.push(`/builds/${savedBuild.id}`);
+            // Note: Ideally redirect to the specific build, but ID is generated on server for POST.
+            // We could await result and get ID if storageService returns it.
+            // For now home/history is fine.
+        } catch (error) {
+            console.error("Failed to create build:", error);
+            alert(t('common.error'));
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    return (
+        <div className="min-h-screen bg-slate-50 selection:bg-rose-100 pb-20">
+            <header className="bg-white border-b border-slate-200 mb-8">
+                <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-4">
+                    <Link href="/" className="text-slate-400 hover:text-slate-600 transition-colors">
+                        <i className="fas fa-arrow-left text-xl"></i>
+                    </Link>
+                    <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+                        {t('recipeForm.titleCreate')}
+                    </h1>
+                </div>
+            </header>
+
+            <main className="max-w-7xl mx-auto px-4">
+                <BuildForm
+                    title={t('recipeForm.titleCreate')}
+                    onSubmit={handleSubmit}
+                    isSubmitting={isSubmitting}
+                />
+            </main>
+        </div>
+    );
+}

@@ -6,7 +6,7 @@ export const verificationEmailTemplate = (verificationUrl: string, language: str
   const isPt = language.toLowerCase().startsWith('pt');
 
   const title = isPt ? 'Verifique seu endereço de email' : 'Verify your email address';
-  const heading = isPt ? 'Bem-vindo ao Dinner Chef AI!' : 'Welcome to Dinner Chef AI!';
+  const heading = isPt ? 'Bem-vindo ao POE2 Genie!' : 'Welcome to POE2 Genie!';
   const bodyText = isPt
     ? 'Estamos felizes em ter você a bordo. Para começar, verifique seu endereço de email clicando no botão abaixo.'
     : "We're excited to have you on board. To get started, please verify your email address by clicking the button below.";
@@ -15,8 +15,8 @@ export const verificationEmailTemplate = (verificationUrl: string, language: str
     ? 'Se o botão acima não funcionar, copie e cole este link no seu navegador:'
     : "If the button above doesn't work, copy and paste this link into your browser:";
   const ignoreText = isPt
-    ? 'Se você não se cadastrou no Dinner Chef AI, ignore este email.'
-    : 'If you did not sign up for Dinner Chef AI, please ignore this email.';
+    ? 'Se você não se cadastrou no POE2 Genie, ignore este email.'
+    : 'If you did not sign up for POE2 Genie, please ignore this email.';
 
   const safeVerificationUrl = escapeHtml(verificationUrl);
   const content = `

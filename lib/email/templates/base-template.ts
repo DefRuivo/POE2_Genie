@@ -147,16 +147,16 @@ export const baseTemplate = (content: string, title: string) => {
   <div class="container">
     <div class="header">
       <div class="logo-container">
-        <div class="logo-icon">🍴</div>
-        <span class="logo-text">Dinner?</span>
+        <div class="logo-icon">🛡️</div>
+        <span class="logo-text">POE2 Genie</span>
       </div>
     </div>
     <div class="content">
       ${content}
     </div>
     <div class="footer">
-      &copy; ${new Date().getFullYear()} Dinner Chef AI.<br>
-      Your Executive Chef and Food Safety Auditor.
+      &copy; ${new Date().getFullYear()} POE2 Genie.<br>
+      Your hideout build strategist.
     </div>
   </div>
 </body>

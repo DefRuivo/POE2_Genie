@@ -1,8 +1,29 @@
 services:
+  mysql:
+    image: mariadb:11.4
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-dinner}
+      MYSQL_USER: ${MYSQL_USER:-user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-pass}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -u$$MYSQL_USER -p$$MYSQL_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
   app:
     build:
       context: .
       target: runner-dev
+    depends_on:
+      mysql:
+        condition: service_healthy
     volumes:
       - .:/app
       - /app/node_modules
@@ -11,3 +32,8 @@ services:
       - .env
     ports:
       - "${APP_PORT:-3000}:${APP_PORT:-3000}"
+    command: >
+      sh -lc "echo 'Installing deps (pnpm install) on startup...'; pnpm install; npx prisma generate; pnpm db:push; pnpm run dev"
+
+volumes:
+  mysql_data:

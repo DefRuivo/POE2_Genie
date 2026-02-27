@@ -7,8 +7,8 @@ import { storageService } from '../../services/storageService';
 // Mock storageService
 jest.mock('../../services/storageService', () => ({
   storageService: {
-    toggleFavorite: jest.fn(),
-    deleteRecipe: jest.fn(),
+    toggleBuildFavorite: jest.fn(),
+    deleteBuild: jest.fn(),
   },
 }));
 
@@ -57,7 +57,7 @@ describe('HistorySection', () => {
     jest.clearAllMocks();
   });
 
-  it('renders list of recipes', () => {
+  it('renders list of builds', () => {
     render(<HistorySection history={mockRecipes} onUpdate={mockUpdate} onViewRecipe={mockView} />);
 
     expect(screen.getByText('Recipe 1')).toBeInTheDocument();
@@ -83,7 +83,7 @@ describe('HistorySection', () => {
     if (firstBtn) {
       fireEvent.click(firstBtn);
       // It calls the service directly inside RecipeCard, so we expect storageService call
-      await waitFor(() => expect(storageService.toggleFavorite).toHaveBeenCalledWith('1'));
+      await waitFor(() => expect(storageService.toggleBuildFavorite).toHaveBeenCalledWith('1'));
     }
   });
 
@@ -93,11 +93,11 @@ describe('HistorySection', () => {
     const deleteButtons = screen.getAllByText('Delete');
     fireEvent.click(deleteButtons[0]);
 
-    expect(screen.getByText('Delete Recipe?')).toBeInTheDocument();
+    expect(screen.getByText('Delete Build?')).toBeInTheDocument();
     expect(screen.getByText(/Are you sure/)).toBeInTheDocument();
   });
 
-  it('deletes recipe after confirmation', async () => {
+  it('deletes build after confirmation', async () => {
     render(<HistorySection history={mockRecipes} onUpdate={mockUpdate} onViewRecipe={mockView} />);
 
     const deleteButtons = screen.getAllByText('Delete');
@@ -108,7 +108,7 @@ describe('HistorySection', () => {
     fireEvent.click(confirmDelete);
 
     await waitFor(() => {
-      expect(storageService.deleteRecipe).toHaveBeenCalledWith('1');
+      expect(storageService.deleteBuild).toHaveBeenCalledWith('1');
       expect(mockUpdate).toHaveBeenCalled();
     });
   });

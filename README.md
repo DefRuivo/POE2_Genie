@@ -1,37 +1,37 @@
 
-# Dinner? 🥗
-**Eliminate decision fatigue and cook smarter.**
+# POE2 Genie ⚔️
+**Plan smarter builds for your hideout party.**
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Next.js](https://img.shields.io/badge/Next.js-16.0-black)
 ![Prisma](https://img.shields.io/badge/Prisma-ORM-blueviolet)
 ![Gemini AI](https://img.shields.io/badge/AI-Gemini%201.5-orange)
 
-**Dinner?** is an intelligent, AI-powered kitchen assistant designed to solve the eternal question: *"What are we eating today?"*. It combines a digital pantry, collaborative shopping lists, and a powerful AI Chef to turn your available ingredients into delicious, personalized recipes.
+**POE2 Genie** is an intelligent, AI-powered Path of Exile companion for building stronger characters. It combines hideout party profiles, stash tracking, build items, and an AI build strategist to turn your available resources into practical, personalized builds.
 
 ---
 
 ## ✨ Features
 
-### 👨‍🍳 AI Executive Chef
-*   **Intelligent Generation**: Creates unique recipes based on what you *actually* have in your pantry.
-*   **Personalized**: Respects dietary restrictions, meal types (Quick, Fancy, Snack), and prep time preferences.
-*   **Chef Mode**: Step-by-step interactive cooking guide to keep you on track.
-*   **Global Kitchen**: Instantly translate any recipe into your preferred language (English/Portuguese).
+### 🧠 AI Build Strategist
+*   **Intelligent Crafting**: Creates practical builds from what you *actually* have in your stash.
+*   **Party-Aware**: Respects party restrictions, preferred archetypes, and setup time preferences.
+*   **Theorycrafter Mode**: Supports advanced and technical build planning.
+*   **Global Translation**: Instantly translate any build into your preferred language (English/Portuguese).
 
-### 🏠 Connected Kitchens
-*   **Family Sync**: Invite family members or roommates to your digital kitchen.
-*   **Shared Management**: Everyone sees the same pantry and shopping list.
-*   **Role Control**: Manage permissions with Admin and Member roles.
+### 🏠 Connected Hideouts
+*   **Party Sync**: Invite friends to your hideout and manage shared context.
+*   **Shared Management**: Everyone sees the same stash and build items.
+*   **Role Control**: Manage permissions with Party Leader and Party Member roles.
 
-### 🛒 Smart Shopping
-*   **Seamless Workflow**: Add ingredients from recipes directly to your shopping list.
-*   **Smart Sorting**: Organize items by category or recipe source.
-*   **Easy Sharing**: Copy your filtered list to clipboard to share via WhatsApp or text.
+### 🛒 Build Items Workflow
+*   **Seamless Flow**: Add missing gear/gems from builds directly to Build Items.
+*   **Smart Filtering**: Organize items by manual entries or linked builds.
+*   **Easy Sharing**: Copy your filtered list to share via WhatsApp or text.
 
-### 🍱 Digital Pantry
-*   **Track Inventory**: Know exactly what's in your fridge without opening the door.
-*   **Minimize Waste**: The AI prioritizes ingredients you already have, saving you money and reducing food waste.
+### 📦 Stash Tracking
+*   **Track Inventory**: Keep your stash visibility up to date.
+*   **Smarter Suggestions**: AI prioritizes what you already have before suggesting new items.
 
 ---
 
@@ -59,8 +59,8 @@ Built with modern web technologies for performance and scale:
 
 1.  **Clone the repository**:
     ```bash
-    git clone https://github.com/imakecodes/dinner.git
-    cd dinner
+    git clone https://github.com/DefRuivo/POE2_Genie.git
+    cd POE2_Genie
     ```
 
 2.  **Set up environment**:
@@ -85,13 +85,13 @@ Built with modern web technologies for performance and scale:
     pnpm dev
     ```
 
-Visit `http://localhost:3000` to start cooking!
+Visit `http://localhost:3000` to start crafting builds.
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions! Whether you're fixing a bug (like our recent UTF-8 encoding improvements!) or adding a new feature (like our new specific recipe filters), feel free to open a Pull Request.
+We welcome contributions. Whether you're fixing a bug or adding a new build-planning feature, feel free to open a Pull Request.
 
 ## 📄 License
 

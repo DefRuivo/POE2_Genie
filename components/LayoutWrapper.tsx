@@ -1,17 +1,25 @@
 "use client";
 
-import React, { useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
 
-
-export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
+function LayoutWrapperClient({ children }: { children: React.ReactNode }) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [pathname, setPathname] = useState('');
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            setPathname(window.location.pathname);
+        }
+    }, []);
+
+    const navigate = (path: string) => {
+        if (typeof window !== 'undefined') {
+            window.location.assign(path);
+        }
+    };
 
     // Hide Header/Sidebar on auth pages
     // Using simple includes check. Can be robustified if needed.
@@ -24,7 +32,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                     isOpen={isSidebarOpen}
                     onClose={() => setIsSidebarOpen(false)}
                     onNavigate={(path) => {
-                        router.push(path);
+                        navigate(path);
                         setIsSidebarOpen(false);
                     }}
                 />
@@ -35,7 +43,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                 {!isAuthPage && (
                     <Header
                         onMenuClick={() => setIsSidebarOpen(true)}
-                        onHomeClick={() => router.push('/')}
+                        onHomeClick={() => navigate('/')}
                     />
                 )}
 
@@ -47,4 +55,13 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
             </div>
         </>
     );
+}
+
+export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
+    // Avoid stateful client hooks during static prerender.
+    if (typeof window === 'undefined') {
+        return <>{children}</>;
+    }
+
+    return <LayoutWrapperClient>{children}</LayoutWrapperClient>;
 }

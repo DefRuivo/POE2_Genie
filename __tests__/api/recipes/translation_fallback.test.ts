@@ -1,7 +1,7 @@
 
 import { POST } from '@/app/api/recipes/[id]/translate/route';
 import { prisma } from '@/lib/prisma';
-import { translateRecipe } from '@/services/geminiService';
+import { translateBuild } from '@/services/geminiService';
 import { NextRequest } from 'next/server';
 
 jest.mock('@/lib/prisma', () => ({
@@ -82,7 +82,7 @@ describe('Recipe Translation Fallback Logic', () => {
 
     it('should fallback to original shopping items when AI returns an empty list', async () => {
         const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-        (translateRecipe as jest.Mock).mockResolvedValue(mockTranslatedDataEmptyList);
+        (translateBuild as jest.Mock).mockResolvedValue(mockTranslatedDataEmptyList);
 
         const req = new NextRequest('http://localhost/api/translate', {
             method: 'POST',

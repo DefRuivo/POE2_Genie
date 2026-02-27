@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
         const targetId = kitchenId || houseId;
 
         if (!targetId) {
-            return NextResponse.json({ message: 'Kitchen ID is required' }, { status: 400 });
+            return NextResponse.json({ message: 'Hideout ID is required' }, { status: 400 });
         }
 
         const token = request.cookies.get('auth_token')?.value;
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
         });
 
         if (!membership || membership.kitchen.deletedAt) {
-            return NextResponse.json({ message: 'User is not a member of this kitchen' }, { status: 403 });
+            return NextResponse.json({ message: 'User is not a member of this hideout' }, { status: 403 });
         }
 
         // Persist the selection

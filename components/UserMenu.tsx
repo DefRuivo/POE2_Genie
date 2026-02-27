@@ -23,8 +23,9 @@ export const UserMenu: React.FC = () => {
     useEffect(() => {
         loadUser();
 
-        const handleKitchensUpdated = () => loadUser();
-        window.addEventListener('kitchens-updated', handleKitchensUpdated);
+        const handleHideoutsUpdated = () => loadUser();
+        window.addEventListener('hideouts-updated', handleHideoutsUpdated);
+        window.addEventListener('kitchens-updated', handleHideoutsUpdated);
 
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -34,7 +35,8 @@ export const UserMenu: React.FC = () => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
-            window.removeEventListener('kitchens-updated', handleKitchensUpdated);
+            window.removeEventListener('hideouts-updated', handleHideoutsUpdated);
+            window.removeEventListener('kitchens-updated', handleHideoutsUpdated);
         };
     }, []);
 
@@ -49,10 +51,10 @@ export const UserMenu: React.FC = () => {
 
     const handleSwitchKitchen = async (kitchenId: string) => {
         try {
-            await storageService.switchKitchen(kitchenId);
+            await storageService.switchHideout(kitchenId);
             window.location.reload();
         } catch (err) {
-            console.error("Failed to switch kitchen", err);
+            console.error("Failed to switch hideout", err);
         }
     };
 
@@ -81,7 +83,7 @@ export const UserMenu: React.FC = () => {
                 <div className="text-left hidden sm:block">
                     <p className="text-xs font-bold text-slate-900 leading-tight">{user.name}</p>
                     <p className="text-[10px] text-slate-500 font-medium truncate max-w-[100px]">
-                        {user.kitchenMemberships?.find((m: any) => m.kitchenId === user.currentKitchenId)?.kitchen?.name || 'No Kitchen'}
+                        {user.kitchenMemberships?.find((m: any) => m.kitchenId === user.currentKitchenId)?.kitchen?.name || t('auth.userNoKitchen')}
                     </p>
                 </div>
                 <i className={`fas fa-chevron-down text-[10px] text-slate-300 transition-transform ${isDropdownOpen ? 'rotate-180' : ''} ml-1`}></i>
@@ -101,7 +103,7 @@ export const UserMenu: React.FC = () => {
                         <div className="flex justify-between items-center mb-2">
                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('nav.switchKitchen')}</span>
                             <button
-                                onClick={() => { setIsDropdownOpen(false); router.push('/kitchens'); }}
+                                onClick={() => { setIsDropdownOpen(false); router.push('/hideouts'); }}
                                 className="text-[10px] font-bold text-rose-600 hover:text-rose-700 bg-rose-50 px-2 py-1 rounded-lg"
                             >
                                 <i className="fas fa-plus mr-1"></i>
@@ -125,7 +127,7 @@ export const UserMenu: React.FC = () => {
                     <div className="max-h-64 overflow-y-auto custom-scrollbar">
                         {filteredKitchens?.length === 0 ? (
                             <div className="p-4 text-center text-xs text-slate-400 font-medium italic">
-                                No kitchens found
+                                {t('auth.userNoKitchen')}
                             </div>
                         ) : (
                             <>
@@ -142,7 +144,7 @@ export const UserMenu: React.FC = () => {
                                             {myKitchens.length > 0 && (
                                                 <div className="px-3 py-2">
                                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1 mb-1">
-                                                        {t('nav.myKitchens') || 'My Kitchens'}
+                                                        {t('nav.myKitchens') || 'My Hideouts'}
                                                     </p>
                                                     {myKitchens.map((m: any) => (
                                                         <button
@@ -166,7 +168,7 @@ export const UserMenu: React.FC = () => {
                                             {otherKitchens.length > 0 && (
                                                 <div className="px-3 py-2">
                                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1 mb-1">
-                                                        {t('nav.otherKitchens') || 'Other Kitchens'}
+                                                        {t('nav.otherKitchens') || 'Other Hideouts'}
                                                     </p>
                                                     {otherKitchens.map((m: any) => (
                                                         <button

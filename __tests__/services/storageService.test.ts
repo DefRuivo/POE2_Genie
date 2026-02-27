@@ -17,7 +17,7 @@ describe('storageService', () => {
 
         const result = await storageService.getAllRecipes();
         expect(result).toEqual(mockRecipes);
-        expect(global.fetch).toHaveBeenCalledWith('/api/recipes', expect.any(Object));
+        expect(global.fetch).toHaveBeenCalledWith('/api/builds', expect.any(Object));
     });
 
     it('getAllRecipes should return empty array when API returns null', async () => {
@@ -39,7 +39,7 @@ describe('storageService', () => {
 
         await storageService.saveRecipe(newRecipe);
 
-        expect(global.fetch).toHaveBeenCalledWith('/api/recipes', expect.objectContaining({
+        expect(global.fetch).toHaveBeenCalledWith('/api/builds', expect.objectContaining({
             method: 'POST',
             body: JSON.stringify(newRecipe),
         }));
@@ -53,7 +53,7 @@ describe('storageService', () => {
 
         await storageService.deleteRecipe('1');
 
-        expect(global.fetch).toHaveBeenCalledWith('/api/recipes/1', expect.objectContaining({
+        expect(global.fetch).toHaveBeenCalledWith('/api/builds/1', expect.objectContaining({
             method: 'DELETE'
         }));
     });
@@ -66,7 +66,7 @@ describe('storageService', () => {
 
         await storageService.toggleFavorite('1');
 
-        expect(global.fetch).toHaveBeenCalledWith('/api/recipes/1/favorite', expect.objectContaining({
+        expect(global.fetch).toHaveBeenCalledWith('/api/builds/1/favorite', expect.objectContaining({
             method: 'PATCH'
         }));
     });
@@ -87,7 +87,7 @@ describe('storageService', () => {
         (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => ({}) });
 
         await storageService.saveMember(member);
-        expect(global.fetch).toHaveBeenCalledWith('/api/kitchen-members', expect.objectContaining({
+        expect(global.fetch).toHaveBeenCalledWith('/api/party-members', expect.objectContaining({
             method: 'POST'
         }));
     });
@@ -95,7 +95,7 @@ describe('storageService', () => {
     it('deleteMember should DELETE member', async () => {
         (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => ({}) });
         await storageService.deleteMember('1');
-        expect(global.fetch).toHaveBeenCalledWith('/api/kitchen-members/1', expect.objectContaining({
+        expect(global.fetch).toHaveBeenCalledWith('/api/party-members/1', expect.objectContaining({
             method: 'DELETE'
         }));
     });
@@ -103,7 +103,7 @@ describe('storageService', () => {
     it('addPantryItem should POST new item', async () => {
         (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => ({}) });
         await storageService.addPantryItem('Rice');
-        expect(global.fetch).toHaveBeenCalledWith('/api/pantry', expect.objectContaining({
+        expect(global.fetch).toHaveBeenCalledWith('/api/stash', expect.objectContaining({
             method: 'POST',
             body: JSON.stringify({ name: 'Rice' })
         }));
@@ -112,7 +112,7 @@ describe('storageService', () => {
     it('removePantryItem should DELETE item', async () => {
         (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => ({}) });
         await storageService.removePantryItem('Rice');
-        expect(global.fetch).toHaveBeenCalledWith('/api/pantry/Rice', expect.objectContaining({
+        expect(global.fetch).toHaveBeenCalledWith('/api/stash/Rice', expect.objectContaining({
             method: 'DELETE'
         }));
     });
@@ -120,7 +120,7 @@ describe('storageService', () => {
     it('editPantryItem should PUT item updates', async () => {
         (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => ({}) });
         await storageService.editPantryItem('Rice', { inStock: true });
-        expect(global.fetch).toHaveBeenCalledWith('/api/pantry/Rice', expect.objectContaining({
+        expect(global.fetch).toHaveBeenCalledWith('/api/stash/Rice', expect.objectContaining({
             method: 'PUT',
             body: JSON.stringify({ inStock: true })
         }));
@@ -129,13 +129,25 @@ describe('storageService', () => {
     it('getShoppingList should return items', async () => {
         (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => [] });
         await storageService.getShoppingList();
-        expect(global.fetch).toHaveBeenCalledWith('/api/shopping-list', expect.any(Object));
+        expect(global.fetch).toHaveBeenCalledWith('/api/checklist', expect.any(Object));
+    });
+
+    it('getBuildItems should support status filter "all"', async () => {
+        (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => [] });
+        await storageService.getBuildItems({ status: 'all' });
+        expect(global.fetch).toHaveBeenCalledWith('/api/checklist?status=all', expect.any(Object));
+    });
+
+    it('getShoppingList wrapper should support status filter "completed"', async () => {
+        (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => [] });
+        await storageService.getShoppingList({ status: 'completed' });
+        expect(global.fetch).toHaveBeenCalledWith('/api/checklist?status=completed', expect.any(Object));
     });
 
     it('addToShoppingList should POST item', async () => {
         (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => ({}) });
         await storageService.addToShoppingList('Milk');
-        expect(global.fetch).toHaveBeenCalledWith('/api/shopping-list', expect.objectContaining({
+        expect(global.fetch).toHaveBeenCalledWith('/api/checklist', expect.objectContaining({
             method: 'POST',
             body: JSON.stringify({ name: 'Milk' })
         }));
@@ -144,7 +156,7 @@ describe('storageService', () => {
     it('updateShoppingItem should PUT updates', async () => {
         (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => ({}) });
         await storageService.updateShoppingItem('1', { checked: true });
-        expect(global.fetch).toHaveBeenCalledWith('/api/shopping-list/1', expect.objectContaining({
+        expect(global.fetch).toHaveBeenCalledWith('/api/checklist/1', expect.objectContaining({
             method: 'PUT',
             body: JSON.stringify({ checked: true })
         }));
@@ -153,7 +165,7 @@ describe('storageService', () => {
     it('deleteShoppingItem should DELETE item', async () => {
         (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => ({}) });
         await storageService.deleteShoppingItem('1');
-        expect(global.fetch).toHaveBeenCalledWith('/api/shopping-list/1', expect.objectContaining({
+        expect(global.fetch).toHaveBeenCalledWith('/api/checklist/1', expect.objectContaining({
             method: 'DELETE'
         }));
     });
@@ -162,6 +174,26 @@ describe('storageService', () => {
         (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => ['Tag1'] });
         await storageService.getTags('category');
         expect(global.fetch).toHaveBeenCalledWith('/api/tags?category=category', expect.any(Object));
+    });
+
+    it('canonical methods return empty arrays when payload is null', async () => {
+        (global.fetch as jest.Mock)
+            .mockResolvedValueOnce({ ok: true, json: async () => null }) // getPartyMembers
+            .mockResolvedValueOnce({ ok: true, json: async () => null }) // getStash
+            .mockResolvedValueOnce({ ok: true, json: async () => null }) // getBuildItems
+            .mockResolvedValueOnce({ ok: true, json: async () => null }); // getTags
+
+        await expect(storageService.getPartyMembers()).resolves.toEqual([]);
+        await expect(storageService.getStash()).resolves.toEqual([]);
+        await expect(storageService.getBuildItems({ status: 'completed' })).resolves.toEqual([]);
+        await expect(storageService.getTags('missing')).resolves.toEqual([]);
+    });
+
+    it('getAllBuilds canonical supports language query string', async () => {
+        (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => [] });
+
+        await storageService.getAllBuilds('pt-BR');
+        expect(global.fetch).toHaveBeenCalledWith('/api/builds?lang=pt-BR', expect.any(Object));
     });
 
     it('saveTag should POST new tag', async () => {
@@ -175,7 +207,7 @@ describe('storageService', () => {
     it('createKitchen should POST new kitchen', async () => {
         (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => ({}) });
         await storageService.createKitchen('My Kitchen');
-        expect(global.fetch).toHaveBeenCalledWith('/api/kitchens', expect.objectContaining({
+        expect(global.fetch).toHaveBeenCalledWith('/api/hideouts', expect.objectContaining({
             method: 'POST'
         }));
     });
@@ -203,7 +235,7 @@ describe('storageService', () => {
 
         const result = await storageService.getPantry();
         expect(result).toEqual(mockPantry);
-        expect(global.fetch).toHaveBeenCalledWith('/api/pantry', expect.any(Object));
+        expect(global.fetch).toHaveBeenCalledWith('/api/stash', expect.any(Object));
     });
 
     it('updateProfile should make PUT request', async () => {
@@ -219,5 +251,15 @@ describe('storageService', () => {
             method: 'PUT',
             body: JSON.stringify(profileData)
         }));
+    });
+
+    it('apiRequest includes backend error details when provided', async () => {
+        (global.fetch as jest.Mock).mockResolvedValueOnce({
+            ok: false,
+            status: 400,
+            json: async () => ({ message: 'Request failed', error: 'validation' }),
+        });
+
+        await expect(storageService.getAllBuilds()).rejects.toThrow('Request failed (validation)');
     });
 });

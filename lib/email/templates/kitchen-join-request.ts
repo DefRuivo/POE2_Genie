@@ -7,19 +7,19 @@ export const kitchenJoinRequestTemplate = (
   kitchenName: string,
   appUrl: string
 ) => {
-  const title = 'Kitchen Join Request';
+  const title = 'Hideout Join Request';
   const safeRequesterName = escapeHtml(requesterName);
   const safeKitchenName = escapeHtml(kitchenName);
   const safeAppUrl = escapeHtml(appUrl);
   
   const content = `
     <h2>New Join Request</h2>
-    <p>Hello Admin,</p>
+    <p>Hello Party Leader,</p>
     <div class="info-box">
-      <p style="margin: 0;"><strong>${safeRequesterName}</strong> has requested to join your kitchen "<strong>${safeKitchenName}</strong>".</p>
+      <p style="margin: 0;"><strong>${safeRequesterName}</strong> has requested to join your hideout "<strong>${safeKitchenName}</strong>".</p>
     </div>
-    <p>Please log in to your dashboard to approve or reject this request.</p>
-    <a href="${safeAppUrl}" class="button">Go to Dashboard</a>
+    <p>Please log in to approve or reject this request.</p>
+    <a href="${safeAppUrl}" class="button">Open Hideout Dashboard</a>
   `;
   return baseTemplate(content, title);
 };

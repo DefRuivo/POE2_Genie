@@ -5,9 +5,10 @@ import SettingsPage from '../../app/settings/page';
 
 // Mocks
 const mockSetLanguage = jest.fn();
+let mockGlobalLanguage = 'en';
 jest.mock('@/components/Providers', () => ({
     useApp: () => ({
-        language: 'en',
+        language: mockGlobalLanguage,
         setLanguage: mockSetLanguage,
     }),
 }));
@@ -43,6 +44,16 @@ jest.mock('../../services/storageService', () => ({
 describe('SettingsPage Validation', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        mockGlobalLanguage = 'en';
+        mockGetCurrentUser.mockResolvedValue({
+            user: {
+                name: 'John',
+                surname: 'Doe',
+                email: 'john@example.com',
+                language: 'en',
+                measurementSystem: 'METRIC'
+            }
+        });
     });
 
     it('shows error when passwords do not match', async () => {
@@ -158,5 +169,96 @@ describe('SettingsPage Validation', () => {
             // Let's rely on the fact that if it's not matched it returns the key.
             expect(screen.getByText('settings.invalidCurrentPassword')).toBeInTheDocument();
         });
+    });
+
+    it('saves profile successfully without password change and shows success message', async () => {
+        mockUpdateProfile.mockResolvedValueOnce({ ok: true });
+        render(<SettingsPage />);
+        await waitFor(() => expect(screen.queryByText('settings.title')).toBeInTheDocument());
+
+        fireEvent.change(screen.getAllByRole('textbox')[0], { target: { value: 'Jane' } });
+        fireEvent.change(screen.getAllByRole('textbox')[1], { target: { value: 'Smith' } });
+        const inputs = screen.getAllByPlaceholderText('••••••••');
+        fireEvent.change(inputs[0], { target: { value: 'oldpassword' } });
+        fireEvent.change(inputs[1], { target: { value: 'newpassword123' } });
+        fireEvent.change(inputs[2], { target: { value: 'newpassword123' } });
+        fireEvent.click(screen.getByRole('button', { name: 'common.save' }));
+
+        await waitFor(() => {
+            expect(mockUpdateProfile).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    name: 'Jane',
+                    surname: 'Smith',
+                    password: 'newpassword123',
+                    currentPassword: 'oldpassword',
+                    language: 'en',
+                }),
+            );
+            expect(screen.getByText('settings.updateSuccess')).toBeInTheDocument();
+            expect(mockSetLanguage).toHaveBeenCalled();
+        });
+    });
+
+    it('shows generic backend error message when update fails with custom message', async () => {
+        mockUpdateProfile.mockRejectedValueOnce(new Error('Backend exploded'));
+        render(<SettingsPage />);
+        await waitFor(() => expect(screen.queryByText('settings.title')).toBeInTheDocument());
+
+        const inputs = screen.getAllByPlaceholderText('••••••••');
+        fireEvent.change(inputs[0], { target: { value: 'oldpassword' } });
+        fireEvent.change(inputs[1], { target: { value: 'newpassword123' } });
+        fireEvent.change(inputs[2], { target: { value: 'newpassword123' } });
+        fireEvent.click(screen.getByRole('button', { name: 'common.save' }));
+        await waitFor(() => {
+            expect(screen.getByText('Backend exploded')).toBeInTheDocument();
+        });
+    });
+
+    it('handles load user error and still leaves loading state', async () => {
+        const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+        mockGetCurrentUser.mockRejectedValueOnce(new Error('load fail'));
+        render(<SettingsPage />);
+
+        await waitFor(() => {
+            expect(screen.getByText('settings.title')).toBeInTheDocument();
+        });
+        expect(errorSpy).toHaveBeenCalled();
+        errorSpy.mockRestore();
+    });
+
+    it('syncs local language with global app language when different', async () => {
+        mockGlobalLanguage = 'pt-BR';
+        render(<SettingsPage />);
+        await waitFor(() => expect(screen.queryByText('settings.title')).toBeInTheDocument());
+
+        const portugueseButton = screen.getByRole('button', { name: /Português/i });
+        fireEvent.click(portugueseButton);
+        expect(mockSetLanguage).toHaveBeenCalledWith('pt-BR');
+    });
+
+    it('blocks submit when password is invalid even via form submit', async () => {
+        render(<SettingsPage />);
+        await waitFor(() => expect(screen.queryByText('settings.title')).toBeInTheDocument());
+
+        const inputs = screen.getAllByPlaceholderText('••••••••');
+        fireEvent.change(inputs[0], { target: { value: 'oldpass' } });
+        fireEvent.change(inputs[1], { target: { value: '123' } });
+
+        const form = screen.getByRole('button', { name: 'common.save' }).closest('form');
+        fireEvent.submit(form as HTMLFormElement);
+
+        await waitFor(() => {
+            expect(screen.getByText('settings.updateError')).toBeInTheDocument();
+        });
+        expect(mockUpdateProfile).not.toHaveBeenCalled();
+    });
+
+    it('switches back to English preference button', async () => {
+        mockGlobalLanguage = 'pt-BR';
+        render(<SettingsPage />);
+        await waitFor(() => expect(screen.queryByText('settings.title')).toBeInTheDocument());
+
+        fireEvent.click(screen.getByRole('button', { name: /English/i }));
+        expect(mockSetLanguage).toHaveBeenCalledWith('en');
     });
 });

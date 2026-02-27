@@ -25,9 +25,9 @@ const Header: React.FC<Props> = ({ onMenuClick, onHomeClick }) => {
             className={`flex items-center gap-2 ${onHomeClick ? 'cursor-pointer' : ''} group`}
           >
             <div className="bg-rose-600 p-2 rounded-lg group-hover:scale-110 transition-transform shadow-lg shadow-rose-100">
-              <i className="fas fa-utensils text-white"></i>
+              <i className="fas fa-shield-halved text-white"></i>
             </div>
-            <h1 className="text-2xl font-black tracking-tighter text-slate-900">Dinner?</h1>
+            <h1 className="text-2xl font-black tracking-tighter text-slate-900">POE2 Genie</h1>
           </div>
         </div>
 

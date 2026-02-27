@@ -1,40 +1,32 @@
+'use client';
+
 import React, { useMemo } from 'react';
 import { useTranslation } from '@/hooks/useTranslation';
 
 interface Props {
     value: string;
     onChange: (value: string) => void;
-    measurementSystem?: string; // 'METRIC' | 'IMPERIAL'
+    measurementSystem?: string; // @deprecated - kept for compatibility.
     className?: string;
     placeholder?: string;
 }
 
-// Unit Categories for logic
-const UNIVERSAL_UNITS = ['un', 'tbsp', 'tsp', 'cup', 'pinch', 'can', 'package'];
-const METRIC_UNITS = ['kg', 'g', 'l', 'ml'];
-const IMPERIAL_UNITS = ['lb', 'oz', 'fl_oz', 'gal', 'pt'];
+const POE_UNITS = ['x', 'stack', 'set', 'lvl', '%', 'socket', 'link', 'slot'];
 
-const CustomUnitSelect: React.FC<Props> = ({ value, onChange, measurementSystem = 'METRIC', className, placeholder }) => {
+const CustomUnitSelect: React.FC<Props> = ({ value, onChange, className, placeholder }) => {
     const { t } = useTranslation();
 
     const displayedUnits = useMemo(() => {
-        let units = [...UNIVERSAL_UNITS];
-
-        if (measurementSystem === 'IMPERIAL') {
-            units = [...units, ...IMPERIAL_UNITS];
-        } else {
-            // Default to METRIC
-            units = [...units, ...METRIC_UNITS];
-        }
+        const units = [...POE_UNITS];
 
         // Always include the current value if it exists, even if it's from the "wrong" system
-        // This allows Imperial users to see 'kg' if a 'kg' item was shared with them or already exists
+        // This preserves legacy values read from old records.
         if (value && !units.includes(value)) {
             units.push(value);
         }
 
         return units.sort((a, b) => t(`units.${a}`).localeCompare(t(`units.${b}`)));
-    }, [measurementSystem, value, t]);
+    }, [value, t]);
 
     return (
         <div className={`relative ${className}`}>
@@ -46,7 +38,11 @@ const CustomUnitSelect: React.FC<Props> = ({ value, onChange, measurementSystem 
                 {placeholder && <option value="" disabled>{placeholder}</option>}
                 {displayedUnits.map((u) => (
                     <option key={u} value={u}>
-                        {t(`units.${u}`) || u}
+                        {(() => {
+                            const key = `units.${u}`;
+                            const translated = t(key);
+                            return translated === key ? u : translated;
+                        })()}
                     </option>
                 ))}
             </select>

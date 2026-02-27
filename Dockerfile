@@ -86,7 +86,7 @@ CMD ["./start.sh"]
 # Stage 3: runner-dev
 # Development: includes sources and dev dependencies; useful for dev container
 # -------------------------
-FROM git.makecodes.dev/docker/node22-alpine AS runner-dev
+FROM node:22-alpine AS runner-dev
 WORKDIR /app
 
 # Install curl for development and debugging
