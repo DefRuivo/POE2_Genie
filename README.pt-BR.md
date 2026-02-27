@@ -1,36 +1,36 @@
-
 # POE2 Genie ⚔️
-**Planeje builds melhores para sua party no hideout.**
+**Planeje builds melhores para sua Party no Hideout.**
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Next.js](https://img.shields.io/badge/Next.js-16.0-black)
+![Next.js](https://img.shields.io/badge/Next.js-16.1.x-black)
 ![Prisma](https://img.shields.io/badge/Prisma-ORM-blueviolet)
-![Gemini AI](https://img.shields.io/badge/AI-Gemini%201.5-orange)
+![Gemini AI](https://img.shields.io/badge/AI-Gemini%20API-orange)
 
-**POE2 Genie** é um assistente inteligente para Path of Exile, criado para planejar builds melhores. Ele combina party do hideout, controle de stash, build items e um estrategista IA para transformar seus recursos em builds personalizadas e práticas.
+**POE2 Genie** é um assistente inteligente para Path of Exile, criado para planejar builds melhores. Ele combina perfis de Party no Hideout, controle de Stash, gestão de Checklist e um estrategista de builds com IA para transformar seus recursos em builds práticas e personalizadas.
 
 ---
 
 ## ✨ Funcionalidades
 
 ### 🧠 Estrategista IA de Builds
-*   **Craft Inteligente**: Cria builds práticas com base no que você *realmente* tem no stash.
-*   **Foco na Party**: Respeita restrições da party, archetypes e tempo de setup.
-*   **Modo Theorycrafter**: Suporte a planejamento avançado e técnico de builds.
+*   **Craft Inteligente**: Cria builds práticas com base no que você *realmente* tem no Stash.
+*   **Foco na Party**: Respeita restrições da Party, archetypes preferidos e tempo de setup.
+*   **Planejamento por Custo**: Suporta tiers de custo, de setups baratos até planejamento mirror-level.
 *   **Tradução Global**: Traduza instantaneamente qualquer build para seu idioma (Português/Inglês).
 
 ### 🏠 Hideouts Conectados
-*   **Sincronia da Party**: Convide amigos para o hideout e compartilhe o contexto.
-*   **Gestão Compartilhada**: Todos veem o mesmo stash e Build Items em tempo real.
+*   **Sincronia da Party**: Convide amigos para o Hideout e compartilhe o contexto.
+*   **Gestão Compartilhada**: Todos veem o mesmo Stash e Checklist.
 *   **Controle de Acesso**: Gerencie permissões com funções de Party Leader e Party Member.
 
-### 🛒 Fluxo de Build Items
-*   **Fluxo Contínuo**: Adicione gear/gems faltantes das builds direto em Build Items.
-*   **Organização Esperta**: Filtre itens manuais ou vinculados a builds.
-*   **Compartilhamento Fácil**: Copie a lista filtrada para compartilhar no WhatsApp.
+### 🛒 Fluxo de Checklist
+*   **Fluxo Contínuo**: Adicione Gear/Gems faltantes das builds direto no Checklist.
+*   **Status Claro**: Organize itens nas abas Pending e Completed.
+*   **Compartilhamento Fácil**: Copie itens filtrados do Checklist para WhatsApp ou texto.
 
 ### 📦 Controle de Stash
-*   **Inventário na Mão**: Mantenha visibilidade completa do que já existe no stash.
+*   **Inventário na Mão**: Mantenha visibilidade completa do que já existe no Stash.
+*   **Import por Colar**: Importe conteúdo de item copiado do Path of Exile direto para o Stash.
 *   **Sugestões Inteligentes**: A IA prioriza o que você já possui antes de sugerir novos itens.
 
 ---
@@ -41,14 +41,14 @@ Construído com tecnologias web modernas para performance e escala:
 
 *   **Framework**: [Next.js 16](https://nextjs.org/) (App Router, Server Actions)
 *   **Banco de Dados**: [MariaDB](https://mariadb.org/) & [Prisma ORM](https://www.prisma.io/)
-*   **Motor de IA**: [Google Gemini 1.5](https://deepmind.google/technologies/gemini/) (Pro & Flash)
+*   **Motor de IA**: [Google Gemini API](https://deepmind.google/technologies/gemini/) (modelos configuráveis)
 *   **Estilização**: [TailwindCSS](https://tailwindcss.com/)
 *   **Autenticação**: JWT próprio com fluxo seguro de recuperação de senha.
 *   **Infraestrutura**: Pronto para Docker & Docker Compose.
 
 ---
 
-## 🚀 Como Começar (Getting Started)
+## 🚀 Como Começar
 
 ### Pré-requisitos
 *   Node.js 18+
@@ -65,7 +65,7 @@ Construído com tecnologias web modernas para performance e escala:
 
 2.  **Configure o ambiente**:
     ```bash
-    cp .env.example .env
+    cp .env-sample .env
     # Edite o .env com sua GEMINI_API_KEY e credenciais do banco
     ```
 
@@ -86,6 +86,25 @@ Construído com tecnologias web modernas para performance e escala:
     ```
 
 Acesse `http://localhost:3000` e comece a craftar builds.
+
+---
+
+## 🧭 Rotas Canônicas
+
+*   `/hideouts`
+*   `/party`
+*   `/builds`
+*   `/stash`
+*   `/checklist`
+
+---
+
+## 🔒 Security Checks
+
+Referências de política de segurança e CI:
+
+*   [CI Security Checks](docs/ci-security-checks.md)
+*   [Guia de Migração Canônica](MIGRATION.md)
 
 ---
 
