@@ -214,8 +214,8 @@ export default function BuildForm({ initialData, onSubmit, isSubmitting, title }
     };
 
     return (
-        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8">
-            <h2 className="text-2xl font-black text-slate-900 mb-6">{title}</h2>
+        <div className="poe-card poe-section-marker poe-section-builds rounded-3xl border border-poe-borderStrong shadow-sm p-6 md:p-8">
+            <h2 className="text-2xl font-black poe-title mb-6">{title}</h2>
 
             <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
 
@@ -224,7 +224,7 @@ export default function BuildForm({ initialData, onSubmit, isSubmitting, title }
 
                     {/* Basic Info */}
                     <div className="space-y-4">
-                        <label htmlFor="build_title" className="block text-xs font-black text-slate-400 uppercase tracking-widest">{t('recipeForm.recipeTitle')}</label>
+                        <label htmlFor="build_title" className="block text-xs font-black text-poe-text2 uppercase tracking-widest">{t('recipeForm.recipeTitle')}</label>
 
                         <input
                             id="build_title"
@@ -232,7 +232,7 @@ export default function BuildForm({ initialData, onSubmit, isSubmitting, title }
                             placeholder={t('recipeForm.recipeTitlePlaceholder')}
                             value={formData.build_title}
                             onChange={e => handleChange('build_title', e.target.value)}
-                            className="w-full text-lg font-bold p-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-rose-500 outline-none"
+                            className="w-full text-lg font-bold p-3 poe-input poe-focus-ring rounded-xl"
                             required
                         />
 
@@ -240,7 +240,7 @@ export default function BuildForm({ initialData, onSubmit, isSubmitting, title }
                             <select
                                 value={formData.build_archetype}
                                 onChange={e => handleChange('build_archetype', e.target.value)}
-                                className="p-3 bg-slate-50 border border-slate-200 rounded-xl font-medium"
+                                className="p-3 poe-select poe-focus-ring rounded-xl font-medium"
                             >
                                 <option value="league_starter">{t('recipeForm.leagueStarter')}</option>
                                 <option value="mapper">{t('recipeForm.mapper')}</option>
@@ -250,7 +250,7 @@ export default function BuildForm({ initialData, onSubmit, isSubmitting, title }
                         </div>
 
                         <div className="space-y-2">
-                            <label className="block text-xs font-black text-slate-400 uppercase tracking-widest">{t('recipeForm.costs')}</label>
+                            <label className="block text-xs font-black text-poe-text2 uppercase tracking-widest">{t('recipeForm.costs')}</label>
                             <div className="grid grid-cols-2 gap-2">
                                 {[
                                     { value: 'cheap', label: t('recipeForm.cheap'), tooltip: t('recipeForm.costTooltipCheap') },
@@ -263,10 +263,10 @@ export default function BuildForm({ initialData, onSubmit, isSubmitting, title }
                                         type="button"
                                         title={option.tooltip}
                                         onClick={() => handleChange('build_cost_tier', option.value)}
-                                        className={`py-2 px-3 rounded-xl border-2 text-xs font-black uppercase transition-colors ${
+                                        className={`py-2 px-3 rounded-xl border text-xs font-black uppercase transition-colors poe-focus-ring ${
                                             formData.build_cost_tier === option.value
-                                                ? 'bg-indigo-100 border-indigo-500 text-indigo-700'
-                                                : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'
+                                                ? 'poe-accent-settings-soft'
+                                                : 'poe-input border-poe-border text-poe-text2 hover:border-poe-sectionSettings'
                                         }`}
                                     >
                                         {option.label}
@@ -281,7 +281,7 @@ export default function BuildForm({ initialData, onSubmit, isSubmitting, title }
                                 placeholder={t('recipeForm.prepTimePlaceholder')}
                                 value={formData.setup_time}
                                 onChange={e => handleChange('setup_time', e.target.value)}
-                                className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-rose-500 outline-none"
+                                className="w-full p-3 poe-input poe-focus-ring rounded-xl"
                             />
                             <div className="relative">
                                 <input
@@ -302,16 +302,16 @@ export default function BuildForm({ initialData, onSubmit, isSubmitting, title }
                                              handleChange('setup_time_minutes', val ? parseInt(val) : '');
                                         }
                                     }}
-                                    className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-rose-500 outline-none"
+                                    className="w-full p-3 poe-input poe-focus-ring rounded-xl"
                                 />
-                                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-bold">min</span>
+                                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-poe-text2 text-sm font-bold">min</span>
                             </div>
                         </div>
                     </div>
 
                     {/* Ingredients */}
                     <div className="space-y-4">
-                        <label className="block text-xs font-black text-slate-400 uppercase tracking-widest">{t('recipeForm.ingredients')}</label>
+                        <label className="block text-xs font-black text-poe-text2 uppercase tracking-widest">{t('recipeForm.ingredients')}</label>
 
 
                         <div className="grid grid-cols-12 gap-3">
@@ -320,12 +320,12 @@ export default function BuildForm({ initialData, onSubmit, isSubmitting, title }
                                 placeholder={t('recipeForm.qty')}
                                 value={newIngredient.quantity}
                                 onChange={e => setNewIngredient(prev => ({ ...prev, quantity: e.target.value }))}
-                                className="col-span-2 p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-center"
+                                className="col-span-2 p-3 poe-input poe-focus-ring rounded-xl text-center"
                             />
                             <select
                                 value={newIngredient.unit}
                                 onChange={e => setNewIngredient(prev => ({ ...prev, unit: e.target.value }))}
-                                className="col-span-3 p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none font-medium text-slate-700"
+                                className="col-span-3 p-3 poe-select poe-focus-ring rounded-xl font-medium text-poe-text1"
                                 aria-label="Unit"
                             >
                                 {availableUnits.map(u => (
@@ -338,19 +338,19 @@ export default function BuildForm({ initialData, onSubmit, isSubmitting, title }
                                 value={newIngredient.name}
                                 onChange={e => setNewIngredient(prev => ({ ...prev, name: e.target.value }))}
                                 onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addIngredient())}
-                                className={editingIngredientIndex !== null ? "col-span-5 p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none" : "col-span-6 p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none"}
+                                className={editingIngredientIndex !== null ? "col-span-5 p-3 poe-input poe-focus-ring rounded-xl" : "col-span-6 p-3 poe-input poe-focus-ring rounded-xl"}
                             />
                             {editingIngredientIndex !== null ? (
                                 <div className="col-span-2 flex gap-2">
-                                    <button type="button" onClick={addIngredient} className="flex-1 bg-emerald-100 text-emerald-600 rounded-xl font-bold hover:bg-emerald-200 flex items-center justify-center aspect-square" title={t('common.save')}>
+                                    <button type="button" onClick={addIngredient} className="flex-1 poe-status-success rounded-xl font-bold hover:brightness-110 flex items-center justify-center aspect-square poe-focus-ring" title={t('common.save')}>
                                         <i className="fas fa-check"></i>
                                     </button>
-                                    <button type="button" onClick={cancelEditIngredient} className="flex-1 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 flex items-center justify-center aspect-square" title={t('common.cancel')}>
+                                    <button type="button" onClick={cancelEditIngredient} className="flex-1 poe-card text-poe-text1 rounded-xl font-bold hover:brightness-110 flex items-center justify-center aspect-square poe-focus-ring" title={t('common.cancel')}>
                                         <i className="fas fa-times"></i>
                                     </button>
                                 </div>
                             ) : (
-                                <button type="button" onClick={addIngredient} className="col-span-1 bg-emerald-100 text-emerald-600 rounded-xl font-bold hover:bg-emerald-200 flex items-center justify-center aspect-square" title={t('recipeForm.add')}>
+                                <button type="button" onClick={addIngredient} className="col-span-1 poe-status-success rounded-xl font-bold hover:brightness-110 flex items-center justify-center aspect-square poe-focus-ring" title={t('recipeForm.add')}>
                                     <i className="fas fa-plus"></i>
                                 </button>
                             )}
@@ -360,7 +360,7 @@ export default function BuildForm({ initialData, onSubmit, isSubmitting, title }
                             {formData.gear_gems.map((ing: any, i) => (
                                 <li key={i}
                                     onClick={() => editIngredient(i)}
-                                    className={`flex justify-between items-center bg-white border border-slate-100 p-3 rounded-xl shadow-sm cursor-pointer transition-colors group ${editingIngredientIndex === i ? 'ring-2 ring-rose-200 bg-rose-50' : 'hover:bg-slate-50'}`}
+                                    className={`flex justify-between items-center poe-card border border-poe-border p-3 rounded-xl shadow-sm cursor-pointer transition-colors group ${editingIngredientIndex === i ? 'ring-2 ring-poe-sectionBuilds border-poe-sectionBuilds' : 'hover:bg-poe-surface2'}`}
                                     title={t('common.edit')}
                                 >
                                     {typeof ing === 'string' ? ing : (ing.quantity ? `${ing.quantity} ${getUnitLabel(ing.unit)} ${ing.name}` : ing.name)}
@@ -368,7 +368,7 @@ export default function BuildForm({ initialData, onSubmit, isSubmitting, title }
                                         <button
                                             type="button"
                                             onClick={(e) => { e.stopPropagation(); removeIngredient(i); }}
-                                            className="text-red-400 hover:text-red-600 p-2"
+                                            className="text-poe-danger hover:brightness-110 p-2 poe-focus-ring rounded-lg"
                                         >
                                             <i className="fas fa-times"></i>
                                         </button>
@@ -380,19 +380,19 @@ export default function BuildForm({ initialData, onSubmit, isSubmitting, title }
 
                     {/* Shopping List */}
                     <div className="space-y-4">
-                        <label className="block text-xs font-black text-slate-400 uppercase tracking-widest">{t('recipeForm.shoppingList')}</label>
+                        <label className="block text-xs font-black text-poe-text2 uppercase tracking-widest">{t('recipeForm.shoppingList')}</label>
                         <div className="grid grid-cols-12 gap-3">
                             <input
                                 type="text"
                                 placeholder={t('recipeForm.qty')}
                                 value={newShoppingItem.quantity}
                                 onChange={e => setNewShoppingItem(prev => ({ ...prev, quantity: e.target.value }))}
-                                className="col-span-2 p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-center"
+                                className="col-span-2 p-3 poe-input poe-focus-ring rounded-xl text-center"
                             />
                             <select
                                 value={newShoppingItem.unit}
                                 onChange={e => setNewShoppingItem(prev => ({ ...prev, unit: e.target.value }))}
-                                className="col-span-3 p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none font-medium text-slate-700"
+                                className="col-span-3 p-3 poe-select poe-focus-ring rounded-xl outline-none font-medium text-poe-text1"
                                 aria-label="Unit"
                             >
                                 {availableUnits.map(u => (
@@ -405,19 +405,19 @@ export default function BuildForm({ initialData, onSubmit, isSubmitting, title }
                                 value={newShoppingItem.name}
                                 onChange={e => setNewShoppingItem(prev => ({ ...prev, name: e.target.value }))}
                                 onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addShoppingItem())}
-                                className={editingShoppingIndex !== null ? "col-span-5 p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none" : "col-span-6 p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none"}
+                                className={editingShoppingIndex !== null ? "col-span-5 p-3 poe-input poe-focus-ring rounded-xl" : "col-span-6 p-3 poe-input poe-focus-ring rounded-xl"}
                             />
                             {editingShoppingIndex !== null ? (
                                 <div className="col-span-2 flex gap-2">
-                                    <button type="button" onClick={addShoppingItem} className="flex-1 bg-orange-100 text-orange-600 rounded-xl font-bold hover:bg-orange-200 flex items-center justify-center aspect-square" title={t('common.save')}>
+                                    <button type="button" onClick={addShoppingItem} className="flex-1 poe-status-warning rounded-xl font-bold hover:brightness-110 flex items-center justify-center aspect-square poe-focus-ring" title={t('common.save')}>
                                         <i className="fas fa-check"></i>
                                     </button>
-                                    <button type="button" onClick={cancelEditShoppingItem} className="flex-1 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 flex items-center justify-center aspect-square" title={t('common.cancel')}>
+                                    <button type="button" onClick={cancelEditShoppingItem} className="flex-1 poe-card text-poe-text1 rounded-xl font-bold hover:brightness-110 flex items-center justify-center aspect-square poe-focus-ring" title={t('common.cancel')}>
                                         <i className="fas fa-times"></i>
                                     </button>
                                 </div>
                             ) : (
-                                <button type="button" onClick={addShoppingItem} className="col-span-1 bg-orange-100 text-orange-600 rounded-xl font-bold hover:bg-orange-200 flex items-center justify-center aspect-square" title={t('recipeForm.add')}>
+                                <button type="button" onClick={addShoppingItem} className="col-span-1 poe-status-warning rounded-xl font-bold hover:brightness-110 flex items-center justify-center aspect-square poe-focus-ring" title={t('recipeForm.add')}>
                                     <i className="fas fa-plus"></i>
                                 </button>
                             )}
@@ -426,7 +426,7 @@ export default function BuildForm({ initialData, onSubmit, isSubmitting, title }
                             {formData.build_items.map((item: any, i) => (
                                 <li key={i}
                                     onClick={() => editShoppingItem(i)}
-                                    className={`flex justify-between items-center bg-white border border-slate-100 p-3 rounded-xl shadow-sm cursor-pointer transition-colors group ${editingShoppingIndex === i ? 'ring-2 ring-orange-200 bg-orange-50' : 'hover:bg-slate-50'}`}
+                                    className={`flex justify-between items-center poe-card border border-poe-border p-3 rounded-xl shadow-sm cursor-pointer transition-colors group ${editingShoppingIndex === i ? 'ring-2 ring-poe-sectionStash border-poe-sectionStash' : 'hover:bg-poe-surface2'}`}
                                     title={t('common.edit')}
                                 >
                                     {typeof item === 'string' ? item : (item.quantity ? `${item.quantity} ${getUnitLabel(item.unit)} ${item.name}` : item.name)}
@@ -434,7 +434,7 @@ export default function BuildForm({ initialData, onSubmit, isSubmitting, title }
                                         <button
                                             type="button"
                                             onClick={(e) => { e.stopPropagation(); removeShoppingItem(i); }}
-                                            className="text-red-400 hover:text-red-600 p-2"
+                                            className="text-poe-danger hover:brightness-110 p-2 poe-focus-ring rounded-lg"
                                         >
                                             <i className="fas fa-times"></i>
                                         </button>
@@ -450,26 +450,26 @@ export default function BuildForm({ initialData, onSubmit, isSubmitting, title }
                 <div className="space-y-8 flex flex-col h-full">
                     {/* Steps */}
                     <div className="space-y-4">
-                        <label className="block text-xs font-black text-slate-400 uppercase tracking-widest">{t('recipeForm.instructions')}</label>
+                        <label className="block text-xs font-black text-poe-text2 uppercase tracking-widest">{t('recipeForm.instructions')}</label>
                         <div className="space-y-4">
                             {formData.build_steps.map((step, i) => (
                                 <div key={i} className="flex gap-3">
-                                    <div className="w-8 h-8 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center font-bold shrink-0">
+                                    <div className="w-8 h-8 poe-accent-builds-soft rounded-full flex items-center justify-center font-bold shrink-0">
                                         {i + 1}
                                     </div>
                                     <textarea
                                         value={step.text}
                                         onChange={e => handleStepChange(i, e.target.value)}
                                         placeholder={t('recipeForm.stepPlaceholder').replace('{n}', (i + 1).toString())}
-                                        className="flex-1 p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none resize-y min-h-[5rem]"
+                                        className="flex-1 p-3 poe-input poe-focus-ring rounded-xl resize-y min-h-[5rem]"
                                     />
-                                    <button type="button" onClick={() => removeStep(i)} aria-label={`Remove step ${i + 1}`} className="self-center text-red-400 hover:text-red-600 px-2">
+                                    <button type="button" onClick={() => removeStep(i)} aria-label={`Remove step ${i + 1}`} className="self-center text-poe-danger hover:brightness-110 px-2 poe-focus-ring rounded-lg">
                                         <i className="fas fa-trash"></i>
                                     </button>
                                 </div>
                             ))}
                         </div>
-                        <button type="button" onClick={addStep} className="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 font-bold hover:border-slate-400 hover:text-slate-600">
+                        <button type="button" onClick={addStep} className="w-full py-3 border-2 border-dashed border-poe-borderStrong rounded-xl text-poe-text2 font-bold hover:border-poe-sectionBuilds hover:text-poe-sectionBuilds poe-focus-ring">
                             + {t('recipeForm.addStep')}
                         </button>
                     </div>
@@ -478,7 +478,7 @@ export default function BuildForm({ initialData, onSubmit, isSubmitting, title }
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full py-5 bg-rose-600 rounded-2xl text-white font-black text-lg shadow-lg hover:bg-rose-700 transition-all flex items-center justify-center gap-3 mt-auto"
+                        className="w-full py-5 poe-btn-primary poe-focus-ring rounded-2xl font-black text-lg shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-3 mt-auto"
                     >
                         {isSubmitting ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-save"></i>}
                         {isSubmitting ? t('recipeForm.saving') : t('recipeForm.saveRecipe')}

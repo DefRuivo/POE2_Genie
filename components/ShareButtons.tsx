@@ -38,17 +38,17 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({
                     href={whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full flex items-center gap-3 p-4 hover:bg-emerald-50 rounded-xl text-xs font-black text-slate-700 transition-colors"
+                    className="w-full flex items-center gap-3 p-4 hover:bg-poe-surface2 border border-transparent hover:border-poe-borderStrong rounded-xl text-xs font-black text-poe-text1 transition-colors poe-focus-ring"
                 >
-                    <i className="fab fa-whatsapp text-emerald-500 text-lg"></i> {t('recipeCard.whatsapp') || 'WhatsApp'}
+                    <i className="fab fa-whatsapp text-poe-success text-lg"></i> {t('recipeCard.whatsapp') || 'WhatsApp'}
                 </a>
                 <a 
                     href={telegramUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full flex items-center gap-3 p-4 hover:bg-sky-50 rounded-xl text-xs font-black text-slate-700 transition-colors"
+                    className="w-full flex items-center gap-3 p-4 hover:bg-poe-surface2 border border-transparent hover:border-poe-borderStrong rounded-xl text-xs font-black text-poe-text1 transition-colors poe-focus-ring"
                 >
-                    <i className="fab fa-telegram text-sky-500 text-lg"></i> {t('recipeCard.telegram') || 'Telegram'}
+                    <i className="fab fa-telegram text-poe-info text-lg"></i> {t('recipeCard.telegram') || 'Telegram'}
                 </a>
                 
                 <CopyButton text={text} />
@@ -63,7 +63,7 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center w-9 h-9 bg-[#DCF8C6] hover:bg-[#d0f0ba] text-[#128C7E] rounded-lg transition-colors shadow-sm"
+                className="flex items-center justify-center w-9 h-9 poe-card border border-poe-sectionChecklist text-poe-sectionChecklist rounded-lg transition-colors shadow-sm hover:bg-poe-surface2 poe-focus-ring"
                 title="WhatsApp"
             >
                 <i className="fab fa-whatsapp text-lg"></i>
@@ -72,7 +72,7 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({
                 href={telegramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center w-9 h-9 bg-[#E3F2FD] hover:bg-[#d0e9fc] text-[#0088CC] rounded-lg transition-colors shadow-sm"
+                className="flex items-center justify-center w-9 h-9 poe-card border border-poe-sectionSettings text-poe-sectionSettings rounded-lg transition-colors shadow-sm hover:bg-poe-surface2 poe-focus-ring"
                 title="Telegram"
             >
                 <i className="fab fa-telegram-plane text-lg"></i>
@@ -94,7 +94,7 @@ const CopyButton: React.FC<{ text: string }> = ({ text }) => {
     return (
         <button 
             onClick={handleCopy}
-            className="w-full flex items-center gap-3 p-4 hover:bg-rose-50 rounded-xl text-xs font-black text-rose-600 transition-colors"
+            className="w-full flex items-center gap-3 p-4 hover:bg-poe-surface2 border border-transparent hover:border-poe-borderStrong rounded-xl text-xs font-black text-poe-sectionParty transition-colors poe-focus-ring"
         >
             <i className={`fas ${copied ? 'fa-check' : 'fa-copy'} text-lg`}></i> 
             {copied ? (t('recipeCard.copied') || 'Copied!') : (t('recipeCard.copyClipboard') || 'Copy')}

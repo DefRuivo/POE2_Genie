@@ -56,7 +56,7 @@ describe('components/StashItemEditDialog', () => {
     fireEvent.change(screen.getByTestId('unit-select'), { target: { value: 'stack' } });
 
     // Toggle inStock
-    const toggleButton = document.querySelector('button.bg-emerald-500') as HTMLElement;
+    const toggleButton = document.querySelector('button.bg-poe-success') as HTMLElement;
     fireEvent.click(toggleButton);
 
     // Enter key path

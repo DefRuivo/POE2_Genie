@@ -8,7 +8,7 @@ interface TagInputProps {
     suggestions: string[];
     placeholder: string;
     icon: string;
-    chipColorClass: string; // e.g., "bg-rose-100 text-rose-700"
+    chipColorClass: string; // e.g., "poe-status-success"
 }
 
 export const TagInput: React.FC<TagInputProps> = ({ tags, setTags, suggestions, placeholder, icon, chipColorClass }) => {
@@ -71,11 +71,11 @@ export const TagInput: React.FC<TagInputProps> = ({ tags, setTags, suggestions, 
     return (
         <div className="relative" ref={wrapperRef}>
             <div
-                className="flex flex-wrap gap-2 bg-slate-50 border-2 border-slate-100 rounded-xl px-3 py-3 focus-within:border-slate-300 focus-within:ring-4 focus-within:ring-slate-50 transition-all cursor-text"
+                className="flex flex-wrap gap-2 poe-input border rounded-xl px-3 py-3 focus-within:border-poe-focus focus-within:shadow-[0_0_0_3px_rgba(159,208,255,0.18)] transition-all cursor-text"
                 onClick={() => inputRef.current?.focus()}
             >
                 {/* Icon */}
-                <div className="flex items-center justify-center w-6 h-6 text-slate-400">
+                <div className="flex items-center justify-center w-6 h-6 text-poe-text2">
                     <i className={`fas ${icon}`}></i>
                 </div>
 
@@ -97,7 +97,7 @@ export const TagInput: React.FC<TagInputProps> = ({ tags, setTags, suggestions, 
                 <input
                     ref={inputRef}
                     type="text"
-                    className="flex-1 bg-transparent outline-none text-slate-900 font-medium placeholder:text-slate-400 min-w-[120px]"
+                    className="flex-1 bg-transparent outline-none text-poe-text1 font-medium placeholder:text-poe-text2 min-w-[120px]"
                     placeholder={tags.length === 0 ? placeholder : ''}
                     value={input}
                     onChange={handleChange}
@@ -109,14 +109,14 @@ export const TagInput: React.FC<TagInputProps> = ({ tags, setTags, suggestions, 
 
             {/* Suggestions Dropdown */}
             {showSuggestions && input.length > 0 && filteredSuggestions.length > 0 && (
-                <div className="absolute z-10 w-full mt-1 bg-white border border-slate-100 rounded-xl shadow-lg max-h-48 overflow-auto">
+                <div className="absolute z-10 w-full mt-1 poe-surface border border-poe-borderStrong rounded-xl shadow-lg max-h-48 overflow-auto">
                     {filteredSuggestions.map((s, i) => (
                         <div
                             key={i}
-                            className="px-4 py-2 hover:bg-slate-50 cursor-pointer text-sm font-medium text-slate-700 flex items-center gap-2"
+                            className="px-4 py-2 hover:bg-poe-surface2 cursor-pointer text-sm font-medium text-poe-text1 flex items-center gap-2"
                             onClick={() => addTag(s)}
                         >
-                            <i className="fas fa-plus text-xs text-slate-300"></i>
+                            <i className="fas fa-plus text-xs text-poe-text2"></i>
                             {s}
                         </div>
                     ))}

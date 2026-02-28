@@ -51,20 +51,23 @@ export default function BuildsPage() {
         <main className="max-w-7xl mx-auto px-4 pt-6 pb-32 space-y-6 animate-in fade-in duration-500">
 
             {/* Standard Page Header */}
-            <header className="mb-8">
-                <h1 className="text-3xl font-black text-slate-900 tracking-tight">{t('recipes.title')}</h1>
-                <p className="text-slate-500 font-medium">{t('recipes.subtitle')}</p>
+            <header className="mb-8 poe-section-marker poe-section-builds">
+                <h1 className="text-3xl font-black poe-title tracking-tight flex items-center gap-3">
+                    <i className="fas fa-scroll text-poe-sectionBuilds"></i>
+                    {t('recipes.title')}
+                </h1>
+                <p className="poe-text-muted font-medium">{t('recipes.subtitle')}</p>
             </header>
 
             {/* Search Bar */}
             <div className="relative">
-                <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-poe-text2"></i>
                 <input
                     type="text"
                     placeholder={t('recipes.searchPlaceholder')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all font-medium text-slate-700 placeholder:text-slate-400"
+                    className="w-full pl-12 pr-4 py-3 rounded-2xl poe-input poe-focus-ring transition-all font-medium"
                 />
             </div>
 
@@ -72,14 +75,14 @@ export default function BuildsPage() {
                 {!isGuest && (
                     <button
                         onClick={() => router.push('/builds/craft')}
-                        className="flex items-center gap-2 px-4 py-2 bg-rose-100 text-rose-700 hover:bg-rose-200 rounded-xl font-bold transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl font-bold transition-colors poe-focus-ring poe-accent-builds-soft hover:brightness-110"
                     >
                         <i className="fas fa-wand-magic-sparkles"></i> {t('actions.generateTitle')}
                     </button>
                 )}
                 <button
                     onClick={() => router.push('/builds/create')}
-                    className="flex items-center gap-2 px-4 py-2 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 rounded-xl font-bold transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl font-bold transition-colors poe-focus-ring poe-accent-stash-soft hover:brightness-110"
                 >
                     <i className="fas fa-plus"></i> {t('recipes.createCustom')}
                 </button>
@@ -93,18 +96,18 @@ export default function BuildsPage() {
                     isGuest={isGuest}
                 />
             ) : (
-                <div className="text-center py-20 bg-white rounded-3xl border border-slate-100">
-                    <div className="w-16 h-16 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl text-rose-500">
+                <div className="text-center py-20 poe-card rounded-3xl border border-poe-borderStrong">
+                    <div className="w-16 h-16 poe-accent-builds-soft rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
                         <i className="fas fa-search"></i>
                     </div>
-                    <h3 className="text-lg font-bold text-slate-700 mb-2">{t('recipes.noResults')}</h3>
-                    <p className="text-slate-500 max-w-xs mx-auto">
+                    <h3 className="text-lg font-bold text-poe-text1 mb-2">{t('recipes.noResults')}</h3>
+                    <p className="text-poe-text2 max-w-xs mx-auto">
                         {searchTerm ? t('recipes.noResultsSearch').replace('{term}', searchTerm) : t('recipes.empty')}
                     </p>
                     {!searchTerm && !isGuest && (
                         <button
                             onClick={() => router.push('/builds/craft')}
-                            className="mt-6 px-6 py-2 bg-rose-600 text-white font-bold rounded-xl hover:bg-rose-700 transition-colors"
+                            className="mt-6 px-6 py-2 poe-btn-primary poe-focus-ring font-bold rounded-xl transition-colors"
                         >
                             {t('actions.generateTitle')}
                         </button>

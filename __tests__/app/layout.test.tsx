@@ -25,7 +25,7 @@ describe('app/layout', () => {
 
     const body = tree.props.children as React.ReactElement;
     expect(body.type).toBe('body');
-    expect(String(body.props.className)).toContain('bg-slate-50');
+    expect(String(body.props.className)).toContain('poe-shell');
 
     const provider = body.props.children as React.ReactElement;
     expect(typeof provider.type).toBe('function');

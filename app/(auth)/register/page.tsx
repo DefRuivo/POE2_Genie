@@ -72,24 +72,24 @@ function RegisterForm() {
 
     if (success) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-10">
-                <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-10 border border-slate-100 text-center">
+            <div className="min-h-screen flex items-center justify-center px-4 py-10">
+                <div className="max-w-md w-full poe-surface rounded-3xl shadow-xl p-10 border border-poe-borderStrong text-center">
                     <div className="mb-6">
-                        <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="w-20 h-20 poe-status-success rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg className="w-10 h-10 text-poe-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
                         </div>
-                        <h1 className="text-2xl font-black text-slate-900 mb-2">{t('auth.checkEmailTitle')}</h1>
-                        <p className="text-slate-600">
+                        <h1 className="text-2xl font-black poe-title mb-2">{t('auth.checkEmailTitle')}</h1>
+                        <p className="text-poe-text2">
                             {t('auth.checkEmailSent').replace('{email}', registeredEmail)}
                         </p>
                     </div>
                     <div className="space-y-4">
-                        <p className="text-sm text-slate-500">
+                        <p className="text-sm text-poe-text2">
                             {t('auth.checkEmailSpam')}
                         </p>
-                        <Link href="/login" className="block w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition-colors">
+                        <Link href="/login" className="block w-full py-3 poe-card hover:brightness-110 text-poe-text1 rounded-xl font-bold transition-colors poe-focus-ring">
                             {t('auth.backToLogin')}
                         </Link>
                     </div>
@@ -99,15 +99,15 @@ function RegisterForm() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-10">
-            <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-10 border border-slate-100">
+        <div className="min-h-screen flex items-center justify-center px-4 py-10">
+            <div className="max-w-md w-full poe-surface rounded-3xl shadow-xl p-10 border border-poe-borderStrong">
                 <div className="text-center mb-10">
-                    <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-2">{t('auth.registerTitle')}</h1>
-                    <p className="text-slate-500 font-medium">{t('auth.registerSubtitle')}</p>
+                    <h1 className="text-3xl font-black poe-title tracking-tight mb-2">{t('auth.registerTitle')}</h1>
+                    <p className="text-poe-text2 font-medium">{t('auth.registerSubtitle')}</p>
                 </div>
 
                 {error && (
-                    <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm font-bold border border-red-200">
+                    <div className="poe-status-danger p-4 rounded-xl mb-6 text-sm font-bold">
                         {error}
                     </div>
                 )}
@@ -115,37 +115,37 @@ function RegisterForm() {
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">{t('auth.firstName')}</label>
+                            <label className="block text-xs font-black text-poe-text2 uppercase tracking-widest mb-2">{t('auth.firstName')}</label>
                             <input
                                 type="text"
                                 required
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-rose-500 focus:ring-0 outline-none transition-colors font-medium text-slate-700 bg-slate-50/50"
+                                className="w-full px-4 py-3 rounded-xl poe-input poe-focus-ring transition-colors font-medium"
                                 placeholder={t('members.namePlaceholder')}
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">{t('auth.lastName')}</label>
+                            <label className="block text-xs font-black text-poe-text2 uppercase tracking-widest mb-2">{t('auth.lastName')}</label>
                             <input
                                 type="text"
                                 required
                                 value={formData.surname}
                                 onChange={(e) => setFormData({ ...formData, surname: e.target.value })}
-                                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-rose-500 focus:ring-0 outline-none transition-colors font-medium text-slate-700 bg-slate-50/50"
+                                className="w-full px-4 py-3 rounded-xl poe-input poe-focus-ring transition-colors font-medium"
                                 placeholder={t('members.namePlaceholder').replace("Grandma", "Doe")}
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">{t('auth.email')}</label>
+                        <label className="block text-xs font-black text-poe-text2 uppercase tracking-widest mb-2">{t('auth.email')}</label>
                         <input
                             type="email"
                             required
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-rose-500 focus:ring-0 outline-none transition-colors font-medium text-slate-700 bg-slate-50/50"
+                            className="w-full px-4 py-3 rounded-xl poe-input poe-focus-ring transition-colors font-medium"
                             placeholder={t('members.emailPlaceholder')}
                         />
                     </div>
@@ -163,16 +163,16 @@ function RegisterForm() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-black shadow-lg transition-all disabled:opacity-50 flex items-center justify-center gap-2 mt-4"
+                        className="w-full py-4 poe-btn-primary poe-focus-ring rounded-xl font-black shadow-lg shadow-black/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2 mt-4"
                     >
                         {loading ? <i className="fas fa-circle-notch fa-spin"></i> : t('auth.signupBtn')}
                     </button>
                 </form>
 
                 <div className="mt-4 text-center">
-                    <p className="text-slate-500 font-medium">
+                    <p className="text-poe-text2 font-medium">
                         {t('auth.hasAccount')}{' '}
-                        <Link href="/login" className="text-rose-600 font-black hover:underline">
+                        <Link href="/login" className="text-poe-sectionBuilds font-black hover:underline">
                             {t('auth.loginBtn')}
                         </Link>
                     </p>
@@ -185,12 +185,11 @@ function RegisterForm() {
 export default function RegisterPage() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen flex items-center justify-center bg-slate-50">
-                <i className="fas fa-circle-notch fa-spin text-4xl text-rose-500"></i>
+            <div className="min-h-screen flex items-center justify-center">
+                <i className="fas fa-circle-notch fa-spin text-4xl text-poe-sectionBuilds"></i>
             </div>
         }>
             <RegisterForm />
         </Suspense>
     );
 }
-

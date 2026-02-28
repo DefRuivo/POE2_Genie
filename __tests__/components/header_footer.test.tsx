@@ -29,7 +29,7 @@ describe('Header and Footer', () => {
     fireEvent.click(screen.getByRole('button'));
     expect(onMenuClick).toHaveBeenCalledTimes(1);
 
-    fireEvent.click(screen.getByText('POE2 Genie'));
+    fireEvent.click(screen.getByRole('heading', { name: /poe2 genie/i }));
     expect(onHomeClick).toHaveBeenCalledTimes(1);
   });
 

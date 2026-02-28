@@ -60,15 +60,15 @@ export const TagInput: React.FC<Props> = ({ tags, onChange, placeholder, categor
   return (
     <div className="relative">
       <div
-        className={`flex flex-wrap gap-2 p-2 rounded-xl border bg-white min-h-[46px] transition-all cursor-text ${isFocused ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-200'}`}
+        className={`flex flex-wrap gap-2 p-2 rounded-xl border poe-input min-h-[46px] transition-all cursor-text ${isFocused ? 'border-poe-focus ring-2 ring-poe-focus' : 'border-poe-borderStrong'}`}
         onClick={() => inputRef.current?.focus()}
       >
         {tags.map((tag, i) => (
-          <span key={i} className="bg-rose-100 text-rose-800 text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+          <span key={i} className="poe-accent-party-soft text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
             {tag}
             <button
               onClick={(e) => { e.stopPropagation(); removeTag(i); }}
-              className="hover:text-rose-600 focus:outline-none"
+              className="hover:text-poe-sectionParty focus:outline-none poe-focus-ring rounded-md"
             >
               <i className="fas fa-times"></i>
             </button>
@@ -88,13 +88,13 @@ export const TagInput: React.FC<Props> = ({ tags, onChange, placeholder, categor
             }, 200);
           }}
           placeholder={tags.length === 0 ? placeholder : ''}
-          className="flex-1 outline-none text-sm min-w-[120px] bg-transparent"
+          className="flex-1 outline-none text-sm min-w-[120px] bg-transparent text-poe-text1 placeholder:text-poe-text2"
         />
       </div>
 
       {/* Autocomplete Dropdown */}
       {isFocused && suggestions.length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-50 max-h-48 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-1 poe-card border border-poe-borderStrong rounded-xl shadow-lg z-50 max-h-48 overflow-y-auto">
           {suggestions.map((s, i) => (
             <button
               key={i}
@@ -102,7 +102,7 @@ export const TagInput: React.FC<Props> = ({ tags, onChange, placeholder, categor
                 e.preventDefault(); // Prevent blur
                 addTag(s);
               }}
-              className="w-full text-left px-4 py-2 hover:bg-slate-50 text-sm font-medium text-slate-700 block transition-colors"
+              className="w-full text-left px-4 py-2 hover:bg-poe-surface2 text-sm font-medium text-poe-text1 block transition-colors poe-focus-ring"
             >
               {s}
             </button>

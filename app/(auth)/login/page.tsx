@@ -47,23 +47,23 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-            <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-10 border border-slate-100">
+        <div className="min-h-screen flex items-center justify-center px-4">
+            <div className="max-w-md w-full poe-surface rounded-3xl shadow-xl p-10 border border-poe-borderStrong">
                 <div className="text-center mb-10">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-rose-100 text-rose-600 mb-6 shadow-lg shadow-rose-100">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl poe-accent-party-soft mb-6 shadow-lg shadow-black/20">
                         <i className="fas fa-shield-halved text-2xl"></i>
                     </div>
-                    <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-2">{t('auth.loginTitle')}</h1>
-                    <p className="text-slate-500 font-medium">{t('auth.loginSubtitle')}</p>
+                    <h1 className="text-3xl font-black poe-title tracking-tight mb-2">{t('auth.loginTitle')}</h1>
+                    <p className="text-poe-text2 font-medium">{t('auth.loginSubtitle')}</p>
                 </div>
 
                 {error && (
-                    <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm font-bold border border-red-200">
+                    <div className="poe-status-danger p-4 rounded-xl mb-6 text-sm font-bold">
                         {error}
                         {error === t('auth.unverifiedError') && (
-                            <div className="mt-3 pt-3 border-t border-red-100">
+                            <div className="mt-3 pt-3 border-t border-poe-danger">
                                 {resendStatus === 'sent' ? (
-                                    <div className="text-emerald-600 flex items-center gap-2">
+                                    <div className="text-poe-success flex items-center gap-2">
                                         <i className="fas fa-check-circle"></i>
                                         {t('auth.verificationResent')}
                                     </div>
@@ -87,7 +87,7 @@ export default function LoginPage() {
                                             }
                                         }}
                                         disabled={resendStatus === 'sending'}
-                                        className="text-xs uppercase tracking-wider font-black text-red-700 underline hover:no-underline disabled:opacity-50 disabled:no-underline flex items-center gap-2"
+                                        className="text-xs uppercase tracking-wider font-black text-poe-danger underline hover:no-underline disabled:opacity-50 disabled:no-underline flex items-center gap-2 poe-focus-ring rounded-lg"
                                         type="button"
                                     >
                                         {resendStatus === 'sending' && <i className="fas fa-circle-notch fa-spin"></i>}
@@ -101,29 +101,29 @@ export default function LoginPage() {
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                        <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">{t('auth.email')}</label>
+                        <label className="block text-xs font-black text-poe-text2 uppercase tracking-widest mb-2">{t('auth.email')}</label>
                         <input
                             type="email"
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-rose-500 focus:ring-0 outline-none transition-colors font-medium text-slate-700 bg-slate-50/50"
+                            className="w-full px-4 py-3 rounded-xl poe-input poe-focus-ring transition-colors font-medium"
                             placeholder={t('members.emailPlaceholder')}
                         />
                     </div>
 
                     <div>
-                        <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">{t('auth.password')}</label>
+                        <label className="block text-xs font-black text-poe-text2 uppercase tracking-widest mb-2">{t('auth.password')}</label>
                         <input
                             type="password"
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-rose-500 focus:ring-0 outline-none transition-colors font-medium text-slate-700 bg-slate-50/50"
+                            className="w-full px-4 py-3 rounded-xl poe-input poe-focus-ring transition-colors font-medium"
                             placeholder="••••••••"
                         />
                         <div className="text-right mt-2">
-                            <Link href="/recover" className="text-sm font-bold text-rose-600 hover:text-rose-700">
+                            <Link href="/recover" className="text-sm font-bold text-poe-sectionSettings hover:text-poe-info">
                                 {t('auth.forgotPassword')}
                             </Link>
                         </div>
@@ -132,16 +132,16 @@ export default function LoginPage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full py-4 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-black shadow-lg shadow-rose-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        className="w-full py-4 poe-btn-primary poe-focus-ring rounded-xl font-black shadow-lg shadow-black/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                         {loading ? <i className="fas fa-circle-notch fa-spin"></i> : t('auth.loginBtn')}
                     </button>
                 </form>
 
                 <div className="mt-4 text-center">
-                    <p className="text-slate-500 font-medium">
+                    <p className="text-poe-text2 font-medium">
                         {t('auth.noAccount')}{' '}
-                        <Link href="/register" className="text-rose-600 font-black hover:underline">
+                        <Link href="/register" className="text-poe-sectionBuilds font-black hover:underline">
                             {t('auth.signupBtn')}
                         </Link>
                     </p>
