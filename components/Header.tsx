@@ -8,26 +8,29 @@ interface Props {
 
 const Header: React.FC<Props> = ({ onMenuClick, onHomeClick }) => {
   return (
-    <header className="bg-white text-slate-900 shadow-sm p-5 sticky top-0 z-50 border-b border-slate-100 backdrop-blur-md bg-white/80">
+    <header className="poe-surface sticky top-0 z-50 px-4 py-3 md:px-5 md:py-3.5 border-b border-poe-borderStrong backdrop-blur-md bg-poe-surface1 shadow-[0_8px_22px_rgba(0,0,0,0.32)]">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         {/* Brand Section */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           {onMenuClick && (
             <button
               onClick={onMenuClick}
-              className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 transition-all border border-slate-100 xl:hidden"
+              className="w-9 h-9 flex items-center justify-center rounded-xl poe-input poe-focus-ring hover:border-poe-gold hover:text-poe-gold text-poe-text2 transition-all xl:hidden"
+              aria-label="Open navigation"
             >
               <i className="fas fa-bars"></i>
             </button>
           )}
           <div
             onClick={onHomeClick}
-            className={`flex items-center gap-2 ${onHomeClick ? 'cursor-pointer' : ''} group`}
+            className={`flex items-center gap-2 ${onHomeClick ? 'cursor-pointer' : ''} group select-none`}
           >
-            <div className="bg-rose-600 p-2 rounded-lg group-hover:scale-110 transition-transform shadow-lg shadow-rose-100">
-              <i className="fas fa-shield-halved text-white"></i>
+            <div className="p-1.5 rounded-lg bg-poe-bronze group-hover:bg-poe-gold group-hover:scale-105 transition-all shadow-[0_6px_12px_rgba(0,0,0,0.3)] border border-poe-borderStrong">
+              <i className="fas fa-shield-halved text-poe-bg0 text-sm"></i>
             </div>
-            <h1 className="text-2xl font-black tracking-tighter text-slate-900">POE2 Genie</h1>
+            <h1 className="text-xl md:text-[1.35rem] font-black tracking-tight poe-title leading-none">
+              POE2 <span className="text-poe-gold">Genie</span>
+            </h1>
           </div>
         </div>
 

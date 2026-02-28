@@ -85,7 +85,7 @@ export const CodeInput: React.FC<CodeInputProps> = ({ length = 6, onChange, disa
                     onChange={(e) => handleChange(idx, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(idx, e)}
                     onPaste={handlePaste}
-                    className="w-10 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl font-black text-slate-800 bg-slate-50 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-amber-500 focus:bg-white focus:ring-4 focus:ring-amber-100 transition-all uppercase placeholder-slate-300"
+                    className="w-10 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl font-black text-poe-text1 poe-input border rounded-xl focus:outline-none poe-focus-ring transition-all uppercase placeholder-poe-text2"
                     placeholder="-"
                 />
             ))}

@@ -49,78 +49,78 @@ export default function Home() {
   const recipesCount = history.length;
 
   return (
-    <div className="min-h-screen pb-10 bg-slate-50 selection:bg-rose-100">
+    <div className="poe-shell min-h-screen pb-10">
 
       {/* Dashboard Header */}
-      <header className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-2 flex items-center gap-3">
-            {t('home.welcome')}, Exile! <span className="text-rose-500">⚔️</span>
+      <header className="max-w-7xl mx-auto px-4">
+        <div className="poe-section-marker poe-section-hideouts mt-2 md:mt-3">
+          <h1 className="text-2xl md:text-3xl font-black tracking-tight mb-1 flex items-center gap-2.5 poe-title">
+            {t('home.welcome')}, Exile! <span className="text-poe-gold text-xl md:text-2xl">⚔️</span>
             {kitchen && (
-              <span className="text-xs bg-slate-900 text-white px-3 py-1 rounded-full uppercase tracking-widest font-bold border border-slate-700 shadow-sm animate-in fade-in slide-in-from-left-4">
-                <i className="fas fa-house mr-2 text-rose-500"></i>
+              <span className="text-[10px] poe-chip px-2.5 py-1 rounded-full uppercase tracking-widest font-bold shadow-sm animate-in fade-in slide-in-from-left-4">
+                <i className="fas fa-house mr-2 text-poe-gold"></i>
                 {kitchen.name}
               </span>
             )}
           </h1>
-          <p className="text-slate-500 font-medium">{t('actions.generateDesc')}</p>
+          <p className="poe-text-muted font-medium text-sm">{t('actions.generateDesc')}</p>
 
           {/* Stats Row */}
-          <div className="grid grid-cols-3 gap-4 mt-4">
-            <Link href="/party" className="bg-rose-50/50 p-4 rounded-2xl border border-rose-100 text-center hover:bg-rose-50 transition-colors block">
-              <div className="text-2xl font-black text-rose-600">{activeCount}</div>
-              <div className="text-xs font-bold text-rose-400 uppercase tracking-wider">{t('nav.members')}</div>
+          <div className="grid grid-cols-3 gap-3 mt-3">
+            <Link href="/party" className="poe-section-marker poe-section-party p-3 text-center hover:border-poe-sectionParty transition-colors block">
+              <div className="text-xl font-black text-poe-sectionParty leading-none">{activeCount}</div>
+              <div className="text-[10px] font-bold text-poe-text2 uppercase tracking-wider mt-1">{t('nav.members')}</div>
             </Link>
-            <Link href="/checklist" className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 text-center hover:bg-emerald-50 transition-colors block">
-              <div className="text-2xl font-black text-emerald-600">{shoppingCount}</div>
-              <div className="text-xs font-bold text-emerald-400 uppercase tracking-wider">{t('nav.shopping')}</div>
+            <Link href="/checklist" className="poe-section-marker poe-section-checklist p-3 text-center hover:border-poe-sectionChecklist transition-colors block">
+              <div className="text-xl font-black text-poe-sectionChecklist leading-none">{shoppingCount}</div>
+              <div className="text-[10px] font-bold text-poe-text2 uppercase tracking-wider mt-1">{t('nav.shopping')}</div>
             </Link>
-            <Link href="/builds" className="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100 text-center hover:bg-indigo-50 transition-colors block">
-              <div className="text-2xl font-black text-indigo-600">{recipesCount}</div>
-              <div className="text-xs font-bold text-indigo-400 uppercase tracking-wider">{t('nav.recipes')}</div>
+            <Link href="/builds" className="poe-section-marker poe-section-builds p-3 text-center hover:border-poe-sectionBuilds transition-colors block">
+              <div className="text-xl font-black text-poe-sectionBuilds leading-none">{recipesCount}</div>
+              <div className="text-[10px] font-bold text-poe-text2 uppercase tracking-wider mt-1">{t('nav.recipes')}</div>
             </Link>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 mt-4 space-y-4">
+      <main className="max-w-7xl mx-auto px-4 mt-3 space-y-4">
 
         {/* Action Buttons */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {!isGuest && (
             <Link
               href="/builds/craft"
-              className="p-4 bg-white rounded-3xl border-2 border-slate-200 shadow-sm hover:border-rose-500 hover:shadow-rose-100 transition-all group text-left block"
+              className="p-4 poe-card rounded-3xl border-2 border-poe-borderStrong hover:border-poe-sectionBuilds transition-all group text-left block"
             >
-              <div className="w-12 h-12 bg-rose-100 rounded-full flex items-center justify-center text-rose-600 text-xl mb-4 group-hover:scale-110 transition-transform">
+              <div className="w-12 h-12 bg-poe-surface2 border border-poe-borderStrong rounded-full flex items-center justify-center text-poe-sectionBuilds text-xl mb-4 group-hover:scale-110 transition-transform">
                 <i className="fas fa-wand-magic-sparkles"></i>
               </div>
-              <h3 className="text-xl font-black text-slate-800 mb-1">{t('actions.generateTitle')}</h3>
-              <p className="text-sm text-slate-500 font-medium">{t('actions.generateDesc')}</p>
+              <h3 className="text-xl font-black poe-title mb-1">{t('actions.generateTitle')}</h3>
+              <p className="text-sm poe-text-muted font-medium">{t('actions.generateDesc')}</p>
             </Link>
           )}
 
-          <Link href="/stash" className="p-4 bg-white rounded-3xl border-2 border-slate-200 shadow-sm hover:border-emerald-500 hover:shadow-emerald-100 transition-all group text-left">
-            <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 text-xl mb-4 group-hover:scale-110 transition-transform">
+          <Link href="/stash" className="p-4 poe-card rounded-3xl border-2 border-poe-borderStrong hover:border-poe-sectionStash transition-all group text-left">
+            <div className="w-12 h-12 bg-poe-surface2 border border-poe-borderStrong rounded-full flex items-center justify-center text-poe-sectionStash text-xl mb-4 group-hover:scale-110 transition-transform">
               <i className="fas fa-box-open"></i>
             </div>
-            <h3 className="text-xl font-black text-slate-800 mb-1">{t('actions.pantryTitle')}</h3>
-            <p className="text-sm text-slate-500 font-medium">{t('actions.pantryDesc')}</p>
+            <h3 className="text-xl font-black poe-title mb-1">{t('actions.pantryTitle')}</h3>
+            <p className="text-sm poe-text-muted font-medium">{t('actions.pantryDesc')}</p>
           </Link>
 
-          <Link href="/hideouts" className="p-4 bg-white rounded-3xl border-2 border-slate-200 shadow-sm hover:border-indigo-500 hover:shadow-indigo-100 transition-all group text-left">
-            <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 text-xl mb-4 group-hover:scale-110 transition-transform">
+          <Link href="/hideouts" className="p-4 poe-card rounded-3xl border-2 border-poe-borderStrong hover:border-poe-sectionHideouts transition-all group text-left">
+            <div className="w-12 h-12 bg-poe-surface2 border border-poe-borderStrong rounded-full flex items-center justify-center text-poe-sectionHideouts text-xl mb-4 group-hover:scale-110 transition-transform">
               <i className="fas fa-house"></i>
             </div>
-            <h3 className="text-xl font-black text-slate-800 mb-1">{t('actions.kitchenTitle')}</h3>
-            <p className="text-sm text-slate-500 font-medium">{t('actions.kitchenDesc')}</p>
+            <h3 className="text-xl font-black poe-title mb-1">{t('actions.kitchenTitle')}</h3>
+            <p className="text-sm poe-text-muted font-medium">{t('actions.kitchenDesc')}</p>
           </Link>
         </div>
 
         {/* Join Hideout Section */}
-        <div className="bg-white rounded-3xl border-2 border-slate-200 p-6 shadow-sm">
-          <h3 className="text-xl font-black text-slate-800 mb-4 flex items-center gap-2">
-            <i className="fas fa-ticket-alt text-amber-500"></i>
+        <div className="poe-card poe-section-marker poe-section-hideouts rounded-3xl border-2 border-poe-borderStrong p-6">
+          <h3 className="text-xl font-black poe-title mb-4 flex items-center gap-2">
+            <i className="fas fa-ticket-alt text-poe-sectionHideouts"></i>
             {t('actions.haveCode')}
           </h3>
           <div className="flex flex-col md:flex-row gap-6 items-center">
@@ -154,7 +154,7 @@ export default function Home() {
                 }
               }}
               disabled={joining || joinCode.length !== 6}
-              className="w-full md:w-auto bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-xl font-black uppercase tracking-wide shadow-lg shadow-amber-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="w-full md:w-auto poe-btn-primary poe-focus-ring px-8 py-4 rounded-xl font-black uppercase tracking-wide shadow-lg shadow-black/35 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               {joining ? <i className="fas fa-spinner fa-spin"></i> : t('actions.joinCode')}
             </button>
@@ -164,15 +164,15 @@ export default function Home() {
         {/* Recent History */}
         {history.length > 0 && (
           <div className="mt-12">
-            <h3 className="text-lg font-black text-slate-800 mb-6">{t('actions.recent')}</h3>
+            <h3 className="text-lg font-black poe-title mb-6">{t('actions.recent')}</h3>
             <div className="space-y-4">
               {history.slice(0, 3).map(rec => (
-                <Link href={`/builds/${rec.id}`} key={rec.id} className="block bg-white p-4 rounded-2xl border border-slate-200 hover:border-slate-300 transition-all flex justify-between items-center group">
+                <Link href={`/builds/${rec.id}`} key={rec.id} className="block poe-card p-4 rounded-2xl border border-poe-borderStrong hover:border-poe-sectionBuilds transition-all flex justify-between items-center group">
                   <div>
-                    <h4 className="font-bold text-slate-900 group-hover:text-rose-600 transition-colors">{rec.recipe_title}</h4>
-                    <p className="text-xs text-slate-500">{new Date(rec.createdAt).toLocaleDateString()} • {rec.meal_type}</p>
+                    <h4 className="font-bold text-poe-text1 group-hover:text-poe-sectionBuilds transition-colors">{rec.recipe_title}</h4>
+                    <p className="text-xs text-poe-text2">{new Date(rec.createdAt).toLocaleDateString()} • {rec.meal_type}</p>
                   </div>
-                  <i className="fas fa-chevron-right text-slate-300 group-hover:text-rose-400"></i>
+                  <i className="fas fa-chevron-right text-poe-text2 group-hover:text-poe-sectionBuilds"></i>
                 </Link>
               ))}
             </div>

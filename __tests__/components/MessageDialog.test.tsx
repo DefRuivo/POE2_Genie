@@ -44,7 +44,7 @@ describe('MessageDialog', () => {
       />,
     );
     expect(container.querySelector('.fa-circle-xmark')).toBeInTheDocument();
-    expect(container.querySelector('.bg-red-50')).toBeInTheDocument();
+    expect(container.querySelector('.poe-status-danger')).toBeInTheDocument();
 
     rerender(
       <MessageDialog
@@ -56,6 +56,6 @@ describe('MessageDialog', () => {
       />,
     );
     expect(container.querySelector('.fa-circle-check')).toBeInTheDocument();
-    expect(container.querySelector('.bg-rose-50')).toBeInTheDocument();
+    expect(container.querySelector('.poe-status-success')).toBeInTheDocument();
   });
 });

@@ -55,9 +55,9 @@ const BuildArchiveSection: React.FC<Props> = ({ history, onUpdate, onViewRecipe,
   };
 
   return (
-    <section className="bg-slate-50 rounded-[2.5rem] p-8 md:p-10 border border-slate-200">
-      <h2 className="text-2xl font-black text-slate-900 mb-8 flex items-center gap-3">
-        <i className="fas fa-book-open text-rose-500"></i>
+    <section className="poe-card poe-section-marker poe-section-builds rounded-[2.5rem] p-8 md:p-10 border border-poe-borderStrong">
+      <h2 className="text-2xl font-black poe-title mb-8 flex items-center gap-3">
+        <i className="fas fa-book-open text-poe-sectionBuilds"></i>
         {t('nav.recipes')}
       </h2>
 
@@ -66,19 +66,19 @@ const BuildArchiveSection: React.FC<Props> = ({ history, onUpdate, onViewRecipe,
         {history.map(recipe => (
           <div
             key={recipe.id}
-            className="bg-white rounded-[2rem] p-5 shadow-sm border border-slate-100 flex flex-col group hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+            className="poe-card rounded-[2rem] p-5 shadow-sm border border-poe-borderStrong flex flex-col group hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
           >
             {/* Image Area */}
             <div
-              className={`relative h-48 rounded-2xl overflow-hidden mb-5 cursor-pointer bg-slate-900 flex items-center justify-center`}
+              className={`relative h-48 rounded-2xl overflow-hidden mb-5 cursor-pointer bg-poe-bg1 flex items-center justify-center border border-poe-border`}
               onClick={() => onViewRecipe?.(recipe)}
             >
-              <i className="fas fa-scroll text-slate-800 text-5xl"></i>
+              <i className="fas fa-scroll text-poe-borderStrong text-5xl"></i>
 
               {/* Favorite Button */}
               <button
                 onClick={(e) => { e.stopPropagation(); toggleFavorite(recipe.id); }}
-                className={`absolute top-4 right-4 w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg transition-all ${recipe.isFavorite ? 'bg-rose-500 text-white shadow-rose-200' : 'bg-white/90 text-slate-400 hover:text-rose-500 hover:bg-white'}`}
+                className={`absolute top-4 right-4 w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg transition-all poe-focus-ring ${recipe.isFavorite ? 'poe-btn-danger' : 'poe-card text-poe-text2 hover:text-poe-sectionBuilds'}`}
               >
                 <i className={`fas fa-heart ${recipe.isFavorite ? '' : 'far'} text-lg`}></i>
               </button>
@@ -93,12 +93,12 @@ const BuildArchiveSection: React.FC<Props> = ({ history, onUpdate, onViewRecipe,
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-3 flex-wrap">
                   <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border ${resolveArchetype(recipe) === 'league_starter'
-                    ? 'bg-rose-50 text-rose-600 border-rose-100'
+                    ? 'poe-accent-builds-soft'
                     : resolveArchetype(recipe) === 'mapper'
-                      ? 'bg-indigo-50 text-indigo-600 border-indigo-100'
+                      ? 'poe-accent-settings-soft'
                       : resolveArchetype(recipe) === 'bossing'
-                        ? 'bg-purple-50 text-purple-600 border-purple-100'
-                        : 'bg-slate-50 text-slate-600 border-slate-100'
+                        ? 'poe-status-danger'
+                        : 'poe-card text-poe-text2 border-poe-border'
                     }`}>
                     {(() => {
                         const type = resolveArchetype(recipe);
@@ -109,15 +109,15 @@ const BuildArchiveSection: React.FC<Props> = ({ history, onUpdate, onViewRecipe,
                         return recipe.meal_type || recipe.build_archetype;
                     })()}
                   </span>
-                  <span className="text-slate-400 text-xs font-bold flex items-center gap-1">
+                  <span className="text-poe-text2 text-xs font-bold flex items-center gap-1">
                     <i className="far fa-calendar-alt"></i>
                     {new Date(recipe.createdAt).toLocaleDateString()}
                   </span>
                 </div>
                 
                 <div className="flex items-center gap-3">
-                  <span className="text-slate-500 text-xs font-bold flex items-center gap-1.5 bg-slate-50 px-2 py-1 rounded-md border border-slate-100 w-fit">
-                    <i className="far fa-clock text-slate-400"></i>
+                  <span className="text-poe-text2 text-xs font-bold flex items-center gap-1.5 poe-card px-2 py-1 rounded-md border border-poe-border w-fit">
+                    <i className="far fa-clock text-poe-text2"></i>
                     {(recipe.setup_time_minutes ?? recipe.prep_time_minutes) ? `${recipe.setup_time_minutes ?? recipe.prep_time_minutes} min` : (recipe.setup_time || recipe.prep_time)}
                   </span>
 
@@ -131,7 +131,7 @@ const BuildArchiveSection: React.FC<Props> = ({ history, onUpdate, onViewRecipe,
                             e.stopPropagation();
                             window.location.href = `/builds/${t.id}`;
                           }}
-                          className="w-10 h-6 flex items-center justify-center bg-slate-100 rounded text-[9px] font-bold text-slate-500 border border-slate-200 hover:bg-rose-100 hover:text-rose-600 hover:border-rose-200 cursor-pointer uppercase"
+                          className="w-10 h-6 flex items-center justify-center poe-card rounded text-[9px] font-bold text-poe-text2 border border-poe-border hover:text-poe-sectionBuilds hover:border-poe-sectionBuilds cursor-pointer uppercase poe-focus-ring"
                           title={t.build_title || t.recipe_title}
                         >
                           {t.language === 'pt-BR' ? 'PT' : 'EN'}
@@ -142,23 +142,23 @@ const BuildArchiveSection: React.FC<Props> = ({ history, onUpdate, onViewRecipe,
                 </div>
               </div>
 
-              <h3 className="font-black text-slate-900 text-xl md:text-2xl tracking-tight leading-snug group-hover:text-rose-600 transition-colors">
+              <h3 className="font-black text-poe-text1 text-xl md:text-2xl tracking-tight leading-snug group-hover:text-poe-sectionBuilds transition-colors">
                 {recipe.build_title || recipe.recipe_title}
               </h3>
 
-              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                <p className="text-slate-600 text-sm line-clamp-3 leading-relaxed font-medium">
+              <div className="p-4 poe-card rounded-2xl border border-poe-border">
+                <p className="text-poe-text2 text-sm line-clamp-3 leading-relaxed font-medium">
                   {recipe.build_reasoning || recipe.match_reasoning}
                 </p>
               </div>
             </div>
 
             {/* Actions Footer */}
-            <div className="mt-8 flex justify-between items-center pt-5 border-t border-slate-100 px-2">
+            <div className="mt-8 flex justify-between items-center pt-5 border-t border-poe-border px-2">
               {!isGuest && (
                 <button
                   onClick={() => requestDelete(recipe.id)}
-                  className="text-slate-400 hover:text-red-500 text-xs font-bold transition-colors flex items-center gap-2 px-2 py-1 hover:bg-red-50 rounded-lg"
+                  className="text-poe-text2 hover:text-poe-danger text-xs font-bold transition-colors flex items-center gap-2 px-2 py-1 hover:bg-poe-surface2 rounded-lg poe-focus-ring"
                 >
                   <i className="fas fa-trash"></i> {t('common.delete')}
                 </button>
@@ -167,7 +167,7 @@ const BuildArchiveSection: React.FC<Props> = ({ history, onUpdate, onViewRecipe,
 
               <button
                 onClick={() => onViewRecipe?.(recipe)}
-                className="flex items-center gap-2 px-5 py-2.5 bg-rose-50 text-rose-600 rounded-xl text-xs font-black uppercase tracking-wider hover:bg-rose-100 hover:text-rose-700 transition-all border border-rose-100"
+                className="flex items-center gap-2 px-5 py-2.5 poe-accent-builds-soft rounded-xl text-xs font-black uppercase tracking-wider hover:brightness-110 transition-all poe-focus-ring"
               >
                 {t('recipes.view')} <i className="fas fa-arrow-right"></i>
               </button>
@@ -179,13 +179,13 @@ const BuildArchiveSection: React.FC<Props> = ({ history, onUpdate, onViewRecipe,
       {/* Delete Confirmation Modal */}
       {itemToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl space-y-6 animate-in zoom-in-95 duration-200 border border-slate-100">
+          <div className="poe-surface rounded-3xl p-6 max-w-sm w-full shadow-2xl space-y-6 animate-in zoom-in-95 duration-200 border border-poe-borderStrong">
             <div className="text-center">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500">
+              <div className="w-16 h-16 poe-status-danger rounded-full flex items-center justify-center mx-auto mb-4">
                 <i className="fas fa-exclamation-triangle text-2xl"></i>
               </div>
-              <h3 className="text-xl font-black text-slate-900">{t('recipes.deleteTitle')}</h3>
-              <p className="text-slate-500 text-sm font-medium mt-2">
+              <h3 className="text-xl font-black text-poe-text1">{t('recipes.deleteTitle')}</h3>
+              <p className="text-poe-text2 text-sm font-medium mt-2">
                 {t('recipes.deleteDesc')}
               </p>
             </div>
@@ -193,13 +193,13 @@ const BuildArchiveSection: React.FC<Props> = ({ history, onUpdate, onViewRecipe,
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={() => setItemToDelete(null)}
-                className="py-3 px-4 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-colors"
+                className="py-3 px-4 poe-card text-poe-text1 font-bold rounded-xl hover:brightness-110 transition-colors poe-focus-ring"
               >
                 {t('common.cancel')}
               </button>
               <button
                 onClick={confirmDelete}
-                className="py-3 px-4 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition-colors shadow-lg shadow-red-200"
+                className="py-3 px-4 poe-btn-danger font-bold rounded-xl transition-colors shadow-lg shadow-black/30 poe-focus-ring"
               >
                 {t('common.delete')}
               </button>

@@ -89,14 +89,14 @@ function ResetPasswordForm() {
 
     if (status === 'success') {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-                <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-10 border border-slate-100 text-center">
-                    <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="min-h-screen flex items-center justify-center px-4">
+                <div className="max-w-md w-full poe-surface rounded-3xl shadow-xl p-10 border border-poe-borderStrong text-center">
+                    <div className="w-16 h-16 poe-status-success rounded-full flex items-center justify-center mx-auto mb-6">
                         <i className="fas fa-check text-2xl"></i>
                     </div>
-                    <h2 className="text-2xl font-black text-slate-900 mb-4">{t('auth.passwordResetSuccess')}</h2>
-                    <p className="text-slate-600 mb-8">{message}</p>
-                    <Link href="/login" className="block w-full py-4 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-colors">
+                    <h2 className="text-2xl font-black poe-title mb-4">{t('auth.passwordResetSuccess')}</h2>
+                    <p className="text-poe-text2 mb-8">{message}</p>
+                    <Link href="/login" className="block w-full py-4 poe-btn-secondary poe-focus-ring rounded-xl font-bold transition-colors">
                         {t('auth.backToLogin') || 'Back to Login'}
                     </Link>
                 </div>
@@ -106,14 +106,14 @@ function ResetPasswordForm() {
 
     if (status === 'error') {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-                <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-10 border border-slate-100 text-center">
-                    <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="min-h-screen flex items-center justify-center px-4">
+                <div className="max-w-md w-full poe-surface rounded-3xl shadow-xl p-10 border border-poe-borderStrong text-center">
+                    <div className="w-16 h-16 poe-status-danger rounded-full flex items-center justify-center mx-auto mb-6">
                         <i className="fas fa-times text-2xl"></i>
                     </div>
-                    <h2 className="text-2xl font-black text-slate-900 mb-4">{t('auth.invalidResetLink') || 'Invalid Link'}</h2>
-                    <p className="text-slate-600 mb-8">{message}</p>
-                    <Link href="/recover" className="block w-full py-4 bg-rose-600 text-white rounded-xl font-bold hover:bg-rose-700 transition-colors">
+                    <h2 className="text-2xl font-black poe-title mb-4">{t('auth.invalidResetLink') || 'Invalid Link'}</h2>
+                    <p className="text-poe-text2 mb-8">{message}</p>
+                    <Link href="/recover" className="block w-full py-4 poe-btn-danger poe-focus-ring rounded-xl font-bold transition-colors">
                         {t('auth.requestNewLink') || 'Request New Link'}
                     </Link>
                 </div>
@@ -123,21 +123,21 @@ function ResetPasswordForm() {
 
     if (status === 'verifying') {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-                <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-10 border border-slate-100 text-center space-y-4">
-                    <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
-                    <p className="font-bold text-slate-500 animate-pulse">{t('auth.verifyingToken') || 'Verifying link...'}</p>
+            <div className="min-h-screen flex items-center justify-center px-4">
+                <div className="max-w-md w-full poe-surface rounded-3xl shadow-xl p-10 border border-poe-borderStrong text-center space-y-4">
+                    <div className="w-12 h-12 border-4 border-poe-info border-t-transparent rounded-full animate-spin mx-auto"></div>
+                    <p className="font-bold text-poe-text2 animate-pulse">{t('auth.verifyingToken') || 'Verifying link...'}</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-            <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-10 border border-slate-100">
+        <div className="min-h-screen flex items-center justify-center px-4">
+            <div className="max-w-md w-full poe-surface rounded-3xl shadow-xl p-10 border border-poe-borderStrong">
                 <div className="text-center mb-10">
-                    <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-2">{t('auth.resetPasswordTitle') || 'Reset Password'}</h1>
-                    <p className="text-slate-500 font-medium">{t('auth.resetPasswordSubtitle') || 'Enter your new password below.'}</p>
+                    <h1 className="text-3xl font-black poe-title tracking-tight mb-2">{t('auth.resetPasswordTitle') || 'Reset Password'}</h1>
+                    <p className="text-poe-text2 font-medium">{t('auth.resetPasswordSubtitle') || 'Enter your new password below.'}</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -154,14 +154,14 @@ function ResetPasswordForm() {
                     <button
                         type="submit"
                         disabled={status === 'loading' || !isPasswordValid}
-                        className="w-full py-4 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-black shadow-lg shadow-rose-200 transition-all disabled:opacity-50 flex items-center justify-center gap-2 disabled:cursor-not-allowed"
+                        className="w-full py-4 poe-btn-primary poe-focus-ring rounded-xl font-black shadow-lg shadow-black/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2 disabled:cursor-not-allowed"
                     >
                         {status === 'loading' ? <i className="fas fa-circle-notch fa-spin"></i> : (t('auth.resetPassword') || 'Reset Password')}
                     </button>
                 </form>
 
                 <div className="mt-4 text-center">
-                    <Link href="/login" className="text-slate-400 font-bold hover:text-slate-600 text-sm">
+                    <Link href="/login" className="text-poe-text2 font-bold hover:text-poe-text1 text-sm">
                         &larr; {t('auth.backToLogin') || 'Back to Login'}
                     </Link>
                 </div>
@@ -173,11 +173,11 @@ function ResetPasswordForm() {
 export default function ResetPasswordPage() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-                <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-10 border border-slate-100 text-center">
-                    <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse"></div>
-                    <div className="h-8 bg-slate-100 rounded-xl mb-4 animate-pulse"></div>
-                    <div className="h-4 bg-slate-100 rounded-xl animate-pulse"></div>
+            <div className="min-h-screen flex items-center justify-center px-4">
+                <div className="max-w-md w-full poe-surface rounded-3xl shadow-xl p-10 border border-poe-borderStrong text-center">
+                    <div className="w-16 h-16 bg-poe-surface2 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse"></div>
+                    <div className="h-8 bg-poe-surface2 rounded-xl mb-4 animate-pulse"></div>
+                    <div className="h-4 bg-poe-surface2 rounded-xl animate-pulse"></div>
                 </div>
             </div>
         }>

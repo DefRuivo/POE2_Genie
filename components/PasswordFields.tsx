@@ -46,7 +46,7 @@ export const PasswordFields: React.FC<PasswordFieldsProps> = ({
         <div className="space-y-4">
             <div className="space-y-2">
                 {showLabels && (
-                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">
+                    <label className="block text-xs font-black text-poe-text2 uppercase tracking-widest mb-2">
                         {passwordLabel || t('auth.newPassword') || 'New Password'}
                     </label>
                 )}
@@ -62,7 +62,7 @@ export const PasswordFields: React.FC<PasswordFieldsProps> = ({
 
             <div className="space-y-2">
                 {showLabels && (
-                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">
+                    <label className="block text-xs font-black text-poe-text2 uppercase tracking-widest mb-2">
                         {confirmPasswordLabel || t('auth.confirmPassword') || 'Confirm Password'}
                     </label>
                 )}
@@ -77,7 +77,7 @@ export const PasswordFields: React.FC<PasswordFieldsProps> = ({
             </div>
 
             {error && (
-                <div className="p-3 bg-red-50 text-red-600 text-sm font-bold rounded-xl flex items-center gap-2 border border-red-100 animate-in fade-in slide-in-from-top-1 duration-200">
+                <div className="p-3 poe-status-danger text-sm font-bold rounded-xl flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-200">
                     <i className="fas fa-exclamation-circle"></i>
                     {error}
                 </div>

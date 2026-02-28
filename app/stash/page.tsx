@@ -11,9 +11,12 @@ export default function StashPage() {
 
     return (
         <main className="max-w-7xl mx-auto px-4 pt-6 pb-32 space-y-6 animate-in fade-in duration-500">
-            <header className="mb-8">
-                <h1 className="text-3xl font-black text-slate-900 tracking-tight">{t('pantry.title')}</h1>
-                <p className="text-slate-500 font-medium">{t('pantry.subtitle')}</p>
+            <header className="mb-8 poe-section-marker poe-section-stash">
+                <h1 className="text-3xl font-black poe-title tracking-tight flex items-center gap-3">
+                    <i className="fas fa-box-open text-poe-sectionStash"></i>
+                    {t('pantry.title')}
+                </h1>
+                <p className="poe-text-muted font-medium">{t('pantry.subtitle')}</p>
             </header>
             
             <StashSection

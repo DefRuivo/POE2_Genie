@@ -112,21 +112,24 @@ export default function SettingsPage() {
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-[50vh]">
-                <i className="fas fa-circle-notch fa-spin text-4xl text-rose-500"></i>
+                <i className="fas fa-circle-notch fa-spin text-4xl text-poe-sectionSettings"></i>
             </div>
         );
     }
 
     return (
         <div className="max-w-7xl mx-auto px-4 mt-8 pb-20 space-y-8">
-            <header>
-                <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-2">{t('settings.title')}</h1>
-                <p className="text-slate-500 font-medium">{t('settings.subtitle')}</p>
+            <header className="poe-section-marker poe-section-settings">
+                <h1 className="text-3xl font-black poe-title tracking-tight mb-2 flex items-center gap-3">
+                    <i className="fas fa-cog text-poe-sectionSettings"></i>
+                    {t('settings.title')}
+                </h1>
+                <p className="poe-text-muted font-medium">{t('settings.subtitle')}</p>
             </header>
 
 
             {message && (
-                <div className={`p-4 rounded-2xl text-sm font-bold flex items-center gap-3 ${message.type === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-red-50 text-red-700 border border-red-100'
+                <div className={`p-4 rounded-2xl text-sm font-bold flex items-center gap-3 ${message.type === 'success' ? 'poe-status-success' : 'poe-status-danger'
                     }`}>
                     <i className={`fas ${message.type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} text-lg`}></i>
                     {message.text}
@@ -138,61 +141,61 @@ export default function SettingsPage() {
                 {/* Main Column: Profile & Security */}
                 <div className="lg:col-span-2 space-y-8">
                     {/* Personal Information */}
-                    <section className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm space-y-6">
-                        <h2 className="text-xl font-black text-slate-900 flex items-center gap-3">
-                            <i className="fas fa-user-circle text-rose-500"></i>
+                    <section className="poe-card poe-section-marker poe-section-party p-6 rounded-[2rem] border border-poe-borderStrong shadow-sm space-y-6">
+                        <h2 className="text-xl font-black poe-title flex items-center gap-3">
+                            <i className="fas fa-user-circle text-poe-sectionParty"></i>
                             {t('settings.profile')}
                         </h2>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('settings.firstName')}</label>
+                                <label className="text-xs font-bold text-poe-text2 uppercase tracking-wider">{t('settings.firstName')}</label>
                                 <input
                                     type="text"
                                     value={name}
                                     onChange={e => setName(e.target.value)}
-                                    className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 font-bold text-slate-700"
+                                    className="w-full px-4 py-3 rounded-xl poe-input poe-focus-ring font-bold"
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('settings.lastName')}</label>
+                                <label className="text-xs font-bold text-poe-text2 uppercase tracking-wider">{t('settings.lastName')}</label>
                                 <input
                                     type="text"
                                     value={surname}
                                     onChange={e => setSurname(e.target.value)}
-                                    className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 font-bold text-slate-700"
+                                    className="w-full px-4 py-3 rounded-xl poe-input poe-focus-ring font-bold"
                                 />
                             </div>
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('settings.email')}</label>
+                            <label className="text-xs font-bold text-poe-text2 uppercase tracking-wider">{t('settings.email')}</label>
                             <input
                                 type="email"
                                 value={email}
                                 disabled
-                                className="w-full px-4 py-3 rounded-xl bg-slate-100 border border-slate-200 text-slate-500 font-bold cursor-not-allowed"
+                                className="w-full px-4 py-3 rounded-xl bg-poe-surface1 border border-poe-border text-poe-text2 font-bold cursor-not-allowed"
                             />
-                            <p className="text-[10px] text-slate-400 font-bold">{t('settings.emailNote')}</p>
+                            <p className="text-[10px] text-poe-text2 font-bold">{t('settings.emailNote')}</p>
                         </div>
                     </section>
 
                     {/* Security */}
-                    <section className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm space-y-6">
-                        <h2 className="text-xl font-black text-slate-900 flex items-center gap-3">
-                            <i className="fas fa-lock text-emerald-500"></i>
+                    <section className="poe-card poe-section-marker poe-section-checklist p-6 rounded-[2rem] border border-poe-borderStrong shadow-sm space-y-6">
+                        <h2 className="text-xl font-black poe-title flex items-center gap-3">
+                            <i className="fas fa-lock text-poe-sectionChecklist"></i>
                             {t('settings.security')}
                         </h2>
 
                         <div className="space-y-2">
-                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('settings.currentPassword')}</label>
+                            <label className="text-xs font-bold text-poe-text2 uppercase tracking-wider">{t('settings.currentPassword')}</label>
                             <PasswordInput
                                 value={currentPassword}
                                 onChange={(e) => setCurrentPassword(e.target.value)}
                                 placeholder="••••••••"
-                                className="bg-slate-50"
+                                className="poe-input"
                             />
-                            <p className="text-[10px] text-slate-400 font-bold">{t('settings.currentPasswordNote')}</p>
+                            <p className="text-[10px] text-poe-text2 font-bold">{t('settings.currentPasswordNote')}</p>
                         </div>
 
                         <PasswordFields
@@ -208,14 +211,14 @@ export default function SettingsPage() {
 
                 {/* Sidebar Column: Preferences */}
                 <div className="space-y-8">
-                    <section className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm space-y-6">
-                        <h2 className="text-xl font-black text-slate-900 flex items-center gap-3">
-                            <i className="fas fa-sliders-h text-indigo-500"></i>
+                    <section className="poe-card poe-section-marker poe-section-settings p-6 rounded-[2rem] border border-poe-borderStrong shadow-sm space-y-6">
+                        <h2 className="text-xl font-black poe-title flex items-center gap-3">
+                            <i className="fas fa-sliders-h text-poe-sectionSettings"></i>
                             {t('settings.preferences')}
                         </h2>
 
                         <div className="space-y-4">
-                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('settings.language')}</label>
+                            <label className="text-xs font-bold text-poe-text2 uppercase tracking-wider">{t('settings.language')}</label>
                             <div className="flex gap-4">
                                 <button
                                     type="button"
@@ -223,9 +226,9 @@ export default function SettingsPage() {
                                         setLanguage('en');
                                         setGlobalLanguage('en');
                                     }}
-                                    className={`flex-1 p-4 rounded-xl border-2 transition-all font-black flex flex-col items-center gap-2 ${language === 'en'
-                                        ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                                        : 'border-slate-100 bg-white text-slate-400 hover:border-slate-300'
+                                    className={`flex-1 p-4 rounded-xl border transition-all font-black flex flex-col items-center gap-2 poe-focus-ring ${language === 'en'
+                                        ? 'poe-accent-settings-soft'
+                                        : 'poe-card border-poe-border text-poe-text2 hover:border-poe-borderStrong'
                                         }`}
                                 >
                                     <span className="text-2xl">🇺🇸</span>
@@ -237,9 +240,9 @@ export default function SettingsPage() {
                                         setLanguage('pt-BR');
                                         setGlobalLanguage('pt-BR');
                                     }}
-                                    className={`flex-1 p-4 rounded-xl border-2 transition-all font-black flex flex-col items-center gap-2 ${language === 'pt-BR'
-                                        ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                                        : 'border-slate-100 bg-white text-slate-400 hover:border-slate-300'
+                                    className={`flex-1 p-4 rounded-xl border transition-all font-black flex flex-col items-center gap-2 poe-focus-ring ${language === 'pt-BR'
+                                        ? 'poe-accent-settings-soft'
+                                        : 'poe-card border-poe-border text-poe-text2 hover:border-poe-borderStrong'
                                         }`}
                                 >
                                     <span className="text-2xl">🇧🇷</span>
@@ -255,7 +258,7 @@ export default function SettingsPage() {
                     <button
                         type="submit"
                         disabled={saving || (password.length > 0 && (!isPasswordValid || currentPassword.length === 0))}
-                        className="px-8 py-4 bg-slate-900 text-white font-black rounded-2xl hover:bg-slate-800 transition-colors shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3"
+                        className="px-8 py-4 poe-btn-primary poe-focus-ring font-black rounded-2xl transition-colors shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3"
                     >
                         {saving && <i className="fas fa-circle-notch fa-spin"></i>}
                         {saving ? t('common.loading') : t('common.save')}

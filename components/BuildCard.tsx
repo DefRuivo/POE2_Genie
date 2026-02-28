@@ -149,12 +149,12 @@ const BuildCard: React.FC<Props> = ({ build, recipe: legacyRecipe, onSaved }) =>
   };
 
   return (
-    <article className="bg-white rounded-[2.5rem] shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in slide-in-from-bottom-10 duration-700">
+    <article className="poe-card rounded-[2.5rem] shadow-2xl border border-poe-borderStrong overflow-hidden animate-in fade-in slide-in-from-bottom-10 duration-700">
       {/* Dynamic Header Area */}
-      <div className="relative bg-slate-900 flex flex-col p-4 md:p-14 h-auto min-h-[400px] justify-center">
+      <div className="relative bg-poe-bg1 flex flex-col p-4 md:p-14 h-auto min-h-[400px] justify-center">
 
         {/* Persistent Dark Gradient for Readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-slate-900/60 opacity-90 pointer-events-none z-1"></div>
+        <div className="absolute inset-0 opacity-90 pointer-events-none z-1" style={{ background: 'linear-gradient(to top, rgba(15, 14, 13, 0.96) 0%, rgba(15, 14, 13, 0.45) 45%, rgba(15, 14, 13, 0.68) 100%)' }}></div>
 
         {/* Background Image */}
         {recipe.image_base64 && (
@@ -177,12 +177,12 @@ const BuildCard: React.FC<Props> = ({ build, recipe: legacyRecipe, onSaved }) =>
               </div>
               <div className={`inline-flex px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20 text-white ${
                 normalizedCostTier === 'medium'
-                  ? 'bg-yellow-500/80'
+                  ? 'bg-poe-warning'
                   : normalizedCostTier === 'mirror_of_kalandra'
-                    ? 'bg-slate-900 border-rose-500/50'
+                    ? 'bg-poe-surface1 border-poe-sectionBuilds'
                     : normalizedCostTier === 'cheap'
-                      ? 'bg-green-500/80'
-                      : 'bg-red-500/80'
+                      ? 'bg-poe-success'
+                      : 'bg-poe-danger'
               }`}>
                 {normalizedCostTier === 'mirror_of_kalandra'
                   ? <><i className="fas fa-crown mr-1"></i> {t('recipeForm.mirrorOfKalandra')}</>
@@ -201,7 +201,7 @@ const BuildCard: React.FC<Props> = ({ build, recipe: legacyRecipe, onSaved }) =>
               {member?.role === 'ADMIN' && (
                 <button
                   onClick={() => setShowDeleteConfirm(true)}
-                  className="w-10 h-10 rounded-xl bg-white border border-rose-200 text-rose-500 flex items-center justify-center hover:bg-rose-50 hover:border-rose-300 transition-colors shadow-lg"
+                  className="w-10 h-10 rounded-xl poe-card border border-poe-danger text-poe-danger flex items-center justify-center hover:bg-poe-surface2 transition-colors shadow-lg poe-focus-ring"
                   title={t('recipes.delete')}
                 >
                   <i className="fas fa-trash-alt"></i>
@@ -210,7 +210,7 @@ const BuildCard: React.FC<Props> = ({ build, recipe: legacyRecipe, onSaved }) =>
               {!isGuest && (
                 <Link
                   href={`/builds/${recipe.id}/edit`}
-                  className="px-6 py-3 rounded-2xl font-black text-[10px] uppercase shadow-2xl transition-all tracking-widest bg-white text-slate-900 hover:bg-slate-100 border border-slate-200"
+                  className="px-6 py-3 rounded-2xl font-black text-[10px] uppercase shadow-2xl transition-all tracking-widest poe-card text-poe-text1 hover:bg-poe-surface2 border border-poe-borderStrong poe-focus-ring"
                 >
                   <i className="fas fa-edit mr-2"></i> {t('recipeCard.edit')}
                 </Link>
@@ -220,7 +220,7 @@ const BuildCard: React.FC<Props> = ({ build, recipe: legacyRecipe, onSaved }) =>
                 <button
                   onClick={handleTranslate}
                   disabled={isTranslating}
-                  className="px-6 py-3 rounded-xl font-black text-[10px] uppercase shadow-lg transition-all tracking-widest bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border border-indigo-200"
+                  className="px-6 py-3 rounded-xl font-black text-[10px] uppercase shadow-lg transition-all tracking-widest poe-accent-settings-soft hover:brightness-110 poe-focus-ring"
                 >
                   {isTranslating ? (
                     <><i className="fas fa-spinner fa-spin mr-2"></i> {t('recipeCard.translating')}</>
@@ -233,7 +233,7 @@ const BuildCard: React.FC<Props> = ({ build, recipe: legacyRecipe, onSaved }) =>
               )}
               <button
                 onClick={toggleFavorite}
-                className={`px-6 py-3 rounded-2xl font-black text-[10px] uppercase shadow-2xl transition-all tracking-widest ${isFavorite ? 'bg-pink-500 text-white hover:bg-pink-600' : 'bg-slate-800 text-white hover:bg-slate-700'}`}
+                className={`px-6 py-3 rounded-2xl font-black text-[10px] uppercase shadow-2xl transition-all tracking-widest poe-focus-ring ${isFavorite ? 'poe-btn-danger' : 'poe-btn-secondary'}`}
               >
                 {isFavorite ? (
                   <><i className="fas fa-heart-broken mr-2"></i>{t('recipeCard.unfavorite')}</>
@@ -250,8 +250,8 @@ const BuildCard: React.FC<Props> = ({ build, recipe: legacyRecipe, onSaved }) =>
               {displayTitle}
             </h3>
 
-            <div className="bg-slate-800/90 p-4 md:p-10 rounded-3xl border border-slate-700 max-w-3xl mx-auto shadow-xl">
-              <p className="text-slate-200 text-lg md:text-xl font-medium leading-relaxed">
+            <div className="bg-poe-surface1 p-4 md:p-10 rounded-3xl border border-poe-borderStrong max-w-3xl mx-auto shadow-xl">
+              <p className="text-poe-text1 text-lg md:text-xl font-medium leading-relaxed">
                 {displayReasoning}
               </p>
             </div>
@@ -262,19 +262,19 @@ const BuildCard: React.FC<Props> = ({ build, recipe: legacyRecipe, onSaved }) =>
 
       <div className="p-4 md:p-14">
         {isDev && (
-          <div className="bg-slate-50 border border-slate-100 p-4 rounded-3xl mb-12">
-            <h4 className="font-black text-slate-400 text-[10px] uppercase tracking-widest mb-2 flex items-center gap-2">
+          <div className="poe-card border border-poe-border p-4 rounded-3xl mb-12">
+            <h4 className="font-black text-poe-text2 text-[10px] uppercase tracking-widest mb-2 flex items-center gap-2">
               <i className="fas fa-terminal"></i> Auditor Log (Dev Only)
             </h4>
-            <p className="text-slate-600 text-sm italic font-medium">{recipe.analysis_log}</p>
+            <p className="text-poe-text2 text-sm italic font-medium">{recipe.analysis_log}</p>
           </div>
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
           <div className="lg:col-span-4 space-y-12">
             <div>
-              <h4 className="text-xl font-black text-slate-900 flex items-center gap-3 mb-6">
-                <i className="fas fa-shopping-basket text-amber-500"></i>
+              <h4 className="text-xl font-black text-poe-text1 flex items-center gap-3 mb-6">
+                <i className="fas fa-shopping-basket text-poe-sectionStash"></i>
                 {t('recipeCard.fromPantry')}
               </h4>
               <ul className="space-y-3">
@@ -303,17 +303,17 @@ const BuildCard: React.FC<Props> = ({ build, recipe: legacyRecipe, onSaved }) =>
                   })();
 
                   return (
-                    <li key={idx} className="flex items-center gap-3 text-slate-700 bg-emerald-50 p-4 rounded-2xl border border-emerald-100 text-sm font-bold group hover:bg-emerald-100 transition-colors">
-                      <i className="fas fa-check-circle text-emerald-500"></i>
+                    <li key={idx} className="flex items-center gap-3 poe-status-success p-4 rounded-2xl text-sm font-bold group hover:brightness-110 transition-colors">
+                      <i className="fas fa-check-circle text-poe-success"></i>
                       <div className="flex flex-col text-left">
                         {(ing.quantity || ing.unit) && (
-                          <span className="text-[10px] text-emerald-600/70 uppercase tracking-tighter leading-none mb-0.5">
+                          <span className="text-[10px] uppercase tracking-tighter leading-none mb-0.5 opacity-80">
                             {ing.quantity} {ing.unit}
                           </span>
                         )}
                         <span className="leading-tight">{ing.name}</span>
                       </div>
-                      <span className="ml-auto text-[8px] font-black uppercase bg-white px-2 py-1 rounded-full text-emerald-600 border border-emerald-200 shadow-sm opacity-60 group-hover:opacity-100 transition-opacity">{t('recipeCard.pantry')}</span>
+                      <span className="ml-auto text-[8px] font-black uppercase poe-card px-2 py-1 rounded-full text-poe-success border border-poe-success shadow-sm opacity-60 group-hover:opacity-100 transition-opacity">{t('recipeCard.pantry')}</span>
                     </li>
                   );
                 })}
@@ -321,9 +321,9 @@ const BuildCard: React.FC<Props> = ({ build, recipe: legacyRecipe, onSaved }) =>
             </div>
 
             {(buildItems || []).length > 0 && (
-              <div className="bg-orange-50/30 p-4 rounded-[2rem] border-2 border-dashed border-orange-200 relative">
+              <div className="poe-card p-4 rounded-[2rem] border-2 border-dashed border-poe-sectionStash relative">
                 <div className="flex justify-between items-center mb-6">
-                  <h4 className="text-lg font-black text-orange-900 flex items-center gap-3">
+                  <h4 className="text-lg font-black text-poe-sectionStash flex items-center gap-3">
                     <i className="fas fa-cart-plus"></i>
                     {t('recipeCard.toBuy')}
                   </h4>
@@ -331,13 +331,13 @@ const BuildCard: React.FC<Props> = ({ build, recipe: legacyRecipe, onSaved }) =>
                   <div className="flex gap-2 relative" ref={shareMenuRef}>
                     <button
                       onClick={() => setShowShareMenu(!showShareMenu)}
-                      className="w-10 h-10 bg-white border border-orange-200 text-orange-600 rounded-xl flex items-center justify-center hover:bg-orange-100 transition-all shadow-sm"
+                      className="w-10 h-10 poe-card border border-poe-sectionStash text-poe-sectionStash rounded-xl flex items-center justify-center hover:bg-poe-surface2 transition-all shadow-sm poe-focus-ring"
                     >
                       <i className="fas fa-share-alt"></i>
                     </button>
 
                     {showShareMenu && (
-                      <div className="absolute right-0 mt-2 w-52 bg-white border border-slate-100 shadow-2xl rounded-2xl p-2 z-30 animate-in fade-in zoom-in-95 duration-200">
+                      <div className="absolute right-0 mt-2 w-52 poe-surface border border-poe-border shadow-2xl rounded-2xl p-2 z-30 animate-in fade-in zoom-in-95 duration-200">
                         <ShareButtons
                           layout="menu-items"
                           text={`*${t('recipeCard.shoppingListFor').replace('{title}', displayTitle)}*\n\n- ${(buildItems || []).map(item => `${item.quantity} ${item.unit} ${item.name}`).join('\n- ')}`}
@@ -374,12 +374,12 @@ const BuildCard: React.FC<Props> = ({ build, recipe: legacyRecipe, onSaved }) =>
                     })();
 
                     return (
-                      <li key={idx} className="flex items-center justify-between text-orange-950 text-sm font-bold bg-white/80 backdrop-blur-sm py-2 px-3 rounded-xl border border-orange-100 shadow-sm hover:shadow-md hover:bg-white transition-all group/item">
+                      <li key={idx} className="flex items-center justify-between text-poe-text1 text-sm font-bold poe-card py-2 px-3 rounded-xl border border-poe-border shadow-sm hover:shadow-md hover:bg-poe-surface2 transition-all group/item">
                         <div className="flex items-center gap-4 flex-1 min-w-0">
                           {!isGuest && (
                             <button
                               onClick={() => setItemToAdd(ing.name)}
-                              className="w-10 h-10 rounded-xl bg-orange-600 flex items-center justify-center text-white shrink-0 shadow-lg shadow-orange-200 hover:scale-110 active:scale-95 transition-all outline-none"
+                              className="w-10 h-10 rounded-xl poe-btn-primary flex items-center justify-center shrink-0 shadow-lg shadow-black/30 hover:scale-110 active:scale-95 transition-all outline-none poe-focus-ring"
                               title={t('recipeCard.addToShoppingList')}
                             >
                               <i className="fas fa-cart-shopping text-xs"></i>
@@ -387,7 +387,7 @@ const BuildCard: React.FC<Props> = ({ build, recipe: legacyRecipe, onSaved }) =>
                           )}
                           <div className="flex flex-col min-w-0">
                             {(ing.quantity || ing.unit) && (
-                              <span className="text-[10px] text-orange-600 uppercase tracking-tighter leading-none mb-0.5">
+                              <span className="text-[10px] text-poe-sectionStash uppercase tracking-tighter leading-none mb-0.5">
                                 {ing.quantity} {ing.unit}
                               </span>
                             )}
@@ -405,18 +405,18 @@ const BuildCard: React.FC<Props> = ({ build, recipe: legacyRecipe, onSaved }) =>
           </div>
 
           <div className="lg:col-span-8">
-            <h4 className="text-xl font-black text-slate-900 flex items-center gap-3 mb-8 lg:mb-10">
-              <i className="fas fa-list-ol text-rose-500"></i>
+            <h4 className="text-xl font-black text-poe-text1 flex items-center gap-3 mb-8 lg:mb-10">
+              <i className="fas fa-list-ol text-poe-sectionBuilds"></i>
               {t('recipeCard.stepByStep')}
             </h4>
             <div className="space-y-12 relative">
-              <div className="absolute left-[15px] top-4 bottom-4 w-0.5 bg-slate-100"></div>
+              <div className="absolute left-[15px] top-4 bottom-4 w-0.5 bg-poe-border"></div>
               {(buildSteps || []).map((stepData, idx) => {
                 const stepText = typeof stepData === 'string' ? stepData : (stepData as any)?.text || '';
                 return (
                   <div key={idx} className="relative pl-14">
-                    <div className="absolute left-0 w-8 h-8 bg-white border-4 border-rose-500 rounded-full flex items-center justify-center font-black text-xs text-rose-600 z-10 shadow-lg">{idx + 1}</div>
-                    <p className="text-slate-700 text-lg leading-relaxed font-medium pt-0.5">{stepText}</p>
+                    <div className="absolute left-0 w-8 h-8 poe-card border-4 border-poe-sectionBuilds rounded-full flex items-center justify-center font-black text-xs text-poe-sectionBuilds z-10 shadow-lg">{idx + 1}</div>
+                    <p className="text-poe-text1 text-lg leading-relaxed font-medium pt-0.5">{stepText}</p>
                   </div>
                 );
               })}
@@ -428,29 +428,29 @@ const BuildCard: React.FC<Props> = ({ build, recipe: legacyRecipe, onSaved }) =>
 
       {itemToAdd && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl p-4 max-w-sm w-full shadow-2xl space-y-6 animate-in zoom-in-95 duration-200">
+          <div className="poe-surface rounded-3xl p-4 max-w-sm w-full shadow-2xl space-y-6 animate-in zoom-in-95 duration-200 border border-poe-borderStrong">
             <div>
-              <h3 className="text-xl font-black text-slate-900">{t('recipeCard.addToListTitle').replace('{item}', itemToAdd)}</h3>
-              <p className="text-slate-500 text-xs font-medium mt-1 uppercase tracking-wide">{t('recipeCard.trackItem')}</p>
+              <h3 className="text-xl font-black text-poe-text1">{t('recipeCard.addToListTitle').replace('{item}', itemToAdd)}</h3>
+              <p className="text-poe-text2 text-xs font-medium mt-1 uppercase tracking-wide">{t('recipeCard.trackItem')}</p>
             </div>
 
             <div className="grid gap-3">
-              <button onClick={() => confirmAddToStash('ALWAYS')} className="p-4 rounded-xl bg-indigo-50 text-indigo-700 font-bold hover:bg-indigo-100 flex items-center gap-3 transition-all border border-indigo-100">
-                <div className="w-8 h-8 rounded-full bg-indigo-200 flex items-center justify-center text-indigo-700"><i className="fas fa-sync"></i></div>
+              <button onClick={() => confirmAddToStash('ALWAYS')} className="p-4 rounded-xl poe-status-info font-bold hover:brightness-110 flex items-center gap-3 transition-all poe-focus-ring">
+                <div className="w-8 h-8 rounded-full poe-status-info flex items-center justify-center text-poe-info"><i className="fas fa-sync"></i></div>
                 <div className="text-left">
                   <div className="text-sm">{t('recipeCard.alwaysReplenish')}</div>
                   <div className="text-[10px] opacity-70">{t('recipeCard.alwaysReplenishDesc')}</div>
                 </div>
               </button>
-              <button onClick={() => confirmAddToStash('ONE_SHOT')} className="p-4 rounded-xl bg-emerald-50 text-emerald-700 font-bold hover:bg-emerald-100 flex items-center gap-3 transition-all border border-emerald-100">
-                <div className="w-8 h-8 rounded-full bg-emerald-200 flex items-center justify-center text-emerald-700"><i className="fas fa-check"></i></div>
+              <button onClick={() => confirmAddToStash('ONE_SHOT')} className="p-4 rounded-xl poe-status-success font-bold hover:brightness-110 flex items-center gap-3 transition-all poe-focus-ring">
+                <div className="w-8 h-8 rounded-full poe-status-success flex items-center justify-center text-poe-success"><i className="fas fa-check"></i></div>
                 <div className="text-left">
                   <div className="text-sm">{t('recipeCard.oneShot')}</div>
                   <div className="text-[10px] opacity-70">{t('recipeCard.oneShotDesc')}</div>
                 </div>
               </button>
-              <button onClick={() => confirmAddToStash('NEVER')} className="p-4 rounded-xl bg-slate-50 text-slate-700 font-bold hover:bg-slate-100 flex items-center gap-3 transition-all border border-slate-200">
-                <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-600"><i className="fas fa-ban"></i></div>
+              <button onClick={() => confirmAddToStash('NEVER')} className="p-4 rounded-xl poe-card text-poe-text1 font-bold hover:bg-poe-surface2 flex items-center gap-3 transition-all border border-poe-border poe-focus-ring">
+                <div className="w-8 h-8 rounded-full bg-poe-surface2 flex items-center justify-center text-poe-text2"><i className="fas fa-ban"></i></div>
                 <div className="text-left">
                   <div className="text-sm">{t('recipeCard.justTrack')}</div>
                   <div className="text-[10px] opacity-70">{t('recipeCard.justTrackDesc')}</div>
@@ -458,7 +458,7 @@ const BuildCard: React.FC<Props> = ({ build, recipe: legacyRecipe, onSaved }) =>
               </button>
             </div>
 
-            <button onClick={() => setItemToAdd(null)} className="w-full py-3 text-slate-400 font-bold hover:text-slate-600 text-sm uppercase tracking-wide">{t('recipeCard.cancel')}</button>
+            <button onClick={() => setItemToAdd(null)} className="w-full py-3 text-poe-text2 font-bold hover:text-poe-text1 text-sm uppercase tracking-wide poe-focus-ring rounded-lg">{t('recipeCard.cancel')}</button>
           </div>
         </div>
       )}

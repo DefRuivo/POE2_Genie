@@ -38,13 +38,14 @@ export default function CreateBuildPage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 selection:bg-rose-100 pb-20">
-            <header className="bg-white border-b border-slate-200 mb-8">
+        <div className="min-h-screen pb-20">
+            <header className="poe-surface border-b border-poe-borderStrong mb-8">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-4">
-                    <Link href="/" className="text-slate-400 hover:text-slate-600 transition-colors">
+                    <Link href="/" className="text-poe-text2 hover:text-poe-gold transition-colors poe-focus-ring rounded-lg p-1">
                         <i className="fas fa-arrow-left text-xl"></i>
                     </Link>
-                    <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+                    <h1 className="text-2xl font-black poe-title tracking-tight flex items-center gap-3">
+                        <i className="fas fa-pen-to-square text-poe-sectionBuilds"></i>
                         {t('recipeForm.titleCreate')}
                     </h1>
                 </div>

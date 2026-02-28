@@ -173,9 +173,9 @@ const StashSection: React.FC<Props> = ({
   };
 
   return (
-    <section className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+    <section className="poe-card poe-section-marker poe-section-stash rounded-3xl shadow-sm border border-poe-borderStrong overflow-hidden">
       {/* Header & Add */}
-      <div className="p-6 border-b border-slate-100 bg-slate-50/50 space-y-4">
+      <div className="p-6 border-b border-poe-border space-y-4">
 
 
         {/* Add New Bar */}
@@ -184,7 +184,7 @@ const StashSection: React.FC<Props> = ({
             <div className="flex-1 flex gap-2">
               <input
                 placeholder={t('pantry.placeholder')}
-                className="flex-[2] px-4 py-3 rounded-2xl border border-slate-200 text-sm outline-none focus:ring-2 focus:ring-amber-500"
+                className="flex-[2] px-4 py-3 rounded-2xl poe-input poe-focus-ring text-sm"
                 value={newItemName}
                 onKeyPress={e => e.key === 'Enter' && handleAdd()}
                 onPaste={handlePasteImport}
@@ -192,7 +192,7 @@ const StashSection: React.FC<Props> = ({
               />
               <input
                 placeholder={t('recipeForm.qty')}
-                className="w-20 px-3 py-3 rounded-2xl border border-slate-200 text-sm outline-none focus:ring-2 focus:ring-amber-500"
+                className="w-20 px-3 py-3 rounded-2xl poe-input poe-focus-ring text-sm"
                 value={newItemQuantity}
                 onKeyPress={e => e.key === 'Enter' && handleAdd()}
                 onChange={e => setNewItemQuantity(e.target.value)}
@@ -207,8 +207,8 @@ const StashSection: React.FC<Props> = ({
               onClick={handleAdd}
               disabled={!newItemName.trim()}
               className={`px-6 py-3 rounded-2xl font-bold shadow-lg transition-all active:scale-95 ${!newItemName.trim()
-                ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
-                : 'bg-amber-500 text-white shadow-amber-100 hover:bg-amber-600'
+                ? 'poe-card text-poe-text2 cursor-not-allowed shadow-none'
+                : 'poe-btn-primary shadow-black/30'
                 }`}
             >
               <i className="fas fa-plus mr-2 md:hidden"></i>
@@ -218,28 +218,28 @@ const StashSection: React.FC<Props> = ({
         )}
         {!isGuest && (
           <div className="space-y-1">
-            <p className="text-xs font-semibold text-slate-500">{t('pantry.pasteHint')}</p>
-            {pasteNotice && <p className="text-xs font-semibold text-amber-700">{pasteNotice}</p>}
-            {pasteError && <p className="text-xs font-semibold text-rose-600">{pasteError}</p>}
+            <p className="text-xs font-semibold text-poe-text2">{t('pantry.pasteHint')}</p>
+            {pasteNotice && <p className="text-xs font-semibold text-poe-warning">{pasteNotice}</p>}
+            {pasteError && <p className="text-xs font-semibold text-poe-danger">{pasteError}</p>}
           </div>
         )}
       </div>
 
       {/* Search & List */}
       <div className="p-0">
-        <div className="p-4 border-b border-slate-100 flex flex-col md:flex-row gap-4">
+        <div className="p-4 border-b border-poe-border flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
-            <i className="fas fa-search absolute left-4 top-3.5 text-slate-400"></i>
+            <i className="fas fa-search absolute left-4 top-3.5 text-poe-text2"></i>
             <input
               type="text"
               placeholder={t('pantry.search')}
-              className="w-full pl-10 pr-4 py-3 bg-slate-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-slate-200 transition-all"
+              className="w-full pl-10 pr-4 py-3 poe-input poe-focus-ring rounded-xl transition-all"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
             />
           </div>
           <select
-            className="px-4 py-3 bg-slate-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-slate-200 text-slate-600 font-bold"
+            className="px-4 py-3 poe-select poe-focus-ring rounded-xl text-poe-text1 font-bold"
             value={filterRule}
             onChange={e => setFilterRule(e.target.value)}
           >
@@ -252,7 +252,7 @@ const StashSection: React.FC<Props> = ({
 
         <div className="p-6 max-h-[calc(100vh-250px)] overflow-y-auto">
           {filteredPantry.length === 0 ? (
-            <div className="p-12 text-center text-slate-400">
+            <div className="p-12 text-center poe-empty-state rounded-2xl">
               <i className="fas fa-box-open text-4xl mb-3 opacity-20"></i>
               <p>{t('pantry.empty')}</p>
             </div>

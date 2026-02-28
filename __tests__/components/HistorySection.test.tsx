@@ -100,11 +100,12 @@ describe('HistorySection', () => {
   it('deletes build after confirmation', async () => {
     render(<HistorySection history={mockRecipes} onUpdate={mockUpdate} onViewRecipe={mockView} />);
 
-    const deleteButtons = screen.getAllByText('Delete');
+    const deleteButtons = screen.getAllByRole('button', { name: 'Delete' });
     fireEvent.click(deleteButtons[0]);
 
-    // Modal appears
-    const confirmDelete = screen.getByText('Delete', { selector: 'button.bg-red-500' });
+    // Modal appears and adds a second "Delete" confirmation button
+    const allDeleteButtons = screen.getAllByRole('button', { name: 'Delete' });
+    const confirmDelete = allDeleteButtons[allDeleteButtons.length - 1];
     fireEvent.click(confirmDelete);
 
     await waitFor(() => {

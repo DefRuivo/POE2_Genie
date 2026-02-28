@@ -137,9 +137,8 @@ describe('MembersPage Guest Restrictions', () => {
             expect(screen.getByText('Guest User')).toBeInTheDocument();
         });
 
-        // Click on self (Guest User) - Use generic card class selector
-        // The card has 'bg-white p-4 rounded-3xl' classes
-        const guestCard = screen.getByText('Guest User').closest('.bg-white.p-4.rounded-3xl');
+        // Click on self (Guest User) - Use card class selector
+        const guestCard = screen.getByText('Guest User').closest('.poe-card.p-4.rounded-3xl');
         fireEvent.click(guestCard!);
 
         // Form should appear now for editing self
@@ -166,7 +165,7 @@ describe('MembersPage Guest Restrictions', () => {
         const alertSpy = jest.spyOn(window, 'alert');
 
         // Click on Admin User (Another member) - Should be disabled now
-        const adminCard = screen.getByText('Admin User').closest('.bg-white.p-4.rounded-3xl');
+        const adminCard = screen.getByText('Admin User').closest('.poe-card.p-4.rounded-3xl');
         // We can verify it has cursor-not-allowed class
         expect(adminCard).toHaveClass('cursor-not-allowed');
 
@@ -200,7 +199,7 @@ describe('MembersPage Guest Restrictions', () => {
             );
         });
 
-        const otherCard = screen.getByText('Other Member').closest('.bg-white.p-4.rounded-3xl');
+        const otherCard = screen.getByText('Other Member').closest('.poe-card.p-4.rounded-3xl');
         fireEvent.click(otherCard!);
         fireEvent.change(screen.getByPlaceholderText('e.g. Grandma, Mike'), { target: { value: 'Other Updated' } });
         fireEvent.click(screen.getByRole('button', { name: 'Save' }));
@@ -319,7 +318,7 @@ describe('MembersPage Guest Restrictions', () => {
         render(<MembersPage />);
         await waitFor(() => expect(screen.getByText('Admin User')).toBeInTheDocument());
 
-        fireEvent.click(screen.getByText('Admin User').closest('.bg-white.p-4.rounded-3xl')!);
+        fireEvent.click(screen.getByText('Admin User').closest('.poe-card.p-4.rounded-3xl')!);
 
         const guestCheckbox = screen.getByRole('checkbox') as HTMLInputElement;
         expect(guestCheckbox.disabled).toBe(true);
@@ -337,7 +336,7 @@ describe('MembersPage Guest Restrictions', () => {
         render(<MembersPage />);
         await waitFor(() => expect(screen.getByText('Other Member')).toBeInTheDocument());
 
-        fireEvent.click(screen.getByText('Other Member').closest('.bg-white.p-4.rounded-3xl')!);
+        fireEvent.click(screen.getByText('Other Member').closest('.poe-card.p-4.rounded-3xl')!);
         const guestCheckbox = screen.getByRole('checkbox') as HTMLInputElement;
         expect(guestCheckbox.checked).toBe(false);
         fireEvent.click(guestCheckbox);
