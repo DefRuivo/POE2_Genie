@@ -8,6 +8,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { useApp } from '@/components/Providers';
 import { PasswordFields } from '@/components/PasswordFields';
 import { PasswordInput } from '@/components/PasswordInput';
+import { ICON_ACCENT_CLASS, ICON_MAP } from '@/lib/ui/icon-map';
 
 export default function SettingsPage() {
     const [, setUser] = useState<any>(null);
@@ -121,7 +122,7 @@ export default function SettingsPage() {
         <div className="max-w-7xl mx-auto px-4 mt-8 pb-20 space-y-8">
             <header className="poe-section-marker poe-section-settings">
                 <h1 className="text-3xl font-black poe-title tracking-tight mb-2 flex items-center gap-3">
-                    <i className="fas fa-cog text-poe-sectionSettings"></i>
+                    <i className={`${ICON_MAP.settings} ${ICON_ACCENT_CLASS.settings}`}></i>
                     {t('settings.title')}
                 </h1>
                 <p className="poe-text-muted font-medium">{t('settings.subtitle')}</p>

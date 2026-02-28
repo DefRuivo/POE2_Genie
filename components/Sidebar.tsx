@@ -5,6 +5,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/hooks/useTranslation';
+import { ICON_ACCENT_CLASS, ICON_MAP, type IconKey } from '@/lib/ui/icon-map';
 
 interface Props {
   isOpen: boolean;
@@ -28,12 +29,12 @@ const Sidebar: React.FC<Props> = ({ isOpen, onClose, onNavigate }) => {
 
   const NavItem = ({
     href,
-    icon,
+    iconKey,
     label,
     accentClass,
   }: {
     href: string;
-    icon: string;
+    iconKey: IconKey;
     label: string;
     accentClass: string;
   }) => (
@@ -49,7 +50,9 @@ const Sidebar: React.FC<Props> = ({ isOpen, onClose, onNavigate }) => {
       className="poe-nav-link w-full flex items-center gap-4 px-4 py-3 font-bold transition-all group"
     >
       <span className={`w-1.5 h-7 rounded-full ${accentClass}`}></span>
-      <i className={`${icon} w-6 group-hover:scale-110 transition-transform`}></i>
+      <span className="w-8 h-8 rounded-lg flex items-center justify-center border border-poe-border bg-poe-surface2 shadow-inner group-hover:scale-105 transition-transform">
+        <i className={`${ICON_MAP[iconKey]} ${ICON_ACCENT_CLASS[iconKey]} text-sm`}></i>
+      </span>
       {label}
     </Link>
   );
@@ -67,8 +70,8 @@ const Sidebar: React.FC<Props> = ({ isOpen, onClose, onNavigate }) => {
         <div className="p-4 flex flex-col h-full">
           <div className="flex justify-between items-center mb-12">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-poe-bronze rounded-xl flex items-center justify-center text-poe-bg0 shadow-lg border border-poe-borderStrong">
-                <i className="fas fa-shield-halved"></i>
+              <div className="w-10 h-10 bg-poe-bg0 rounded-xl flex items-center justify-center shadow-lg border border-poe-borderStrong">
+                <i className={`${ICON_MAP.brand} ${ICON_ACCENT_CLASS.brand}`}></i>
               </div>
               <span className="font-black text-xl tracking-tighter poe-title">POE2 Genie</span>
             </div>
@@ -78,13 +81,13 @@ const Sidebar: React.FC<Props> = ({ isOpen, onClose, onNavigate }) => {
           </div>
 
           <nav className="flex-1 space-y-2 overflow-y-auto custom-scrollbar pr-2">
-            <NavItem href="/" icon="fas fa-home" label={t('nav.home')} accentClass="bg-poe-gold" />
-            <NavItem href="/stash" icon="fas fa-box-open" label={t('nav.pantry')} accentClass="bg-poe-sectionStash" />
-            <NavItem href="/checklist" icon="fas fa-list-check" label={t('nav.shopping')} accentClass="bg-poe-sectionChecklist" />
-            <NavItem href="/builds" icon="fas fa-scroll" label={t('nav.recipes')} accentClass="bg-poe-sectionBuilds" />
-            <NavItem href="/party" icon="fas fa-users" label={t('nav.members')} accentClass="bg-poe-sectionParty" />
-            <NavItem href="/hideouts" icon="fas fa-house" label={t('nav.kitchens')} accentClass="bg-poe-sectionHideouts" />
-            <NavItem href="/settings" icon="fas fa-cog" label={t('nav.settings')} accentClass="bg-poe-sectionSettings" />
+            <NavItem href="/" iconKey="home" label={t('nav.home')} accentClass="bg-poe-gold" />
+            <NavItem href="/stash" iconKey="stash" label={t('nav.pantry')} accentClass="bg-poe-sectionStash" />
+            <NavItem href="/checklist" iconKey="checklist" label={t('nav.shopping')} accentClass="bg-poe-sectionChecklist" />
+            <NavItem href="/builds" iconKey="builds" label={t('nav.recipes')} accentClass="bg-poe-sectionBuilds" />
+            <NavItem href="/party" iconKey="party" label={t('nav.members')} accentClass="bg-poe-sectionParty" />
+            <NavItem href="/hideouts" iconKey="hideouts" label={t('nav.kitchens')} accentClass="bg-poe-sectionHideouts" />
+            <NavItem href="/settings" iconKey="settings" label={t('nav.settings')} accentClass="bg-poe-sectionSettings" />
           </nav>
 
           <div className="border-t border-poe-border pt-4 mt-2">

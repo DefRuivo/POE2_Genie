@@ -3,6 +3,7 @@
 
 import React from 'react';
 import { useTranslation } from '@/hooks/useTranslation';
+import { ICON_ACCENT_CLASS, ICON_MAP } from '@/lib/ui/icon-map';
 
 const Footer: React.FC = () => {
   const { t } = useTranslation();
@@ -11,7 +12,9 @@ const Footer: React.FC = () => {
     <footer className="mt-32 py-16 border-t border-poe-borderStrong text-center">
       <div className="max-w-4xl mx-auto px-6">
         <div className="inline-flex items-center gap-2 text-poe-gold font-black tracking-tighter text-xl mb-4 poe-title">
-          <i className="fas fa-shield-halved"></i>
+          <span className="w-7 h-7 rounded-lg bg-poe-bg0 border border-poe-borderStrong shadow-[0_6px_12px_rgba(0,0,0,0.28)] inline-flex items-center justify-center">
+            <i className={`${ICON_MAP.brand} ${ICON_ACCENT_CLASS.brand} text-sm`}></i>
+          </span>
           POE2 Genie
         </div>
         <p className="text-poe-text2 text-xs font-bold uppercase tracking-[0.2em]">

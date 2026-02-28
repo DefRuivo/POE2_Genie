@@ -6,6 +6,7 @@ import { storageService } from '@/services/storageService';
 import { BuildItem, BuildItemStatus } from '@/types';
 import { useCurrentMember } from '@/hooks/useCurrentMember';
 import { useTranslation } from '@/hooks/useTranslation';
+import { ICON_ACCENT_CLASS, ICON_MAP } from '@/lib/ui/icon-map';
 
 export default function ChecklistPage() {
     const { isGuest } = useCurrentMember();
@@ -153,7 +154,7 @@ export default function ChecklistPage() {
                 <header className="flex items-start justify-between mb-8">
                     <div className="poe-section-marker poe-section-checklist flex-1 mr-4">
                         <div className="flex items-center gap-3 mb-2">
-                            <i className="fas fa-list-check text-poe-sectionChecklist text-xl"></i>
+                            <i className={`${ICON_MAP.checklist} ${ICON_ACCENT_CLASS.checklist} text-xl`}></i>
                             <h1 className="text-3xl font-black poe-title tracking-tight">{t('shopping.title')}</h1>
                         </div>
                         <p className="poe-text-muted font-medium">{t('shopping.subtitle') || t('nav.shopping')}</p>
@@ -331,7 +332,7 @@ export default function ChecklistPage() {
                                         <div className="flex flex-wrap gap-2 pl-10">
                                             {item.pantryItem && (
                                                 <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full poe-accent-stash-soft">
-                                                    <i className="fas fa-box-open mr-1"></i>
+                                                    <i className={`${ICON_MAP.stash} ${ICON_ACCENT_CLASS.stash} mr-1`}></i>
                                                     {t('shopping.fromPantry')}
                                                 </span>
                                             )}
@@ -342,7 +343,7 @@ export default function ChecklistPage() {
                                                     className="text-[10px] lowercase font-bold px-2 py-0.5 rounded-full poe-accent-builds-soft hover:brightness-110 transition-colors"
                                                     title={ri.recipe.recipe_title}
                                                 >
-                                                    <i className="fas fa-scroll mr-1"></i>
+                                                    <i className={`${ICON_MAP.builds} ${ICON_ACCENT_CLASS.builds} mr-1`}></i>
                                                     {ri.recipe.recipe_title.length > 20 ? ri.recipe.recipe_title.substring(0, 20) + '...' : ri.recipe.recipe_title}
                                                 </a>
                                             ))}

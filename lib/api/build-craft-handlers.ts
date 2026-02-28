@@ -49,6 +49,23 @@ export async function craftBuild(
       );
     }
 
+    const isModelUnavailable = Number(error?.status) === 503 || error?.code === 'gemini.model_unavailable';
+    if (isModelUnavailable) {
+      const localizedModelUnavailable = t('api.geminiModelUnavailable');
+      const fallbackModelUnavailableMessage = t('generate.generateError');
+
+      return NextResponse.json(
+        {
+          error: localizedModelUnavailable === 'api.geminiModelUnavailable'
+            ? fallbackModelUnavailableMessage
+            : localizedModelUnavailable,
+          code: 'gemini.model_unavailable',
+          details: Array.isArray(error?.details) ? error.details : [],
+        },
+        { status: 503 },
+      );
+    }
+
     const isQuotaError = Number(error?.status) === 429 || error?.code === 'gemini.quota_exceeded';
     if (isQuotaError) {
       const parsedRetryAfter = Number(error?.retryAfterSeconds);

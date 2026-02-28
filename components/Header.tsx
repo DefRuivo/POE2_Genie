@@ -1,5 +1,6 @@
 import React from 'react';
 import { UserMenu } from './UserMenu';
+import { ICON_ACCENT_CLASS, ICON_MAP } from '@/lib/ui/icon-map';
 
 interface Props {
   onMenuClick?: () => void;
@@ -25,8 +26,8 @@ const Header: React.FC<Props> = ({ onMenuClick, onHomeClick }) => {
             onClick={onHomeClick}
             className={`flex items-center gap-2 ${onHomeClick ? 'cursor-pointer' : ''} group select-none`}
           >
-            <div className="p-1.5 rounded-lg bg-poe-bronze group-hover:bg-poe-gold group-hover:scale-105 transition-all shadow-[0_6px_12px_rgba(0,0,0,0.3)] border border-poe-borderStrong">
-              <i className="fas fa-shield-halved text-poe-bg0 text-sm"></i>
+            <div className="p-1.5 rounded-lg bg-poe-bg0 group-hover:border-poe-gold group-hover:scale-105 transition-all shadow-[0_6px_12px_rgba(0,0,0,0.3)] border border-poe-borderStrong">
+              <i className={`${ICON_MAP.brand} ${ICON_ACCENT_CLASS.brand} text-sm`}></i>
             </div>
             <h1 className="text-xl md:text-[1.35rem] font-black tracking-tight poe-title leading-none">
               POE2 <span className="text-poe-gold">Genie</span>

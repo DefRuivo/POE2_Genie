@@ -6,6 +6,7 @@ import BuildArchiveSection from '@/components/BuildArchiveSection';
 
 import { storageService } from '@/services/storageService';
 import { BuildRecord } from '@/types';
+import { ICON_ACCENT_CLASS, ICON_MAP } from '@/lib/ui/icon-map';
 
 import { useCurrentMember } from '@/hooks/useCurrentMember';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -53,7 +54,7 @@ export default function BuildsPage() {
             {/* Standard Page Header */}
             <header className="mb-8 poe-section-marker poe-section-builds">
                 <h1 className="text-3xl font-black poe-title tracking-tight flex items-center gap-3">
-                    <i className="fas fa-scroll text-poe-sectionBuilds"></i>
+                    <i className={`${ICON_MAP.builds} ${ICON_ACCENT_CLASS.builds}`}></i>
                     {t('recipes.title')}
                 </h1>
                 <p className="poe-text-muted font-medium">{t('recipes.subtitle')}</p>

@@ -26,10 +26,16 @@ describe('Header and Footer', () => {
     render(<Header onMenuClick={onMenuClick} onHomeClick={onHomeClick} />);
 
     expect(screen.getByTestId('user-menu')).toBeInTheDocument();
+    const brandHeading = screen.getByRole('heading', { name: /poe2 genie/i });
+    const brandBlock = brandHeading.closest('div');
+    const brandIcon = brandBlock?.querySelector('i.fa-wand-magic-sparkles');
+    expect(brandIcon).toBeInTheDocument();
+    expect(brandIcon).toHaveClass('text-poe-gold');
+    expect(brandIcon?.parentElement).toHaveClass('bg-poe-bg0');
     fireEvent.click(screen.getByRole('button'));
     expect(onMenuClick).toHaveBeenCalledTimes(1);
 
-    fireEvent.click(screen.getByRole('heading', { name: /poe2 genie/i }));
+    fireEvent.click(brandHeading);
     expect(onHomeClick).toHaveBeenCalledTimes(1);
   });
 
@@ -41,6 +47,11 @@ describe('Header and Footer', () => {
   it('Footer renders slogan and external links', () => {
     render(<Footer />);
     expect(screen.getByText('common.slogan')).toBeInTheDocument();
+    const footerBrand = screen.getByText('POE2 Genie').closest('div');
+    const footerBrandIcon = footerBrand?.querySelector('i.fa-wand-magic-sparkles');
+    expect(footerBrandIcon).toBeInTheDocument();
+    expect(footerBrandIcon).toHaveClass('text-poe-gold');
+    expect(footerBrandIcon?.parentElement).toHaveClass('bg-poe-bg0');
     expect(screen.getByLabelText('POE2 Genie on X')).toBeInTheDocument();
     expect(screen.getByLabelText('POE2 Genie on GitHub')).toBeInTheDocument();
   });

@@ -78,10 +78,22 @@ describe('geminiService', () => {
     return Object.assign(new Error(JSON.stringify(payload)), { status: 429 });
   };
 
+  const makeModelNotFoundError = (model = 'gemini-3-flash') => {
+    const payload = {
+      error: {
+        code: 404,
+        status: 'NOT_FOUND',
+        message: `models/${model} is not found for API version v1beta, or is not supported for generateContent.`,
+      }
+    };
+
+    return Object.assign(new Error(JSON.stringify(payload)), { status: 404 });
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
     process.env.GEMINI_MODEL_PRIMARY = 'gemini-3-pro-preview';
-    process.env.GEMINI_MODEL_FALLBACK = 'gemini-3-flash';
+    process.env.GEMINI_MODEL_FALLBACK = 'gemini-2.5-flash';
     (getLocalAiContext as jest.Mock).mockResolvedValue('Keep stash-first suggestions only.');
   });
 
@@ -160,9 +172,39 @@ describe('geminiService', () => {
     expect(result.recipe_title).toBe('Fallback Build');
     expect(mockGenerateContent).toHaveBeenCalledTimes(2);
     expect(mockGenerateContent.mock.calls[0][0].model).toBe('gemini-3-pro-preview');
-    expect(mockGenerateContent.mock.calls[1][0].model).toBe('gemini-3-flash');
+    expect(mockGenerateContent.mock.calls[1][0].model).toBe('gemini-2.5-flash');
     expect(warnSpy).toHaveBeenCalledWith(
       expect.stringContaining('Quota exceeded on gemini-3-pro-preview')
+    );
+
+    warnSpy.mockRestore();
+  });
+
+  it('generateRecipe should auto-heal when configured fallback model is invalid and succeed on canonical fallback', async () => {
+    process.env.GEMINI_MODEL_FALLBACK = 'gemini-3-flash';
+    const mockResponseText = makeValidBuildPayload({ build_title: 'Recovered via Canonical Fallback' });
+
+    const mockGenerateContent = jest
+      .fn()
+      .mockRejectedValueOnce(makeQuotaError('5s'))
+      .mockRejectedValueOnce(makeModelNotFoundError('gemini-3-flash'))
+      .mockResolvedValueOnce({ text: mockResponseText, usageMetadata: { promptTokenCount: 9, candidatesTokenCount: 14 } });
+
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    (GoogleGenAI as unknown as jest.Mock).mockImplementation(() => ({
+      models: { generateContent: mockGenerateContent }
+    }));
+
+    const result = await generateRecipe(mockHousehold as any, mockContext);
+
+    expect(result.recipe_title).toBe('Recovered via Canonical Fallback');
+    expect(mockGenerateContent).toHaveBeenCalledTimes(3);
+    expect(mockGenerateContent.mock.calls[0][0].model).toBe('gemini-3-pro-preview');
+    expect(mockGenerateContent.mock.calls[1][0].model).toBe('gemini-3-flash');
+    expect(mockGenerateContent.mock.calls[2][0].model).toBe('gemini-2.5-flash');
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Model gemini-3-flash unavailable for generateContent')
     );
 
     warnSpy.mockRestore();
@@ -206,9 +248,10 @@ describe('geminiService', () => {
     expect(mockGenerateContent).toHaveBeenCalledTimes(2);
   });
 
-  it('generateRecipe should throw structured quota error when primary and fallback both hit 429', async () => {
+  it('generateRecipe should throw structured quota error when all attempted models hit 429', async () => {
     const mockGenerateContent = jest
       .fn()
+      .mockRejectedValueOnce(makeQuotaError('46s'))
       .mockRejectedValueOnce(makeQuotaError('46s'))
       .mockRejectedValueOnce(makeQuotaError('46s'));
 
@@ -223,7 +266,7 @@ describe('geminiService', () => {
       retryAfterSeconds: 46
     });
 
-    expect(mockGenerateContent).toHaveBeenCalledTimes(2);
+    expect(mockGenerateContent).toHaveBeenCalledTimes(3);
   });
 
   it('generateRecipe should parse quota payload from object error shape and extract retry delay from message', async () => {
@@ -236,6 +279,7 @@ describe('geminiService', () => {
     };
     const mockGenerateContent = jest
       .fn()
+      .mockRejectedValueOnce(quotaObj)
       .mockRejectedValueOnce(quotaObj)
       .mockRejectedValueOnce(quotaObj);
 
@@ -259,6 +303,7 @@ describe('geminiService', () => {
     };
     const mockGenerateContent = jest
       .fn()
+      .mockRejectedValueOnce(quotaObj)
       .mockRejectedValueOnce(quotaObj)
       .mockRejectedValueOnce(quotaObj);
 
@@ -286,9 +331,13 @@ describe('geminiService', () => {
     expect(mockGenerateContent).toHaveBeenCalledTimes(2);
   });
 
-  it('generateRecipe should throw quota from primary when fallback model is disabled', async () => {
+  it('generateRecipe should throw quota when configured fallback is same as primary and canonical fallbacks also hit quota', async () => {
     process.env.GEMINI_MODEL_FALLBACK = 'gemini-3-pro-preview';
-    const mockGenerateContent = jest.fn().mockRejectedValueOnce(makeQuotaError('4s'));
+    const mockGenerateContent = jest
+      .fn()
+      .mockRejectedValueOnce(makeQuotaError('4s'))
+      .mockRejectedValueOnce(makeQuotaError('4s'))
+      .mockRejectedValueOnce(makeQuotaError('4s'));
 
     (GoogleGenAI as unknown as jest.Mock).mockImplementation(() => ({
       models: { generateContent: mockGenerateContent }
@@ -298,7 +347,29 @@ describe('geminiService', () => {
       message: 'Gemini quota exceeded',
       retryAfterSeconds: 4,
     });
-    expect(mockGenerateContent).toHaveBeenCalledTimes(1);
+    expect(mockGenerateContent).toHaveBeenCalledTimes(3);
+  });
+
+  it('generateRecipe should throw structured model_unavailable when chain is exhausted by unavailable models', async () => {
+    process.env.GEMINI_MODEL_FALLBACK = 'gemini-3-flash';
+    const mockGenerateContent = jest
+      .fn()
+      .mockRejectedValueOnce(makeQuotaError('4s'))
+      .mockRejectedValueOnce(makeModelNotFoundError('gemini-3-flash'))
+      .mockRejectedValueOnce(makeModelNotFoundError('gemini-2.5-flash'))
+      .mockRejectedValueOnce(makeModelNotFoundError('gemini-2.5-flash-lite'));
+
+    (GoogleGenAI as unknown as jest.Mock).mockImplementation(() => ({
+      models: { generateContent: mockGenerateContent }
+    }));
+
+    await expect(generateRecipe(mockHousehold as any, mockContext)).rejects.toMatchObject({
+      status: 503,
+      code: 'gemini.model_unavailable',
+      details: expect.any(Array),
+    });
+
+    expect(mockGenerateContent).toHaveBeenCalledTimes(4);
   });
 
   it('generateRecipe should handle empty local AI context without appending local-context block', async () => {

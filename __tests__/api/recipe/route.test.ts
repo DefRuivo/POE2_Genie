@@ -48,11 +48,13 @@ describe('POST /api/recipe', () => {
         ? {
             'generate.generateError': 'Falha ao craftar build. Tente novamente.',
             'api.geminiDomainMismatch': 'O conteúdo gerado está fora do domínio de build do Path of Exile. Tente novamente.',
+            'api.geminiModelUnavailable': 'Nenhum modelo Gemini compatível está disponível no momento. Tente novamente em instantes.',
             'api.internalError': 'Erro interno do servidor'
           }
         : {
             'generate.generateError': 'Failed to craft build. Please try again.',
             'api.geminiDomainMismatch': 'Generated content is outside Path of Exile build domain. Please try again.',
+            'api.geminiModelUnavailable': 'No compatible Gemini model is currently available. Please try again shortly.',
             'api.internalError': 'Internal server error'
           };
 
@@ -142,6 +144,25 @@ describe('POST /api/recipe', () => {
       error: 'Generated content is outside Path of Exile build domain. Please try again.',
       code: 'gemini.domain_mismatch',
       details: ['recipe', 'chicken'],
+    });
+  });
+
+  it('returns 503 localized model unavailable when fallback chain is exhausted', async () => {
+    (craftBuildWithAI as jest.Mock).mockRejectedValue({
+      status: 503,
+      code: 'gemini.model_unavailable',
+      details: [{ model: 'gemini-3-flash', reason: 'model_not_found', status: 404 }],
+    });
+
+    const res = await POST(makeRequest('en'));
+    const data = await res.json();
+
+    expect(res.status).toBe(503);
+    expect(res.headers.get('Deprecation')).toBe('true');
+    expect(data).toEqual({
+      error: 'No compatible Gemini model is currently available. Please try again shortly.',
+      code: 'gemini.model_unavailable',
+      details: [{ model: 'gemini-3-flash', reason: 'model_not_found', status: 404 }],
     });
   });
 });

@@ -8,6 +8,7 @@ import { TagInput } from '@/components/ui/TagInput';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 
 import { useTranslation } from '@/hooks/useTranslation';
+import { ICON_ACCENT_CLASS, ICON_MAP } from '@/lib/ui/icon-map';
 
 export default function PartyPage() {
     const { t } = useTranslation();
@@ -214,7 +215,7 @@ export default function PartyPage() {
                 <header className="flex items-start justify-between mb-8">
                     <div className="poe-section-marker poe-section-party flex-1 mr-4">
                         <div className="flex items-center gap-3 mb-2">
-                            <i className="fas fa-users text-poe-sectionParty text-xl"></i>
+                            <i className={`${ICON_MAP.party} ${ICON_ACCENT_CLASS.party} text-xl`}></i>
                             <h1 className="text-3xl font-black poe-title tracking-tight">{t('members.title')}</h1>
                         </div>
                         <p className="poe-text-muted font-medium">{t('members.subtitle') || t('nav.members')}</p>

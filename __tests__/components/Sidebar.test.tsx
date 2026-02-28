@@ -45,6 +45,12 @@ describe('components/Sidebar', () => {
 
     expect(screen.getByText('Home')).toBeInTheDocument();
     expect(screen.getByText('Checklist')).toBeInTheDocument();
+    const homeLink = screen.getByRole('link', { name: /home/i });
+    const hideoutsLink = screen.getByRole('link', { name: /hideouts/i });
+    expect(homeLink.querySelector('i.fa-compass')).toBeInTheDocument();
+    expect(hideoutsLink.querySelector('i.fa-campground')).toBeInTheDocument();
+    expect(document.querySelector('i.fa-home')).not.toBeInTheDocument();
+    expect(document.querySelector('i.fa-house')).not.toBeInTheDocument();
 
     // Backdrop is first fixed div.
     const backdrop = document.querySelector('div.fixed.inset-0');

@@ -9,6 +9,7 @@ import { CodeInput } from '../components/ui/CodeInput';
 import { useCurrentMember } from '@/hooks/useCurrentMember';
 import { useTranslation } from '@/hooks/useTranslation';
 import { MessageDialog } from '../components/MessageDialog';
+import { ICON_ACCENT_CLASS, ICON_MAP } from '@/lib/ui/icon-map';
 
 export default function Home() {
   const { isGuest } = useCurrentMember();
@@ -58,7 +59,7 @@ export default function Home() {
             {t('home.welcome')}, Exile! <span className="text-poe-gold text-xl md:text-2xl">⚔️</span>
             {kitchen && (
               <span className="text-[10px] poe-chip px-2.5 py-1 rounded-full uppercase tracking-widest font-bold shadow-sm animate-in fade-in slide-in-from-left-4">
-                <i className="fas fa-house mr-2 text-poe-gold"></i>
+                <i className={`${ICON_MAP.hideouts} ${ICON_ACCENT_CLASS.hideouts} mr-2`}></i>
                 {kitchen.name}
               </span>
             )}
@@ -102,7 +103,7 @@ export default function Home() {
 
           <Link href="/stash" className="p-4 poe-card rounded-3xl border-2 border-poe-borderStrong hover:border-poe-sectionStash transition-all group text-left">
             <div className="w-12 h-12 bg-poe-surface2 border border-poe-borderStrong rounded-full flex items-center justify-center text-poe-sectionStash text-xl mb-4 group-hover:scale-110 transition-transform">
-              <i className="fas fa-box-open"></i>
+              <i className={`${ICON_MAP.stash} ${ICON_ACCENT_CLASS.stash}`}></i>
             </div>
             <h3 className="text-xl font-black poe-title mb-1">{t('actions.pantryTitle')}</h3>
             <p className="text-sm poe-text-muted font-medium">{t('actions.pantryDesc')}</p>
@@ -110,7 +111,7 @@ export default function Home() {
 
           <Link href="/hideouts" className="p-4 poe-card rounded-3xl border-2 border-poe-borderStrong hover:border-poe-sectionHideouts transition-all group text-left">
             <div className="w-12 h-12 bg-poe-surface2 border border-poe-borderStrong rounded-full flex items-center justify-center text-poe-sectionHideouts text-xl mb-4 group-hover:scale-110 transition-transform">
-              <i className="fas fa-house"></i>
+              <i className={`${ICON_MAP.hideouts} ${ICON_ACCENT_CLASS.hideouts}`}></i>
             </div>
             <h3 className="text-xl font-black poe-title mb-1">{t('actions.kitchenTitle')}</h3>
             <p className="text-sm poe-text-muted font-medium">{t('actions.kitchenDesc')}</p>
@@ -120,7 +121,7 @@ export default function Home() {
         {/* Join Hideout Section */}
         <div className="poe-card poe-section-marker poe-section-hideouts rounded-3xl border-2 border-poe-borderStrong p-6">
           <h3 className="text-xl font-black poe-title mb-4 flex items-center gap-2">
-            <i className="fas fa-ticket-alt text-poe-sectionHideouts"></i>
+            <i className={`${ICON_MAP.invite} ${ICON_ACCENT_CLASS.invite}`}></i>
             {t('actions.haveCode')}
           </h3>
           <div className="flex flex-col md:flex-row gap-6 items-center">

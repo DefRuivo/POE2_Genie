@@ -31,6 +31,7 @@ describe('Auth pages: login + recover', () => {
 
   it('login succeeds and redirects home', async () => {
     render(<LoginPage />);
+    expect(document.querySelector('.fa-wand-magic-sparkles')).toBeInTheDocument();
 
     fireEvent.change(screen.getByPlaceholderText('members.emailPlaceholder'), { target: { value: 'user@test.com' } });
     fireEvent.change(screen.getByPlaceholderText('••••••••'), { target: { value: '123456' } });

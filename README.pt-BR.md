@@ -68,6 +68,7 @@ Construído com tecnologias web modernas para performance e escala:
     cp .env-sample .env
     # Edite o .env com sua GEMINI_API_KEY e credenciais do banco
     ```
+    Mantenha `GEMINI_MODEL_FALLBACK` em um modelo compatível com `generateContent` (recomendado: `gemini-2.5-flash`).
 
 3.  **Inicie o banco de dados**:
     ```bash

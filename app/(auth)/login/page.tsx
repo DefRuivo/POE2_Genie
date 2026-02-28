@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslation } from '@/hooks/useTranslation';
+import { ICON_ACCENT_CLASS, ICON_MAP } from '@/lib/ui/icon-map';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -51,7 +52,7 @@ export default function LoginPage() {
             <div className="max-w-md w-full poe-surface rounded-3xl shadow-xl p-10 border border-poe-borderStrong">
                 <div className="text-center mb-10">
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl poe-accent-party-soft mb-6 shadow-lg shadow-black/20">
-                        <i className="fas fa-shield-halved text-2xl"></i>
+                        <i className={`${ICON_MAP.brand} ${ICON_ACCENT_CLASS.brand} text-2xl`}></i>
                     </div>
                     <h1 className="text-3xl font-black poe-title tracking-tight mb-2">{t('auth.loginTitle')}</h1>
                     <p className="text-poe-text2 font-medium">{t('auth.loginSubtitle')}</p>

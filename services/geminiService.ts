@@ -15,44 +15,13 @@ import {
 } from "@/lib/build-contract";
 import { BUILD_GENERATION_SYSTEM_INSTRUCTION } from "@/lib/prompts";
 import { assessBuildDomain, type DomainAssessment } from "@/lib/domain-guardrails";
-
-const getPrimaryModel = () => process.env.GEMINI_MODEL_PRIMARY || 'gemini-3-pro-preview';
-const getFallbackModel = () => process.env.GEMINI_MODEL_FALLBACK || 'gemini-2.5-flash';
-
-type GeminiErrorPayload = {
-  error?: {
-    code?: number;
-    status?: string;
-    message?: string;
-    details?: Array<{
-      "@type"?: string;
-      retryDelay?: string;
-    }>;
-  };
-};
-
-const parseGeminiErrorPayload = (error: any): GeminiErrorPayload | null => {
-  if (!error) {
-    return null;
-  }
-
-  if (error.error && typeof error.error === 'object') {
-    return { error: error.error };
-  }
-
-  if (typeof error.message === 'string') {
-    try {
-      const parsed = JSON.parse(error.message);
-      if (parsed && typeof parsed === 'object') {
-        return parsed as GeminiErrorPayload;
-      }
-    } catch {
-      return null;
-    }
-  }
-
-  return null;
-};
+import {
+  buildModelAttemptChain,
+  getConfiguredModels,
+  isModelNotFoundError,
+  parseGeminiErrorPayload,
+  validateConfiguredModelsWithList,
+} from "@/lib/gemini-model-policy";
 
 const parseRetryDelaySeconds = (error: any, payload: GeminiErrorPayload | null): number | null => {
   const details = payload?.error?.details;
@@ -99,6 +68,22 @@ const buildGeminiQuotaExceededError = (error: any): Error => {
   return structuredError;
 };
 
+type ModelAttemptReason = 'quota' | 'model_not_found';
+
+type ModelAttemptDetail = {
+  model: string;
+  reason: ModelAttemptReason;
+  status: number | null;
+};
+
+const buildGeminiModelUnavailableError = (details: ModelAttemptDetail[]): Error => {
+  const structuredError = new Error("No available Gemini model could generate content");
+  (structuredError as any).status = 503;
+  (structuredError as any).code = 'gemini.model_unavailable';
+  (structuredError as any).details = details;
+  return structuredError;
+};
+
 const buildLocalContextInstruction = (localAiContext: string): string => {
   if (!localAiContext) {
     return "";
@@ -130,9 +115,18 @@ export const craftBuildWithAI = async (
   rawContext: BuildSessionContext | SessionContext
 ): Promise<GeneratedBuild> => {
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-  const primaryModel = getPrimaryModel();
-  const fallbackModel = getFallbackModel();
+  const configuredModels = getConfiguredModels();
+  const modelAttemptChain = buildModelAttemptChain(configuredModels);
   const session_context = normalizeBuildSessionContext(rawContext);
+
+  const { unavailableConfiguredModels } = await validateConfiguredModelsWithList(ai, configuredModels);
+  if (unavailableConfiguredModels.length > 0) {
+    console.warn('[Gemini] Configured model is not present in models.list()', {
+      unavailableConfiguredModels,
+      primaryModel: configuredModels.primaryModel,
+      fallbackModel: configuredModels.fallbackModel,
+    });
+  }
 
   const costTier = session_context.cost_tier_preference || session_context.build_complexity || 'medium';
   const costTierInstructionEn = costTier === 'cheap'
@@ -208,28 +202,55 @@ export const craftBuildWithAI = async (
   });
 
   const generateWithFallback = async (correctionInstruction = '') => {
-    try {
-      return await generateWithModel(primaryModel, correctionInstruction);
-    } catch (primaryError: any) {
-      if (isGeminiQuotaExceededError(primaryError) && fallbackModel && fallbackModel !== primaryModel) {
-        console.warn(`[Gemini] Quota exceeded on ${primaryModel}. Retrying with fallback model ${fallbackModel}.`);
+    let lastQuotaError: any = null;
+    let sawQuotaError = false;
+    let sawModelNotFoundError = false;
+    const modelAttemptDetails: ModelAttemptDetail[] = [];
 
-        try {
-          return await generateWithModel(fallbackModel, correctionInstruction);
-        } catch (fallbackError: any) {
-          if (isGeminiQuotaExceededError(fallbackError)) {
-            throw buildGeminiQuotaExceededError(fallbackError);
+    for (let index = 0; index < modelAttemptChain.length; index += 1) {
+      const model = modelAttemptChain[index];
+
+      try {
+        return await generateWithModel(model, correctionInstruction);
+      } catch (modelError: any) {
+        const payload = parseGeminiErrorPayload(modelError);
+        const numericStatus = Number(modelError?.status ?? modelError?.code ?? payload?.error?.code);
+        const status = Number.isFinite(numericStatus) ? numericStatus : null;
+
+        if (isGeminiQuotaExceededError(modelError)) {
+          sawQuotaError = true;
+          lastQuotaError = modelError;
+          modelAttemptDetails.push({ model, reason: 'quota', status });
+
+          if (index < modelAttemptChain.length - 1) {
+            console.warn(`[Gemini] Quota exceeded on ${model}. Retrying with fallback model ${modelAttemptChain[index + 1]}.`);
           }
-          throw fallbackError;
+          continue;
         }
-      }
 
-      if (isGeminiQuotaExceededError(primaryError)) {
-        throw buildGeminiQuotaExceededError(primaryError);
-      }
+        if (isModelNotFoundError(modelError)) {
+          sawModelNotFoundError = true;
+          modelAttemptDetails.push({ model, reason: 'model_not_found', status: status ?? 404 });
 
-      throw primaryError;
+          if (index < modelAttemptChain.length - 1) {
+            console.warn(`[Gemini] Model ${model} unavailable for generateContent. Retrying with ${modelAttemptChain[index + 1]}.`);
+            continue;
+          }
+        }
+
+        throw modelError;
+      }
     }
+
+    if (sawModelNotFoundError) {
+      throw buildGeminiModelUnavailableError(modelAttemptDetails);
+    }
+
+    if (sawQuotaError) {
+      throw buildGeminiQuotaExceededError(lastQuotaError);
+    }
+
+    throw buildGeminiModelUnavailableError(modelAttemptDetails);
   };
 
   let response = await generateWithFallback();

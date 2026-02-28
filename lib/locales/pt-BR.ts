@@ -402,6 +402,7 @@ export const ptBR = {
         geminiQuotaExceeded: "Cota da Gemini excedida. Tente novamente em instantes.",
         geminiQuotaRetryAfter: "Cota da Gemini excedida. Tente novamente em {seconds}s.",
         geminiDomainMismatch: "O conteúdo gerado está fora do domínio de build do Path of Exile. Tente novamente.",
+        geminiModelUnavailable: "Nenhum modelo Gemini compatível está disponível no momento. Tente novamente em instantes.",
         internalError: "Erro interno do servidor"
     },
     units: {

@@ -26,6 +26,7 @@ describe('lib/api/build-craft-handlers', () => {
     serializeBuildPayloadMock.mockImplementation((value: unknown) => value);
     tMock.mockImplementation((key: string) => {
       if (key === 'api.geminiDomainMismatch') return 'Domain mismatch';
+      if (key === 'api.geminiModelUnavailable') return 'Model unavailable';
       if (key === 'generate.generateError') return 'Failed to craft build';
       if (key === 'api.internalError') return 'Internal error';
       return key;
@@ -161,6 +162,28 @@ describe('lib/api/build-craft-handlers', () => {
     expect(res.status).toBe(429);
     expect(res.headers.get('Retry-After')).toBeNull();
     expect(json.retryAfterSeconds).toBeNull();
+  });
+
+  it('returns 503 with localized message for unavailable model chain', async () => {
+    craftBuildWithAIMock.mockRejectedValue({
+      status: 503,
+      code: 'gemini.model_unavailable',
+      details: [{ model: 'gemini-3-flash', reason: 'model_not_found', status: 404 }],
+    });
+
+    const req = new NextRequest('http://localhost/api/build', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    });
+    const res = await craftBuild(req);
+    const json = await res.json();
+
+    expect(res.status).toBe(503);
+    expect(json).toEqual({
+      error: 'Model unavailable',
+      code: 'gemini.model_unavailable',
+      details: [{ model: 'gemini-3-flash', reason: 'model_not_found', status: 404 }],
+    });
   });
 
   it('returns 500 for unknown errors', async () => {

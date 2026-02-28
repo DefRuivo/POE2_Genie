@@ -6,6 +6,7 @@ const TOKENS = {
   borderStrong: '#745f49',
   text1: '#f0e4cf',
   text2: '#ccbba0',
+  gold: '#d2a767',
   focus: '#9fd0ff',
   sectionParty: '#e17a66',
   sectionChecklist: '#8ecf8e',
@@ -16,6 +17,9 @@ const TOKENS = {
   success: '#8ecf8e',
   warning: '#f0c36f',
   danger: '#ef9f9f',
+  btnDangerStart: '#d07a6f',
+  btnDangerEnd: '#ba675e',
+  btnDangerText: '#120908',
 } as const;
 
 function toRgb(hex: string) {
@@ -69,6 +73,10 @@ describe('PoE Theme Contrast', () => {
     }
   });
 
+  it('keeps brand gold icon readable on deep dark badge (>= 4.5:1)', () => {
+    expect(contrastRatio(TOKENS.gold, TOKENS.bg0)).toBeGreaterThanOrEqual(4.5);
+  });
+
   it('keeps section/status accent text readable on dark surfaces (>= 4.5:1)', () => {
     const accents = [
       TOKENS.sectionParty,
@@ -90,5 +98,10 @@ describe('PoE Theme Contrast', () => {
   it('keeps focus ring and strong borders visible as non-text contrast (>= 3:1)', () => {
     expect(contrastRatio(TOKENS.focus, TOKENS.bg0)).toBeGreaterThanOrEqual(3);
     expect(contrastRatio(TOKENS.borderStrong, TOKENS.bg0)).toBeGreaterThanOrEqual(3);
+  });
+
+  it('keeps danger button text at WCAG AA against its gradient ends (>= 4.5:1)', () => {
+    expect(contrastRatio(TOKENS.btnDangerText, TOKENS.btnDangerStart)).toBeGreaterThanOrEqual(4.5);
+    expect(contrastRatio(TOKENS.btnDangerText, TOKENS.btnDangerEnd)).toBeGreaterThanOrEqual(4.5);
   });
 });

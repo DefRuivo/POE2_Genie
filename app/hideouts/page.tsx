@@ -7,6 +7,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { ShareButtons } from '@/components/ShareButtons';
 import { CodeInput } from '@/components/ui/CodeInput';
 import { MessageDialog } from '@/components/MessageDialog';
+import { ICON_ACCENT_CLASS, ICON_MAP } from '@/lib/ui/icon-map';
 
 export default function HideoutsPage() {
     const { t } = useTranslation();
@@ -258,7 +259,7 @@ export default function HideoutsPage() {
                 <header className="flex items-start justify-between mb-8">
                     <div className="poe-section-marker poe-section-hideouts flex-1 mr-4">
                          <div className="flex items-center gap-3 mb-2">
-                            <i className="fas fa-house text-poe-sectionHideouts text-xl"></i>
+                            <i className={`${ICON_MAP.hideouts} ${ICON_ACCENT_CLASS.hideouts} text-xl`}></i>
                             <h1 className="text-3xl font-black poe-title tracking-tight">{t('kitchens.title')}</h1>
                         </div>
                         <p className="text-poe-text2 font-medium">{t('kitchens.subtitle') || t('nav.kitchens')}</p>
@@ -296,7 +297,7 @@ export default function HideoutsPage() {
                             {/* Join Kitchen */}
                             <section className="poe-card poe-section-marker poe-section-hideouts p-6 rounded-3xl shadow-xl border border-poe-borderStrong flex flex-col h-full animate-in slide-in-from-bottom-4 duration-500">
                                 <h2 className="font-bold text-lg text-poe-text1 mb-6 flex items-center gap-2">
-                                    <span className="w-8 h-8 poe-accent-settings-soft rounded-lg flex items-center justify-center text-sm"><i className="fas fa-ticket-alt"></i></span>
+                                    <span className="w-8 h-8 poe-accent-settings-soft rounded-lg flex items-center justify-center text-sm"><i className={`${ICON_MAP.invite} ${ICON_ACCENT_CLASS.invite}`}></i></span>
                                     {t('actions.haveCode')}
                                 </h2>
                                 <div className="flex flex-col gap-4 mt-auto">

@@ -403,6 +403,7 @@ export const en = {
         geminiQuotaExceeded: "Gemini quota exceeded. Please try again shortly.",
         geminiQuotaRetryAfter: "Gemini quota exceeded. Please try again in {seconds}s.",
         geminiDomainMismatch: "Generated content is outside Path of Exile build domain. Please try again.",
+        geminiModelUnavailable: "No compatible Gemini model is currently available. Please try again shortly.",
         internalError: "Internal server error"
     },
     units: {
